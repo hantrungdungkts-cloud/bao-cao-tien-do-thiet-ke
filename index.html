@@ -454,7 +454,33 @@
             display: none;
         }
         body.mobile-view-mode #projectGridSummaryWrapper,
-        body.mobile-view-mode #ganttStaffSubtitle {
+        body.mobile-view-mode #ganttStaffSubtitle,
+        body.mobile-view-mode #ganttStaffBadge,
+        body.mobile-view-mode #ganttStaffStats,
+        body.mobile-view-mode #btnUndo,
+        body.mobile-view-mode #btnRedo,
+        body.mobile-view-mode #tabBtn-recruitment,
+        body.mobile-view-mode #tabBtn-archive,
+        body.mobile-view-mode #btnSortActive {
+            display: none !important;
+        }
+        body.mobile-view-mode #headerTabsRow {
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            overflow: visible !important;
+        }
+        body.mobile-view-mode #headerTabsRow button {
+            padding: 6px 4px !important;
+            font-size: 10.5px !important;
+            text-align: center !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        body.mobile-view-mode #floatingActionCluster {
+            right: 12px !important;
+            bottom: 12px !important;
+        }
+        body.mobile-view-mode tr[data-staff-gantt-row] td.cons-sticky-col-1 button {
             display: none !important;
         }
 </style>
@@ -1656,7 +1682,7 @@
     </div>
 
     <!-- FLOATING SCROLL TO TOP BUTTON & FLOATING AI BUTTON -->
-    <div class="fixed bottom-3 right-[60px] z-50 flex flex-row items-center gap-2">
+    <div id="floatingActionCluster" class="fixed bottom-3 right-[60px] z-50 flex flex-row items-center gap-2">
         <button id="scrollToTopBtn" onclick="scrollToTop()" class="hidden w-9 h-9 rounded-full bg-[#211B18]/90 hover:bg-[#382F2A] text-[#FAF6F0] shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 border border-[#8C6239]" title="Đưa lên đầu trang">
             <svg class="w-4 h-4 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"></path>
@@ -5903,50 +5929,69 @@ Nhiệm vụ của bạn:
                                     </div>
                                 </div>
                                 <div class="p-2 space-y-2 bg-[#FAF6F0]/60">
-                                    ${filteredTasks.map(task => `
-                                        <div class="bg-white rounded-xl border border-[#E3D3C1] p-2 space-y-1.5 shadow-2xs">
-                                            <div class="flex items-center gap-1.5">
-                                                <input type="text" value="${task.name.replace(/^[\.\s]+/, '')}" onchange="updateTaskName(${proj.id}, ${task.id}, this.value)"
-                                                    class="flex-1 min-w-0 text-xs font-extrabold text-[#211B18] bg-transparent border-0 focus:bg-slate-50 rounded px-1 py-0.5 focus:outline-none">
+                                    ${filteredTasks.map(task => {
+                                        const runs = task.runs || [];
+                                        let primaryIdx = 0;
+                                        for (let i = runs.length - 1; i >= 0; i--) {
+                                            if (runs[i].dateReceive || runs[i].datePlan || runs[i].dateActual) {
+                                                primaryIdx = i;
+                                                break;
+                                            }
+                                        }
+                                        const renderMobileRunBlock = (run, rIdx) => `
+                                            <div class="bg-[#FAF6F0]/60 rounded-lg border border-slate-200 p-1.5 space-y-1">
+                                                <div class="flex items-center gap-1">
+                                                    ${rIdx === 0 ? `
+                                                        <button onclick="addTaskRun(${proj.id}, ${task.id})" class="w-4 h-4 rounded bg-indigo-50 text-indigo-600 font-extrabold text-[11px] flex items-center justify-center flex-shrink-0">+</button>
+                                                    ` : `
+                                                        <button onclick="removeTaskRun(${proj.id}, ${task.id}, ${rIdx})" class="w-4 h-4 rounded bg-slate-100 text-slate-500 font-bold text-[11px] flex items-center justify-center flex-shrink-0">×</button>
+                                                    `}
+                                                    <span class="text-[11px] font-bold text-slate-500 flex-shrink-0">${rIdx + 1}:</span>
+                                                    <input type="text" list="staffOptionsList-${proj.id}-${task.id}-${rIdx}" value="${run.staff === 'Chưa giao' ? '' : run.staff}" placeholder="Nhân sự..." onchange="updateRunStaff(${proj.id}, ${task.id}, ${rIdx}, this.value)"
+                                                        class="flex-1 text-[11px] font-bold bg-transparent border-0 text-slate-900 focus:outline-none min-w-0">
+                                                </div>
+                                                <div class="grid grid-cols-3 gap-1 text-center">
+                                                    <div>${renderDateInputHtml(proj.id, task.id, rIdx, 'dateReceive', run.dateReceive, 'receive', run.datePlan, '', false, false)}</div>
+                                                    <div>${renderDateInputHtml(proj.id, task.id, rIdx, 'datePlan', run.datePlan, 'plan', '', run.dateActual, false, false)}</div>
+                                                    <div>${renderDateInputHtml(proj.id, task.id, rIdx, 'dateActual', run.dateActual, 'actual', '', '', false, false)}</div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <select onchange="updateTaskStatus(${proj.id}, ${task.id}, this.value)"
-                                                    class="status-pill ${STATUS_CONFIG[task.status]?.class || 'status-chua-pc'}">
-                                                    ${Object.entries(STATUS_CONFIG).map(([k, cfg]) => `<option value="${k}" ${task.status === k ? 'selected' : ''}>${cfg.label}</option>`).join('')}
-                                                </select>
-                                            </div>
-                                            <div class="grid grid-cols-3 gap-1 text-center text-[9px] font-bold text-slate-400 px-1 pt-0.5">
-                                                <div>Tiếp nhận</div>
-                                                <div>Dự kiến</div>
-                                                <div>Hoàn thành</div>
-                                            </div>
-                                            <div class="space-y-1">
-                                                ${task.runs.map((run, rIdx) => `
-                                                    <div class="bg-[#FAF6F0]/60 rounded-lg border border-slate-200 p-1.5 space-y-1">
-                                                        <div class="flex items-center gap-1">
-                                                            ${rIdx === 0 ? `
-                                                                <button onclick="addTaskRun(${proj.id}, ${task.id})" class="w-4 h-4 rounded bg-indigo-50 text-indigo-600 font-extrabold text-[11px] flex items-center justify-center flex-shrink-0">+</button>
-                                                            ` : `
-                                                                <button onclick="removeTaskRun(${proj.id}, ${task.id}, ${rIdx})" class="w-4 h-4 rounded bg-slate-100 text-slate-500 font-bold text-[11px] flex items-center justify-center flex-shrink-0">×</button>
-                                                            `}
-                                                            <span class="text-[11px] font-bold text-slate-500 flex-shrink-0">${rIdx + 1}:</span>
-                                                            <input type="text" list="staffOptionsList-${proj.id}-${task.id}-${rIdx}" value="${run.staff === 'Chưa giao' ? '' : run.staff}" placeholder="Nhân sự..." onchange="updateRunStaff(${proj.id}, ${task.id}, ${rIdx}, this.value)"
-                                                                class="flex-1 text-[11px] font-bold bg-transparent border-0 text-slate-900 focus:outline-none min-w-0">
+                                        `;
+                                        const otherRuns = runs.map((r, i) => ({ r, i })).filter(x => x.i !== primaryIdx);
+                                        return `
+                                            <div class="bg-white rounded-xl border border-[#E3D3C1] p-2 space-y-1.5 shadow-2xs">
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <input type="text" value="${task.name.replace(/^[\.\s]+/, '')}" onchange="updateTaskName(${proj.id}, ${task.id}, this.value)"
+                                                        class="flex-1 min-w-0 text-xs font-extrabold text-[#211B18] bg-transparent border-0 focus:bg-slate-50 rounded px-0.5 py-0.5 focus:outline-none">
+                                                    <select onchange="updateTaskStatus(${proj.id}, ${task.id}, this.value)"
+                                                        class="status-pill !w-auto max-w-[145px] flex-shrink-0 ${STATUS_CONFIG[task.status]?.class || 'status-chua-pc'}">
+                                                        ${Object.entries(STATUS_CONFIG).map(([k, cfg]) => `<option value="${k}" ${task.status === k ? 'selected' : ''}>${cfg.label}</option>`).join('')}
+                                                    </select>
+                                                </div>
+                                                <div class="grid grid-cols-3 gap-1 text-center text-[9px] font-bold text-slate-400 px-1">
+                                                    <div>Tiếp nhận</div>
+                                                    <div>Dự kiến</div>
+                                                    <div>Hoàn thành</div>
+                                                </div>
+                                                <div class="space-y-1">
+                                                    ${runs[primaryIdx] ? renderMobileRunBlock(runs[primaryIdx], primaryIdx) : ''}
+                                                    ${otherRuns.length > 0 ? `
+                                                        <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.remove();"
+                                                            class="w-full py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-bold transition">
+                                                            + Xem thêm ${otherRuns.length} lần khác
+                                                        </button>
+                                                        <div class="hidden space-y-1">
+                                                            ${otherRuns.map(x => renderMobileRunBlock(x.r, x.i)).join('')}
                                                         </div>
-                                                        <div class="grid grid-cols-3 gap-1 text-center">
-                                                            <div>${renderDateInputHtml(proj.id, task.id, rIdx, 'dateReceive', run.dateReceive, 'receive', run.datePlan, '', false, false)}</div>
-                                                            <div>${renderDateInputHtml(proj.id, task.id, rIdx, 'datePlan', run.datePlan, 'plan', '', run.dateActual, false, false)}</div>
-                                                            <div>${renderDateInputHtml(proj.id, task.id, rIdx, 'dateActual', run.dateActual, 'actual', '', '', false, false)}</div>
-                                                        </div>
-                                                    </div>
-                                                `).join('')}
+                                                    ` : ''}
+                                                </div>
+                                                ${task.note ? `
+                                                    <textarea rows="1" oninput="autoGrowTextarea(this)" onchange="updateTaskNote(${proj.id}, ${task.id}, this.value)" placeholder="Ghi chú..."
+                                                        class="w-full text-[11px] font-medium bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-indigo-400 text-slate-800 resize-none overflow-hidden">${task.note}</textarea>
+                                                ` : ''}
                                             </div>
-                                            ${task.note ? `
-                                                <textarea rows="1" oninput="autoGrowTextarea(this)" onchange="updateTaskNote(${proj.id}, ${task.id}, this.value)" placeholder="Ghi chú..."
-                                                    class="w-full text-[11px] font-medium bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-indigo-400 text-slate-800 resize-none overflow-hidden">${task.note}</textarea>
-                                            ` : ''}
-                                        </div>
-                                    `).join('')}
+                                        `;
+                                    }).join('')}
                                 </div>
                             </div>
                         `;
