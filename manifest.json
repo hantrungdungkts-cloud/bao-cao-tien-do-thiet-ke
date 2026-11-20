@@ -1,0 +1,25 @@
+{
+  "name": "Báo Cáo Tiến Độ Thiết Kế & Quản Lý Nhân Sự",
+  "short_name": "Tiến Độ TK",
+  "description": "Quản lý tiến độ thiết kế, thi công và nhân sự đồng bộ trực tuyến",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F4EFEA",
+  "theme_color": "#211B18",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

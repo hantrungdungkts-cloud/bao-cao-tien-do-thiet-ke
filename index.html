@@ -2,8 +2,16 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Báo Cáo Tiến Độ Thiết Kế & Quản Lý Nhân Sự</title>
+    <!-- PWA App Manifest & Mobile App Meta -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#211B18">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tiến Độ TK">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    <link rel="icon" type="image/png" href="./icon-192.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -539,6 +547,10 @@
 
         <!-- Right Controls -->
         <div class="flex items-center gap-1.5">
+            <button onclick="installPWAApp()" id="btnInstallPWA" class="hidden px-2.5 py-1.5 rounded-lg bg-[#C59B27] hover:bg-[#A88118] text-[#1F1713] text-xs font-black transition flex items-center gap-1 shadow-sm" title="Cài đặt thành App trên điện thoại / máy tính">
+                <span>📲</span>
+                <span class="hidden sm:inline">Cài App</span>
+            </button>
             <button onclick="toggleMobileViewMode()" id="btnMobileView" class="px-2.5 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#EBDFD3] text-xs font-bold transition flex items-center gap-1 shadow-2xs" title="Chuyển chế độ xem Điện thoại / Máy tính">
                 <span>📱</span>
                 <span class="hidden sm:inline">Điện thoại</span>
@@ -13304,7 +13316,35 @@ Nhiệm vụ của bạn:
                     initFirebaseSync();
                 }, { once: true });
             }
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').then((reg) => {
+                    reg.update();
+                }).catch(() => {});
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (!refreshing) {
+                        refreshing = true;
+                        window.location.reload();
+                    }
+                });
+            }
         });
+
+        let deferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            const btn = document.getElementById('btnInstallPWA');
+            if (btn) btn.classList.remove('hidden');
+        });
+        async function installPWAApp() {
+            if (!deferredInstallPrompt) return;
+            deferredInstallPrompt.prompt();
+            await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            const btn = document.getElementById('btnInstallPWA');
+            if (btn) btn.classList.add('hidden');
+        }
 
 </script>
 </body>
