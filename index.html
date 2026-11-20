@@ -8009,7 +8009,7 @@ Nhiệm vụ của bạn:
                         <!-- 2. Bảng Hạng Mục Thi Công của công trình này -->
                         ${isMobileViewMode ? `
                             <div class="p-2 space-y-1.5 bg-[#FAF6F0]/60 flex-1 overflow-y-auto">
-                                ${filteredItems.map((item, origIdx) => {
+                                ${filteredItems.map((item, iIdx) => {
                                     const itemRuns = (Array.isArray(item.runs) && item.runs.length > 0)
                                         ? item.runs
                                         : [{ subTask: item.subTask || '', contractor: item.contractor || '', dateStart: item.dateStart || '', datePlan: item.datePlan || '', dateActual: item.dateActual || '', progress: item.progress || 0, status: item.status || 'DANG_THI_CONG', note: item.note || '' }];
@@ -8018,9 +8018,6 @@ Nhiệm vụ của bạn:
                                         rIdx,
                                         sortKey: parseToISODate(run.dateStart || run.datePlan || run.dateActual) || '9999-12-31'
                                     })).sort((a, b) => a.sortKey.localeCompare(b.sortKey) || (a.rIdx - b.rIdx));
-                                    const earliestItemDate = sortedRuns[0]?.sortKey || '9999-12-31';
-                                    return { item, origIdx, sortedRuns, earliestItemDate };
-                                }).sort((a, b) => a.earliestItemDate.localeCompare(b.earliestItemDate) || (a.origIdx - b.origIdx)).map(({ item, sortedRuns }, iIdx) => {
                                     const itemPalette = CONS_TIMELINE_ITEM_PALETTE[iIdx % CONS_TIMELINE_ITEM_PALETTE.length];
                                     const renderMobileConsRun = (run, rIdx) => {
                                         const runSubTask = run.subTask !== undefined ? run.subTask : '';
