@@ -855,7 +855,7 @@
                 <!-- Hàng 1: Thanh Công Cụ Tác Vụ & Xuất Báo Cáo (Cân đối 2 bên) -->
                 <div class="flex flex-wrap items-center justify-between gap-2 w-full">
                     <!-- Nhóm Trái: Xuất Báo Cáo -->
-                    <div class="flex items-center gap-1.5 flex-wrap">
+                    <div class="mobile-hide flex items-center gap-1.5 flex-wrap">
                         <div class="flex items-center bg-white border border-[#D5C7B8] rounded-xl px-2 py-1 shadow-2xs gap-1">
                             <span class="text-[10px] font-extrabold uppercase text-[#7E634F]">Chọn DA:</span>
                             <select id="consExportTargetSelect" class="text-xs font-extrabold text-[#211B18] bg-transparent focus:outline-none cursor-pointer pr-1">
@@ -872,7 +872,7 @@
 
                     <!-- Nhóm Phải: Tác Vụ Điều Khiển & Tạo Mới -->
                     <div class="flex items-center gap-1.5 flex-wrap">
-                        <button id="btnToggleAllConsTimeline" onclick="toggleAllConstructionTimelines()" class="px-3 py-1.5 rounded-xl bg-[#2D6A4F] hover:bg-[#1B4332] text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1 whitespace-nowrap active:scale-95" title="Ẩn / Hiện biểu đồ Timeline bên dưới tất cả công trình">
+                        <button id="btnToggleAllConsTimeline" onclick="toggleAllConstructionTimelines()" class="mobile-hide px-3 py-1.5 rounded-xl bg-[#2D6A4F] hover:bg-[#1B4332] text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1 whitespace-nowrap active:scale-95" title="Ẩn / Hiện biểu đồ Timeline bên dưới tất cả công trình">
                             <span>📅 Timeline: BẬT</span>
                         </button>
                         <button onclick="syncProjectsFromDesignToConstruction()" class="mobile-hide px-3 py-1.5 rounded-xl bg-[#8C6239] hover:bg-[#734F2E] text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1 whitespace-nowrap active:scale-95" title="Đồng bộ các dự án từ Bảng Thiết Kế (Tab 1) sang Thi Công">
@@ -7909,139 +7909,172 @@ Nhiệm vụ của bạn:
                          style="border-left: 8px solid ${thm.accentColor || '#C59B27'} !important;"
                          class="${isMobileViewMode ? 'w-full flex-shrink-0 snap-center max-h-[calc(100vh-175px)] flex flex-col' : 'mb-6'} bg-white rounded-2xl border-t border-r border-b border-[#D5C7B8] shadow-md overflow-hidden transition-all duration-200">
                         <!-- 1. Thanh Header Công Trình -->
-                        <div class="${thm.headerBg} text-[#FAF6F0] px-3 sm:px-4 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2 sm:gap-3 ${thm.headerBorder} flex-shrink-0">
-                            <div class="flex items-center gap-3 flex-wrap flex-1 min-w-[280px]">
-                                <span style="background-color: ${thm.accentColor || '#C59B27'};" class="w-8 h-8 rounded-xl text-white font-black text-sm flex items-center justify-center shadow-md ring-2 ring-white/40 flex-shrink-0">
-                                    ${pIdx + 1}
-                                </span>
-                                <div class="min-w-0 flex-1">
-                                    <div class="flex items-center gap-2 flex-wrap">
-                                        <input type="text" value="${proj.name}" 
-                                            onchange="updateConstructionProjectField(${proj.id}, 'name', this.value)"
-                                            class="font-black text-white text-sm sm:text-base uppercase tracking-tight bg-transparent border-0 hover:bg-white/10 focus:bg-black/40 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-white/40 max-w-[340px] truncate"
-                                            title="Click để đổi tên công trình">
-                                        <span class="px-2 py-0.5 rounded-full bg-[#107C41] text-white font-extrabold text-[11px] shadow-2xs">
-                                            ${avgProgress}% Hoàn thành
-                                        </span>
-                                        <span class="px-2 py-0.5 rounded-full ${thm.statusBadge} font-bold text-[11px]">
-                                            Nghiệm thu: ${doneItemsCount}/${proj.items.length} mục
-                                        </span>
+                        ${isMobileViewMode ? `
+                            <div class="${thm.headerBg} text-[#FAF6F0] px-2.5 py-2 flex items-center justify-between gap-2 ${thm.headerBorder} flex-shrink-0">
+                                <div class="flex items-center gap-2 min-w-0 flex-1">
+                                    <span style="background-color: ${thm.accentColor || '#C59B27'};" class="w-6 h-6 rounded-lg text-white font-black text-[11px] flex items-center justify-center flex-shrink-0 ring-1 ring-white/30">
+                                        ${pIdx + 1}
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-black text-xs uppercase text-white truncate">${proj.name}</div>
+                                        <div class="text-[10px] text-[#D9C4B0] font-semibold truncate">👷 ${proj.supervisor || 'Chưa giao'} • ${doneItemsCount}/${proj.items.length} mục • <span class="text-[#F0CAA0]">◀ Vuốt ▶</span></div>
                                     </div>
-                                    <div class="flex items-center gap-3 text-[11px] text-[#D9C4B0] mt-1 flex-wrap">
-                                        <div class="flex items-center gap-1">
-                                            <span class="text-white/80 font-bold">📍</span>
-                                            <input type="text" value="${proj.address || ''}" placeholder="Nhập địa chỉ công trình..."
-                                                onchange="updateConstructionProjectField(${proj.id}, 'address', this.value)"
-                                                class="bg-transparent border-0 hover:bg-white/10 focus:bg-black/40 text-[#FAF6F0] rounded px-1 py-0 text-[11px] font-medium w-48 sm:w-64 truncate">
+                                </div>
+                                <div class="flex items-center gap-1.5 flex-shrink-0">
+                                    <span class="px-2 py-0.5 rounded-full bg-[#107C41] text-white font-black text-[10px]">${avgProgress}%</span>
+                                    <button onclick="addConstructionItem(${proj.id})" class="w-6 h-6 rounded-lg bg-white/15 text-white font-black text-xs flex items-center justify-center" title="Thêm hạng mục">+</button>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="${thm.headerBg} text-[#FAF6F0] px-4 py-3 flex flex-wrap items-center justify-between gap-3 ${thm.headerBorder} flex-shrink-0">
+                                <div class="flex items-center gap-3 flex-wrap flex-1 min-w-[280px]">
+                                    <span style="background-color: ${thm.accentColor || '#C59B27'};" class="w-8 h-8 rounded-xl text-white font-black text-sm flex items-center justify-center shadow-md ring-2 ring-white/40 flex-shrink-0">
+                                        ${pIdx + 1}
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <input type="text" value="${proj.name}" 
+                                                onchange="updateConstructionProjectField(${proj.id}, 'name', this.value)"
+                                                class="font-black text-white text-sm sm:text-base uppercase tracking-tight bg-transparent border-0 hover:bg-white/10 focus:bg-black/40 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-white/40 max-w-[340px] truncate"
+                                                title="Click để đổi tên công trình">
+                                            <span class="px-2 py-0.5 rounded-full bg-[#107C41] text-white font-extrabold text-[11px] shadow-2xs">
+                                                ${avgProgress}% Hoàn thành
+                                            </span>
+                                            <span class="px-2 py-0.5 rounded-full ${thm.statusBadge} font-bold text-[11px]">
+                                                Nghiệm thu: ${doneItemsCount}/${proj.items.length} mục
+                                            </span>
                                         </div>
-                                        <div class="flex items-center gap-1">
-                                            <span class="text-white/80 font-bold">👷 Giám sát:</span>
-                                            <input type="text" list="consSupervisorList-${proj.id}" value="${proj.supervisor || ''}" placeholder="Chưa giao"
-                                                onchange="updateConstructionProjectField(${proj.id}, 'supervisor', this.value)"
-                                                class="w-24 text-[11px] font-extrabold bg-transparent border-0 hover:bg-white/10 focus:bg-black/40 rounded px-1 py-0 text-[#FAF6F0] focus:outline-none">
-                                            <datalist id="consSupervisorList-${proj.id}">
-                                                ${staffList.map(s => `<option value="${s}">`).join('')}
-                                            </datalist>
+                                        <div class="flex items-center gap-3 text-[11px] text-[#D9C4B0] mt-1 flex-wrap">
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-white/80 font-bold">📍</span>
+                                                <input type="text" value="${proj.address || ''}" placeholder="Nhập địa chỉ công trình..."
+                                                    onchange="updateConstructionProjectField(${proj.id}, 'address', this.value)"
+                                                    class="bg-transparent border-0 hover:bg-white/10 focus:bg-black/40 text-[#FAF6F0] rounded px-1 py-0 text-[11px] font-medium w-48 sm:w-64 truncate">
+                                            </div>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-white/80 font-bold">👷 Giám sát:</span>
+                                                <input type="text" list="consSupervisorList-${proj.id}" value="${proj.supervisor || ''}" placeholder="Chưa giao"
+                                                    onchange="updateConstructionProjectField(${proj.id}, 'supervisor', this.value)"
+                                                    class="w-24 text-[11px] font-extrabold bg-transparent border-0 hover:bg-white/10 focus:bg-black/40 rounded px-1 py-0 text-[#FAF6F0] focus:outline-none">
+                                                <datalist id="consSupervisorList-${proj.id}">
+                                                    ${staffList.map(s => `<option value="${s}">`).join('')}
+                                                </datalist>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <button onclick="exportConstructionToPDF(${proj.id})" 
-                                    class="mobile-hide px-3 py-1.5 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-extrabold text-xs shadow-md transition flex items-center gap-1" 
-                                    title="Xuất Báo Cáo Tiến Độ Thi Công & Biểu Đồ Timeline PDF riêng cho công trình ${proj.name}">
-                                    <span>📄 Xuất PDF</span>
-                                </button>
-                                <button onclick="openConstructionGoogleSheetModal(${proj.id})" 
-                                    class="mobile-hide px-3 py-1.5 rounded-xl bg-[#107C41] hover:bg-[#0D6535] text-white font-extrabold text-xs shadow-md transition flex items-center gap-1 border border-emerald-600" 
-                                    title="Xuất hoặc liên kết Google Sheet riêng cho công trình ${proj.name}">
-                                    <span>📊 Xuất Sheet</span>
-                                </button>
-                                <button onclick="toggleSingleConstructionTimeline(${proj.id})" 
-                                    class="px-3 py-1.5 rounded-xl ${isTimelineVisible ? 'bg-white/25 text-white ring-1 ring-white/40' : 'bg-black/25 hover:bg-black/40 text-white/90'} font-extrabold text-xs transition shadow-2xs" 
-                                    title="Ẩn / Hiện biểu đồ Timeline của công trình này">
-                                    <span>📅 ${isTimelineVisible ? 'Ẩn Timeline' : 'Hiện Timeline'}</span>
-                                </button>
-                                <button onclick="addConstructionItem(${proj.id})" 
-                                    class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-extrabold text-xs transition shadow-2xs border border-white/20">
-                                    <span>+ Thêm Hạng Mục</span>
-                                </button>
-                                <button onclick="archiveConstructionProject(${proj.id})" 
-                                    class="mobile-hide px-2.5 py-1.5 rounded-xl bg-amber-600/30 hover:bg-amber-600 text-amber-200 hover:text-white font-extrabold text-xs transition flex items-center gap-1 shadow-2xs active:scale-95" 
-                                    title="Chuyển công trình này vào Kho Lưu Trữ (Tab 6)">
-                                    <span>📦 Lưu Kho</span>
-                                </button>
-                                <button onclick="deleteConstructionProject(${proj.id})" 
-                                    class="mobile-hide p-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-600 text-rose-200 hover:text-white font-bold text-xs transition" 
-                                    title="Xóa công trình ${proj.name}">
-                                    ✕
-                                </button>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <button onclick="exportConstructionToPDF(${proj.id})" 
+                                        class="px-3 py-1.5 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-extrabold text-xs shadow-md transition flex items-center gap-1" 
+                                        title="Xuất Báo Cáo Tiến Độ Thi Công & Biểu Đồ Timeline PDF riêng cho công trình ${proj.name}">
+                                        <span>📄 Xuất PDF</span>
+                                    </button>
+                                    <button onclick="openConstructionGoogleSheetModal(${proj.id})" 
+                                        class="px-3 py-1.5 rounded-xl bg-[#107C41] hover:bg-[#0D6535] text-white font-extrabold text-xs shadow-md transition flex items-center gap-1 border border-emerald-600" 
+                                        title="Xuất hoặc liên kết Google Sheet riêng cho công trình ${proj.name}">
+                                        <span>📊 Xuất Sheet</span>
+                                    </button>
+                                    <button onclick="toggleSingleConstructionTimeline(${proj.id})" 
+                                        class="px-3 py-1.5 rounded-xl ${isTimelineVisible ? 'bg-white/25 text-white ring-1 ring-white/40' : 'bg-black/25 hover:bg-black/40 text-white/90'} font-extrabold text-xs transition shadow-2xs" 
+                                        title="Ẩn / Hiện biểu đồ Timeline của công trình này">
+                                        <span>📅 ${isTimelineVisible ? 'Ẩn Timeline' : 'Hiện Timeline'}</span>
+                                    </button>
+                                    <button onclick="addConstructionItem(${proj.id})" 
+                                        class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-extrabold text-xs transition shadow-2xs border border-white/20">
+                                        <span>+ Thêm Hạng Mục</span>
+                                    </button>
+                                    <button onclick="archiveConstructionProject(${proj.id})" 
+                                        class="px-2.5 py-1.5 rounded-xl bg-amber-600/30 hover:bg-amber-600 text-amber-200 hover:text-white font-extrabold text-xs transition flex items-center gap-1 shadow-2xs active:scale-95" 
+                                        title="Chuyển công trình này vào Kho Lưu Trữ (Tab 6)">
+                                        <span>📦 Lưu Kho</span>
+                                    </button>
+                                    <button onclick="deleteConstructionProject(${proj.id})" 
+                                        class="p-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-600 text-rose-200 hover:text-white font-bold text-xs transition" 
+                                        title="Xóa công trình ${proj.name}">
+                                        ✕
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        `}
 
                         <!-- 2. Bảng Hạng Mục Thi Công của công trình này -->
                         ${isMobileViewMode ? `
-                            <div class="p-2.5 space-y-2.5 bg-[#FAF6F0]/60 flex-1 overflow-y-auto">
+                            <div class="p-2 space-y-1.5 bg-[#FAF6F0]/60 flex-1 overflow-y-auto">
                                 ${filteredItems.map((item, iIdx) => {
                                     const itemPalette = CONS_TIMELINE_ITEM_PALETTE[iIdx % CONS_TIMELINE_ITEM_PALETTE.length];
                                     const itemRuns = (Array.isArray(item.runs) && item.runs.length > 0)
                                         ? item.runs
                                         : [{ subTask: item.subTask || '', contractor: item.contractor || '', dateStart: item.dateStart || '', datePlan: item.datePlan || '', dateActual: item.dateActual || '', progress: item.progress || 0, status: item.status || 'DANG_THI_CONG', note: item.note || '' }];
-                                    return `
-                                        <div class="bg-white rounded-xl border border-[#D5C7B8] p-2.5 space-y-2 shadow-2xs">
-                                            <div class="flex items-center gap-1.5">
-                                                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-black text-[10px] flex items-center justify-center flex-shrink-0">${iIdx + 1}</span>
-                                                <span class="w-2.5 h-2.5 rounded-full ${itemPalette.dot} flex-shrink-0"></span>
-                                                <input type="text" value="${item.name}" onchange="updateConstructionItemField(${proj.id}, ${item.id}, 'name', this.value)"
-                                                    class="flex-1 min-w-0 text-xs font-extrabold text-slate-900 bg-transparent border-0 focus:bg-slate-50 rounded px-1 py-0.5 focus:outline-none">
-                                                <button onclick="deleteConstructionItem(${proj.id}, ${item.id})" class="text-slate-400 hover:text-rose-600 font-bold px-1.5 py-0.5 text-xs">✕</button>
+                                    let primaryIdx = 0;
+                                    for (let i = itemRuns.length - 1; i >= 0; i--) {
+                                        if (itemRuns[i].dateStart || itemRuns[i].datePlan || itemRuns[i].dateActual) {
+                                            primaryIdx = i;
+                                            break;
+                                        }
+                                    }
+                                    const renderMobileConsRun = (run, rIdx) => {
+                                        const runSubTask = run.subTask !== undefined ? run.subTask : '';
+                                        const runStatus = run.status || item.status || 'DANG_THI_CONG';
+                                        const runProgress = run.progress !== undefined ? Number(run.progress) : (Number(item.progress) || 0);
+                                        const runNote = run.note !== undefined ? run.note : (item.note || '');
+                                        const disablePlanOverdue = (runStatus === 'DA_NGHIEM_THU' || runStatus === 'CHO_MAT_BANG');
+                                        return `
+                                            <div class="bg-[#FAF6F0]/70 rounded-lg border border-slate-200 p-1.5 space-y-1">
+                                                <div class="flex items-center gap-1">
+                                                    ${rIdx === 0 ? `
+                                                        <button onclick="addConstructionItemRun(${proj.id}, ${item.id})" class="w-4 h-4 rounded bg-indigo-50 text-indigo-600 font-extrabold text-[11px] flex items-center justify-center flex-shrink-0">+</button>
+                                                    ` : `
+                                                        <button onclick="removeConstructionItemRun(${proj.id}, ${item.id}, ${rIdx})" class="w-4 h-4 rounded bg-slate-100 text-slate-500 font-bold text-[11px] flex items-center justify-center flex-shrink-0">×</button>
+                                                    `}
+                                                    <span class="text-[11px] font-bold text-slate-500 flex-shrink-0">${rIdx + 1}:</span>
+                                                    <input type="text" value="${run.contractor || ''}" placeholder="Tổ đội / Xưởng..." onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'contractor', this.value)"
+                                                        class="flex-1 text-[11px] font-bold bg-transparent border-0 text-slate-900 focus:outline-none min-w-0">
+                                                    <div class="flex items-center bg-white border border-slate-200 rounded px-1 py-0.5 flex-shrink-0">
+                                                        <input type="number" min="0" max="100" step="5" value="${runProgress}" onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'progress', this.value)"
+                                                            class="w-7 text-center font-extrabold text-[11px] text-slate-900 focus:outline-none">
+                                                        <span class="text-[9px] font-bold text-slate-500">%</span>
+                                                    </div>
+                                                    <select onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'status', this.value)"
+                                                        class="status-pill !w-auto max-w-[115px] flex-shrink-0 ${CONSTRUCTION_STATUS_CONFIG[runStatus]?.class || 'status-chua-pc'}">
+                                                        ${Object.entries(CONSTRUCTION_STATUS_CONFIG).map(([k, cfg]) => `<option value="${k}" ${runStatus === k ? 'selected' : ''}>${cfg.label}</option>`).join('')}
+                                                    </select>
+                                                </div>
+                                                <input type="text" value="${runSubTask}" placeholder="Đầu việc cụ thể..." onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'subTask', this.value)"
+                                                    class="w-full text-[11px] font-medium text-slate-700 bg-white/80 border border-slate-200 rounded px-1.5 py-0.5 focus:outline-none focus:border-[#8C6239]">
+                                                <div class="grid grid-cols-3 gap-1 text-center">
+                                                    <div>${renderDateInputHtml(proj.id, item.id, rIdx, 'dateStart', run.dateStart, 'receive', run.datePlan, '', true, false, '+ Bắt đầu')}</div>
+                                                    <div>${renderDateInputHtml(proj.id, item.id, rIdx, 'datePlan', run.datePlan, 'plan', '', run.dateActual, true, disablePlanOverdue, '+ DK')}</div>
+                                                    <div>${renderDateInputHtml(proj.id, item.id, rIdx, 'dateActual', run.dateActual, 'actual', '', '', true, false, '+ N.Thu')}</div>
+                                                </div>
+                                                ${runNote ? `
+                                                    <textarea rows="1" oninput="autoGrowTextarea(this)" onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'note', this.value)"
+                                                        placeholder="Ghi chú L${rIdx + 1}..."
+                                                        class="w-full text-[11px] font-medium bg-white border border-slate-200 rounded px-2 py-1 focus:outline-none focus:border-[#8C6239] text-slate-800 resize-none overflow-hidden">${runNote}</textarea>
+                                                ` : ''}
                                             </div>
-                                            <div class="space-y-2">
-                                                ${itemRuns.map((run, rIdx) => {
-                                                    const runSubTask = run.subTask !== undefined ? run.subTask : '';
-                                                    const runStatus = run.status || item.status || 'DANG_THI_CONG';
-                                                    const runProgress = run.progress !== undefined ? Number(run.progress) : (Number(item.progress) || 0);
-                                                    const runNote = run.note !== undefined ? run.note : (item.note || '');
-                                                    const disablePlanOverdue = (runStatus === 'DA_NGHIEM_THU' || runStatus === 'CHO_MAT_BANG');
-                                                    return `
-                                                        <div class="bg-[#FAF6F0]/70 rounded-lg border border-slate-200 p-2 space-y-1.5">
-                                                            <input type="text" value="${runSubTask}" placeholder="Nhập đầu việc cụ thể..." onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'subTask', this.value)"
-                                                                class="w-full text-[11px] font-semibold text-slate-800 bg-white border border-slate-200 rounded px-2 py-1 focus:outline-none focus:border-[#8C6239]">
-                                                            <div class="flex items-center gap-1 bg-white border border-slate-200 rounded px-1.5 py-0.5">
-                                                                ${rIdx === 0 ? `
-                                                                    <button onclick="addConstructionItemRun(${proj.id}, ${item.id})" class="w-4 h-4 rounded bg-indigo-50 text-indigo-600 font-extrabold text-[11px] flex items-center justify-center flex-shrink-0">+</button>
-                                                                ` : `
-                                                                    <button onclick="removeConstructionItemRun(${proj.id}, ${item.id}, ${rIdx})" class="w-4 h-4 rounded bg-slate-100 text-slate-500 font-bold text-[11px] flex items-center justify-center flex-shrink-0">×</button>
-                                                                `}
-                                                                <span class="text-[11px] font-bold text-slate-500 flex-shrink-0">${rIdx + 1}:</span>
-                                                                <input type="text" value="${run.contractor || ''}" placeholder="Tổ đội / Xưởng..." onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'contractor', this.value)"
-                                                                    class="flex-1 text-[11px] font-bold bg-transparent border-0 text-slate-900 focus:outline-none min-w-0">
-                                                            </div>
-                                                            <div class="grid grid-cols-3 gap-1 text-center">
-                                                                <div>${renderDateInputHtml(proj.id, item.id, rIdx, 'dateStart', run.dateStart, 'receive', run.datePlan, '', true, false, '+ Bắt đầu')}</div>
-                                                                <div>${renderDateInputHtml(proj.id, item.id, rIdx, 'datePlan', run.datePlan, 'plan', '', run.dateActual, true, disablePlanOverdue, '+ DK')}</div>
-                                                                <div>${renderDateInputHtml(proj.id, item.id, rIdx, 'dateActual', run.dateActual, 'actual', '', '', true, false, '+ N.Thu')}</div>
-                                                            </div>
-                                                            <div class="flex items-center gap-1.5">
-                                                                <div class="flex items-center gap-0.5 bg-white border border-slate-200 rounded px-1.5 py-0.5 flex-shrink-0">
-                                                                    <input type="number" min="0" max="100" step="5" value="${runProgress}" onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'progress', this.value)"
-                                                                        class="w-10 text-center font-extrabold text-xs text-slate-900 focus:outline-none">
-                                                                    <span class="text-[10px] font-bold text-slate-500">%</span>
-                                                                </div>
-                                                                <select onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'status', this.value)"
-                                                                    class="status-pill flex-1 ${CONSTRUCTION_STATUS_CONFIG[runStatus]?.class || 'status-chua-pc'}">
-                                                                    ${Object.entries(CONSTRUCTION_STATUS_CONFIG).map(([k, cfg]) => `<option value="${k}" ${runStatus === k ? 'selected' : ''}>${cfg.label}</option>`).join('')}
-                                                                </select>
-                                                            </div>
-                                                            ${runNote ? `
-                                                                <textarea rows="1" oninput="autoGrowTextarea(this)" onchange="updateConstructionRunField(${proj.id}, ${item.id}, ${rIdx}, 'note', this.value)"
-                                                                    placeholder="Ghi chú L${rIdx + 1}..."
-                                                                    class="w-full text-[11px] font-medium bg-white border border-slate-200 rounded px-2 py-1 focus:outline-none focus:border-[#8C6239] text-slate-800 resize-none overflow-hidden">${runNote}</textarea>
-                                                            ` : ''}
-                                                        </div>
-                                                    `;
-                                                }).join('')}
+                                        `;
+                                    };
+                                    const otherRuns = itemRuns.map((r, i) => ({ r, i })).filter(x => x.i !== primaryIdx);
+                                    return `
+                                        <div class="bg-white rounded-xl border border-[#D5C7B8] p-2 space-y-1.5 shadow-2xs">
+                                            <div class="flex items-center gap-1.5">
+                                                <span class="w-4 h-4 rounded-full bg-slate-100 text-slate-600 font-black text-[9px] flex items-center justify-center flex-shrink-0">${iIdx + 1}</span>
+                                                <span class="w-2 h-2 rounded-full ${itemPalette.dot} flex-shrink-0"></span>
+                                                <input type="text" value="${item.name.replace(/^[\.\s]+/, '')}" onchange="updateConstructionItemField(${proj.id}, ${item.id}, 'name', this.value)"
+                                                    class="flex-1 min-w-0 text-xs font-extrabold text-slate-900 bg-transparent border-0 focus:bg-slate-50 rounded px-0.5 py-0.5 focus:outline-none">
+                                            </div>
+                                            <div class="space-y-1">
+                                                ${itemRuns[primaryIdx] ? renderMobileConsRun(itemRuns[primaryIdx], primaryIdx) : ''}
+                                                ${otherRuns.length > 0 ? `
+                                                    <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.remove();"
+                                                        class="w-full py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-bold transition">
+                                                        + Xem thêm ${otherRuns.length} lần khác
+                                                    </button>
+                                                    <div class="hidden space-y-1">
+                                                        ${otherRuns.map(x => renderMobileConsRun(x.r, x.i)).join('')}
+                                                    </div>
+                                                ` : ''}
                                             </div>
                                         </div>
                                     `;
