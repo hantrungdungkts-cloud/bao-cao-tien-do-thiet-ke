@@ -7381,6 +7381,66 @@ Nhiệm vụ của bạn:
             );
         }
 
+        function renderMobileTimelineViewHtml(rows, minIso, maxIso, todayIso, emptyMsg = 'Chưa có lịch trình.') {
+            if (!rows || rows.length === 0) {
+                return `<div class="p-6 text-center text-slate-400 text-xs font-semibold">${emptyMsg}</div>`;
+            }
+            const safeMin = minIso || todayIso;
+            const safeMax = (maxIso && maxIso >= safeMin) ? maxIso : safeMin;
+            const startMs = new Date(safeMin).getTime();
+            const endMs = Math.max(startMs + 86400000, new Date(safeMax).getTime());
+            const totalMs = endMs - startMs;
+            const pctOf = (iso) => {
+                const ms = new Date(iso).getTime();
+                return Math.max(0, Math.min(100, ((ms - startMs) / totalMs) * 100));
+            };
+            const todayPct = pctOf(todayIso);
+            const fmtShort = (iso) => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}` : '';
+            const oneDayPct = 100 / Math.max(1, Math.round(totalMs / 86400000));
+
+            return `
+                <div class="p-2 space-y-2 bg-white">
+                    <div class="flex items-center justify-between text-[10px] font-extrabold text-[#7E634F] bg-[#FAF6F0] px-2.5 py-1.5 rounded-lg border border-[#E3D3C1]">
+                        <span>📅 ${fmtShort(safeMin)} → ${fmtShort(safeMax)}</span>
+                        <span class="flex items-center gap-1 text-rose-600"><span class="w-1.5 h-3 bg-rose-500 rounded-full inline-block"></span> Hôm nay (${fmtShort(todayIso)})</span>
+                    </div>
+                    <div class="space-y-1.5">
+                        ${rows.map(row => {
+                            const hasRange = row.startIso && row.endIso;
+                            const leftPct = hasRange ? pctOf(row.startIso) : 0;
+                            const rightPct = hasRange ? pctOf(row.endIso) : 0;
+                            const rawWidth = hasRange ? Math.max(8, rightPct - leftPct + oneDayPct) : 0;
+                            const clampedWidth = Math.min(100 - leftPct, rawWidth);
+                            return `
+                                <div ${row.onClickAttr || ''} class="rounded-xl border border-slate-200 bg-[#FAF6F0]/40 p-2 space-y-1.5 ${row.onClickAttr ? 'cursor-pointer active:bg-amber-50' : ''}">
+                                    <div class="flex items-start justify-between gap-2">
+                                        <div class="min-w-0 flex-1">
+                                            ${row.subtitle ? `<div class="text-[9px] font-extrabold text-[#8C6239] uppercase truncate">${row.subtitle}</div>` : ''}
+                                            <div class="text-xs font-extrabold text-[#211B18] leading-snug break-words">${row.title}</div>
+                                        </div>
+                                        ${row.badgeHtml || ''}
+                                    </div>
+                                    <div class="relative h-6 bg-slate-100 rounded-lg border border-slate-200 overflow-hidden">
+                                        ${todayIso >= safeMin && todayIso <= safeMax ? `
+                                            <div style="left:${todayPct}%;" class="absolute top-0 bottom-0 w-[2px] bg-rose-500/80 z-20 pointer-events-none"></div>
+                                        ` : ''}
+                                        ${hasRange ? `
+                                            <div style="left:${leftPct}%; width:${clampedWidth}%;"
+                                                class="absolute top-1 bottom-1 rounded-md ${row.barClass || 'bg-indigo-600 text-white'} flex items-center justify-center px-1.5 text-[9px] font-black shadow-2xs truncate z-10">
+                                                ${fmtShort(row.startIso)} → ${fmtShort(row.endIso)}
+                                            </div>
+                                        ` : `
+                                            <div class="h-full flex items-center justify-center text-[10px] text-slate-400 font-semibold italic">Chưa có lịch</div>
+                                        `}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         function renderConstructionProjectTimelineHtml(proj, filteredItems, pIdx = 0) {
             normalizeConstructionData();
             const itemsToShow = (filteredItems && filteredItems.length > 0) ? filteredItems : (proj.items || []);
@@ -7469,6 +7529,49 @@ Nhiệm vụ của bạn:
                     ganttTodayBg: '#C59B27',
                     ganttTodayFg: '#1F1713'
                 };
+
+            if (isMobileViewMode) {
+                const mobileRows = itemsToShow.map((it, iIdx) => {
+                    const palette = CONS_TIMELINE_ITEM_PALETTE[iIdx % CONS_TIMELINE_ITEM_PALETTE.length];
+                    const cleanItemName = (it.name || '').replace(/^[\.\s]+/, '');
+                    const pct = Number(it.progress) || 0;
+                    const runsList = (Array.isArray(it.runs) && it.runs.length > 0) ? it.runs : [it];
+                    let sIso = '', eIso = '';
+                    let isOverdue = false;
+                    const contractors = [];
+                    runsList.forEach(r => {
+                        if (r.contractor) contractors.push(r.contractor);
+                        const s = parseToISODate(r.dateStart || r.datePlan);
+                        const e = parseToISODate(r.dateActual || r.datePlan || r.dateStart);
+                        const p = parseToISODate(r.datePlan);
+                        const a = parseToISODate(r.dateActual);
+                        if (p && !a && p < todayStr && (r.status || it.status) !== 'DA_NGHIEM_THU') isOverdue = true;
+                        if (s && (!sIso || s < sIso)) sIso = s;
+                        if (e && (!eIso || e > eIso)) eIso = e;
+                    });
+                    return {
+                        subtitle: contractors.join(', ') || 'Chưa giao đội',
+                        title: `${iIdx + 1}. ${cleanItemName}`,
+                        badgeHtml: `<span class="px-1.5 py-0.5 rounded bg-slate-100 text-[#8C6239] font-black text-[10px] flex-shrink-0">${pct}%</span>`,
+                        startIso: sIso,
+                        endIso: eIso,
+                        barClass: isOverdue ? 'bg-rose-600 text-white' : (pct === 100 ? 'bg-emerald-600 text-white' : palette.barL1)
+                    };
+                });
+                const minIso = dateList[0] || todayStr;
+                const maxIso = dateList[dateList.length - 1] || todayStr;
+                return `
+                    <div class="${thm.timelineBg} p-2 ${thm.timelineBorder} space-y-1.5">
+                        <div class="flex items-center justify-between gap-2 px-1">
+                            <span class="px-2 py-0.5 rounded-lg ${thm.timelineTitleBg} font-black text-[10px] uppercase">📅 TIMELINE THI CÔNG (${itemsToShow.length})</span>
+                            <button onclick="toggleSingleConstructionTimeline(${proj.id})" class="px-2 py-0.5 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold text-[10px]">✕ Đóng</button>
+                        </div>
+                        <div id="cons-gantt-viewport-${proj.id}" class="border border-slate-300 rounded-xl overflow-hidden bg-white">
+                            ${renderMobileTimelineViewHtml(mobileRows, minIso, maxIso, todayStr, 'Chưa có hạng mục thi công nào.')}
+                        </div>
+                    </div>
+                `;
+            }
 
             return `
                 <div class="${thm.timelineBg} p-2 sm:p-2.5 ${thm.timelineBorder} space-y-1.5 transition-all">
@@ -8612,6 +8715,42 @@ Nhiệm vụ của bạn:
 
             const daysOfWeekMap = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
             const sortBtnLabel = staffGanttSortOrder === 'newest_first' ? '⬇ Mới → Cũ' : '⬆ Cũ → Mới';
+
+            if (isMobileViewMode) {
+                const mobileRows = staffTasks.map(item => {
+                    const { proj, task, matchedRunIndices } = item;
+                    const cleanName = task.name.replace(/^[\.\s]+/, '');
+                    const primaryRunIdx = matchedRunIndices[0] || 0;
+                    let sIso = '', eIso = '';
+                    matchedRunIndices.forEach(rIdx => {
+                        const r = task.runs[rIdx];
+                        if (!r) return;
+                        const s = parseToISODate(r.dateReceive || r.datePlan);
+                        const e = parseToISODate(r.dateActual || r.datePlan || r.dateReceive);
+                        if (s && (!sIso || s < sIso)) sIso = s;
+                        if (e && (!eIso || e > eIso)) eIso = e;
+                    });
+                    let barClass = 'bg-indigo-600 text-white';
+                    if (task.status === 'DA_CHOT' || task.status === 'GUI_HS') barClass = 'bg-emerald-600 text-white';
+                    else if (task.status === 'GUI_KH') barClass = 'bg-sky-600 text-white';
+                    else if (task.status === 'DIEU_CHINH') barClass = 'bg-amber-600 text-white';
+                    else if (eIso && eIso < todayStr) barClass = 'bg-rose-600 text-white';
+                    return {
+                        subtitle: proj.name,
+                        title: cleanName,
+                        badgeHtml: `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold flex-shrink-0 ${STATUS_CONFIG[task.status]?.class || 'status-chua-pc'}">${STATUS_CONFIG[task.status]?.label || ''}</span>`,
+                        startIso: sIso,
+                        endIso: eIso,
+                        barClass,
+                        onClickAttr: `onclick="openGanttTaskEditor(${proj.id}, ${task.id}, ${primaryRunIdx}, this)"`
+                    };
+                });
+                const minIso = minD ? minD.toISOString().split('T')[0] : todayStr;
+                const maxIso = maxD ? maxD.toISOString().split('T')[0] : todayStr;
+                vp.innerHTML = renderMobileTimelineViewHtml(mobileRows, minIso, maxIso, todayStr, `Nhân sự ${staffName} chưa có đầu việc nào.`);
+                return;
+            }
+
             vp.innerHTML = `
                 <table class="cons-timeline-table w-max min-w-full text-xs select-none">
                     <thead>
@@ -9846,6 +9985,51 @@ Nhiệm vụ của bạn:
                 };
 
             const daysOfWeekMap = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+            if (isMobileViewMode) {
+                let tightMin = '', tightMax = '';
+                const mobileRows = tasks.map(t => {
+                    const cleanName = (t.name || '').replace(/^[\.\s]+/, '');
+                    const runs = Array.isArray(t.runs) && t.runs.length > 0 ? t.runs : [{ staff: proj.lead || 'Chưa giao', dateReceive: '', datePlan: '', dateActual: '' }];
+                    let sIso = '', eIso = '';
+                    const staffNames = [];
+                    runs.forEach(r => {
+                        if (r.staff && r.staff !== 'Chưa giao' && !staffNames.includes(r.staff)) staffNames.push(r.staff);
+                        const s = parseToISODate(r.dateReceive || r.datePlan);
+                        const e = parseToISODate(r.dateActual || r.datePlan || r.dateReceive);
+                        if (s && (!sIso || s < sIso)) sIso = s;
+                        if (e && (!eIso || e > eIso)) eIso = e;
+                    });
+                    if (sIso && (!tightMin || sIso < tightMin)) tightMin = sIso;
+                    if (eIso && (!tightMax || eIso > tightMax)) tightMax = eIso;
+                    let barClass = 'bg-indigo-600 text-white';
+                    if (t.status === 'DA_CHOT' || t.status === 'GUI_HS') barClass = 'bg-emerald-600 text-white';
+                    else if (t.status === 'GUI_KH') barClass = 'bg-sky-600 text-white';
+                    else if (t.status === 'DIEU_CHINH') barClass = 'bg-amber-600 text-white';
+                    else if (eIso && eIso < todayStr) barClass = 'bg-rose-600 text-white';
+                    return {
+                        subtitle: staffNames.length > 0 ? `👤 ${staffNames.join(', ')}` : 'Chưa giao',
+                        title: cleanName,
+                        badgeHtml: `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold flex-shrink-0 ${STATUS_CONFIG[t.status]?.class || 'status-chua-pc'}">${STATUS_CONFIG[t.status]?.label || ''}</span>`,
+                        startIso: sIso,
+                        endIso: eIso,
+                        barClass
+                    };
+                });
+                const minIso = tightMin || dateList[0] || todayStr;
+                const maxIso = tightMax || dateList[dateList.length - 1] || todayStr;
+                return `
+                    <div class="${thm.timelineBg || 'bg-[#FAF6F0]'} p-2 ${thm.timelineBorder || 'border-t border-[#E3D3C1]'} space-y-1.5">
+                        <div class="flex items-center justify-between gap-2 px-1">
+                            <span class="px-2.5 py-0.5 rounded-lg ${thm.timelineTitleBg || 'bg-[#211B18] text-white'} font-black text-[10px] uppercase">📅 TIẾN ĐỘ THỰC TẾ (${tasks.length} việc)</span>
+                            <button onclick="addNewTask(${proj.id})" class="px-2 py-0.5 rounded-lg bg-[#8C6239] text-white font-extrabold text-[10px]">+ Việc</button>
+                        </div>
+                        <div id="proj-gantt-viewport-${proj.id}" class="border border-[#D5C7B8] rounded-xl overflow-hidden bg-white">
+                            ${renderMobileTimelineViewHtml(mobileRows, minIso, maxIso, todayStr, 'Chưa có đầu việc thiết kế nào.')}
+                        </div>
+                    </div>
+                `;
+            }
 
             return `
                 <div class="${thm.timelineBg || 'bg-[#FAF6F0]'} p-2 sm:p-2.5 ${thm.timelineBorder || 'border-t border-[#E3D3C1]'} space-y-1.5 transition-all">
