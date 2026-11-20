@@ -508,65 +508,61 @@
 <body class="min-h-screen flex flex-col bg-[#F4EFEA] text-[#211B18]">
 
     <!-- TOP NAVIGATION BAR (CỐ ĐỊNH TRÊN CÙNG) -->
-    <header id="topNavHeader" class="sticky top-0 z-[100] bg-[#211B18] text-[#FAF6F0] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shadow-lg border-b border-[#382F2A]">
-        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#A69688]/40 bg-[#A69688]/10 text-[#EBDFD3] font-extrabold text-[11px] sm:text-xs tracking-wider uppercase shadow-sm truncate">
+    <header id="topNavHeader" class="sticky top-0 z-[100] bg-[#211B18] text-[#FAF6F0] px-3 py-2 flex flex-wrap xl:flex-nowrap items-center justify-between gap-2 shadow-lg border-b border-[#382F2A]">
+        <div class="flex items-center gap-1.5 min-w-0 flex-shrink-0">
+            <div class="px-2.5 py-1 rounded-lg border border-[#A69688]/40 bg-[#A69688]/10 text-[#EBDFD3] font-extrabold text-[11px] tracking-wider uppercase shadow-sm truncate">
                 BÁO CÁO TIẾN ĐỘ THIẾT KẾ
             </div>
-            <button id="headerBrandBtnTimeline" onclick="switchTab('staff')" class="px-3 py-1.5 rounded-lg border border-[#A69688]/30 bg-[#2D2521] hover:bg-[#382F2A] text-[#D9C4B0] font-bold text-xs transition flex items-center gap-1.5">
+            <button id="headerBrandBtnTimeline" onclick="switchTab('staff')" class="px-2.5 py-1 rounded-lg border border-[#A69688]/30 bg-[#2D2521] hover:bg-[#382F2A] text-[#D9C4B0] font-bold text-[11px] transition flex items-center gap-1 whitespace-nowrap">
                 <span>TIMELINE</span>
             </button>
-            <div id="saveStatusBadge" onclick="forceSyncNow()" title="Click để đồng bộ ngay lập tức" class="cursor-pointer flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-[#16211A] border border-[#2D5A3F] text-[#5CB87E] text-xs font-medium transition hover:bg-[#1E2E24] flex-shrink-0">
+            <div id="saveStatusBadge" onclick="forceSyncNow()" title="Click để đồng bộ ngay lập tức" class="cursor-pointer flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#16211A] border border-[#2D5A3F] text-[#5CB87E] text-[11px] font-medium transition hover:bg-[#1E2E24] flex-shrink-0 whitespace-nowrap">
                 <span id="saveStatusDot" class="w-2 h-2 rounded-full bg-[#5CB87E] animate-pulse"></span>
                 <span id="saveStatusText" class="hidden sm:inline">Trực tuyến (Live Sync)</span>
             </div>
         </div>
 
         <!-- Center Tabs -->
-        <div id="headerTabsRow" class="flex items-center bg-[#14100E] p-1 rounded-xl border border-[#382F2A] flex-wrap gap-0.5">
-            <button id="tabBtn-progress" onclick="switchTab('progress')" class="px-4 py-1.5 rounded-lg text-xs font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A]">
+        <div id="headerTabsRow" class="flex items-center bg-[#14100E] p-1 rounded-xl border border-[#382F2A] flex-wrap xl:flex-nowrap gap-0.5">
+            <button id="tabBtn-progress" onclick="switchTab('progress')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap">
                 1. Bảng Tiến Độ
             </button>
-            <button id="tabBtn-staff" onclick="switchTab('staff')" class="px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white">
+            <button id="tabBtn-staff" onclick="switchTab('staff')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap">
                 2. Nhân Sự (Gantt)
             </button>
-            <button id="tabBtn-details" onclick="switchTab('details')" class="px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white">
+            <button id="tabBtn-details" onclick="switchTab('details')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap">
                 3. Chi Tiết DA
             </button>
-            <button id="tabBtn-construction" onclick="switchTab('construction')" class="px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white">
+            <button id="tabBtn-construction" onclick="switchTab('construction')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap">
                 4. Tiến Độ Thi Công
             </button>
-            <button id="tabBtn-recruitment" onclick="switchTab('recruitment')" class="px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white">
+            <button id="tabBtn-recruitment" onclick="switchTab('recruitment')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap">
                 5. Tuyển Dụng NS
             </button>
-            <button id="tabBtn-archive" onclick="switchTab('archive')" class="px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5">
+            <button id="tabBtn-archive" onclick="switchTab('archive')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap">
                 <span>6. Kho Lưu Trữ</span>
                 <span id="archiveBadgeCount" class="px-1.5 py-0.2 rounded-full bg-[#8C6239] text-white text-[10px] font-black hidden">0</span>
             </button>
         </div>
 
         <!-- Right Controls -->
-        <div class="flex items-center gap-1.5">
-            <button onclick="installPWAApp()" id="btnInstallPWA" class="hidden px-2.5 py-1.5 rounded-lg bg-[#C59B27] hover:bg-[#A88118] text-[#1F1713] text-xs font-black transition flex items-center gap-1 shadow-sm" title="Cài đặt thành App trên điện thoại / máy tính">
-                <span>📲</span>
-                <span class="hidden sm:inline">Cài App</span>
-            </button>
-            <button onclick="toggleMobileViewMode()" id="btnMobileView" class="px-2.5 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#EBDFD3] text-xs font-bold transition flex items-center gap-1 shadow-2xs" title="Chuyển chế độ xem Điện thoại / Máy tính">
+        <div class="flex items-center gap-1 flex-shrink-0">
+            <button onclick="toggleMobileViewMode()" id="btnMobileView" class="px-2 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#EBDFD3] text-[11px] font-bold transition flex items-center gap-1 shadow-2xs whitespace-nowrap" title="Chuyển chế độ xem Điện thoại / Máy tính">
                 <span>📱</span>
                 <span class="hidden sm:inline">Điện thoại</span>
             </button>
-            <button onclick="performUndo()" id="btnUndo" class="px-2.5 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#FAF6F0] text-xs font-bold transition flex items-center gap-1 shadow-2xs hover:scale-105 active:scale-95" title="Hoàn tác thao tác trước (Ctrl + Z)">
-                <span class="text-sm font-black">↶</span>
-                <span class="hidden md:inline">Hoàn tác</span>
+            <button onclick="performUndo()" id="btnUndo" class="px-2 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#FAF6F0] text-[11px] font-bold transition flex items-center gap-1 shadow-2xs hover:scale-105 active:scale-95 whitespace-nowrap" title="Hoàn tác thao tác trước (Ctrl + Z)">
+                <span class="text-xs font-black">↶</span>
+                <span class="hidden 2xl:inline">Hoàn tác</span>
             </button>
-            <button onclick="performRedo()" id="btnRedo" class="px-2.5 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#FAF6F0] text-xs font-bold transition flex items-center gap-1 shadow-2xs hover:scale-105 active:scale-95" title="Làm lại thao tác vừa hoàn tác (Ctrl + Y)">
-                <span class="text-sm font-black">↷</span>
-                <span class="hidden md:inline">Làm lại</span>
+            <button onclick="performRedo()" id="btnRedo" class="px-2 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#FAF6F0] text-[11px] font-bold transition flex items-center gap-1 shadow-2xs hover:scale-105 active:scale-95 whitespace-nowrap" title="Làm lại thao tác vừa hoàn tác (Ctrl + Y)">
+                <span class="text-xs font-black">↷</span>
+                <span class="hidden 2xl:inline">Làm lại</span>
             </button>
-            <button onclick="toggleCompactMode()" id="btnCompact" class="px-3 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#EBDFD3] text-xs font-semibold transition">
+            <button onclick="toggleCompactMode()" id="btnCompact" class="px-2.5 py-1.5 rounded-lg bg-[#2D2521] hover:bg-[#382F2A] border border-[#473B33] text-[#EBDFD3] text-[11px] font-semibold transition whitespace-nowrap">
                 Thu gọn
             </button>
-            <button onclick="toggleScheduleAlert()" id="btnScheduleAlert" class="px-3 py-1.5 rounded-lg bg-[#35251D] border border-[#8C5230]/60 text-[#F0CAA0] text-xs font-bold transition">
+            <button onclick="toggleScheduleAlert()" id="btnScheduleAlert" class="px-2.5 py-1.5 rounded-lg bg-[#35251D] border border-[#8C5230]/60 text-[#F0CAA0] text-[11px] font-bold transition whitespace-nowrap">
                 Báo Lịch: BẬT
             </button>
         </div>
@@ -6799,41 +6795,41 @@ Nhiệm vụ của bạn:
             const tabArchive = document.getElementById('tab-archive');
             if (tabArchive) tabArchive.classList.add('hidden');
 
-            document.getElementById('tabBtn-progress').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white';
-            document.getElementById('tabBtn-staff').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white';
-            document.getElementById('tabBtn-details').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white';
-            document.getElementById('tabBtn-recruitment').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white';
-            document.getElementById('tabBtn-construction').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white';
+            document.getElementById('tabBtn-progress').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
+            document.getElementById('tabBtn-staff').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
+            document.getElementById('tabBtn-details').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
+            document.getElementById('tabBtn-recruitment').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
+            document.getElementById('tabBtn-construction').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
             const tabBtnArchive = document.getElementById('tabBtn-archive');
-            if (tabBtnArchive) tabBtnArchive.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5';
+            if (tabBtnArchive) tabBtnArchive.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
 
             if (tabName === 'progress') {
                 document.getElementById('tab-progress').classList.remove('hidden');
-                document.getElementById('tabBtn-progress').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A]';
+                document.getElementById('tabBtn-progress').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
                 renderStatusFilters();
                 renderProgressTable();
             } else if (tabName === 'staff') {
                 document.getElementById('tab-staff').classList.remove('hidden');
-                document.getElementById('tabBtn-staff').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A]';
+                document.getElementById('tabBtn-staff').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
                 renderStaffSection();
                 setTimeout(() => {
                     centerAllGanttToToday();
                 }, 60);
             } else if (tabName === 'details') {
                 document.getElementById('tab-details').classList.remove('hidden');
-                document.getElementById('tabBtn-details').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A]';
+                document.getElementById('tabBtn-details').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
                 renderProjectSummary();
             } else if (tabName === 'recruitment') {
                 document.getElementById('tab-recruitment').classList.remove('hidden');
-                document.getElementById('tabBtn-recruitment').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A]';
+                document.getElementById('tabBtn-recruitment').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
                 renderRecruitmentSection();
             } else if (tabName === 'construction') {
                 document.getElementById('tab-construction').classList.remove('hidden');
-                document.getElementById('tabBtn-construction').className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A]';
+                document.getElementById('tabBtn-construction').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
                 renderConstructionSection();
             } else if (tabName === 'archive') {
                 if (tabArchive) tabArchive.classList.remove('hidden');
-                if (tabBtnArchive) tabBtnArchive.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1.5';
+                if (tabBtnArchive) tabBtnArchive.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1 whitespace-nowrap';
                 renderArchiveSection();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -8013,18 +8009,19 @@ Nhiệm vụ của bạn:
                         <!-- 2. Bảng Hạng Mục Thi Công của công trình này -->
                         ${isMobileViewMode ? `
                             <div class="p-2 space-y-1.5 bg-[#FAF6F0]/60 flex-1 overflow-y-auto">
-                                ${filteredItems.map((item, iIdx) => {
-                                    const itemPalette = CONS_TIMELINE_ITEM_PALETTE[iIdx % CONS_TIMELINE_ITEM_PALETTE.length];
+                                ${filteredItems.map((item, origIdx) => {
                                     const itemRuns = (Array.isArray(item.runs) && item.runs.length > 0)
                                         ? item.runs
                                         : [{ subTask: item.subTask || '', contractor: item.contractor || '', dateStart: item.dateStart || '', datePlan: item.datePlan || '', dateActual: item.dateActual || '', progress: item.progress || 0, status: item.status || 'DANG_THI_CONG', note: item.note || '' }];
-                                    let primaryIdx = 0;
-                                    for (let i = itemRuns.length - 1; i >= 0; i--) {
-                                        if (itemRuns[i].dateStart || itemRuns[i].datePlan || itemRuns[i].dateActual) {
-                                            primaryIdx = i;
-                                            break;
-                                        }
-                                    }
+                                    const sortedRuns = itemRuns.map((run, rIdx) => ({
+                                        run,
+                                        rIdx,
+                                        sortKey: parseToISODate(run.dateStart || run.datePlan || run.dateActual) || '9999-12-31'
+                                    })).sort((a, b) => a.sortKey.localeCompare(b.sortKey) || (a.rIdx - b.rIdx));
+                                    const earliestItemDate = sortedRuns[0]?.sortKey || '9999-12-31';
+                                    return { item, origIdx, sortedRuns, earliestItemDate };
+                                }).sort((a, b) => a.earliestItemDate.localeCompare(b.earliestItemDate) || (a.origIdx - b.origIdx)).map(({ item, sortedRuns }, iIdx) => {
+                                    const itemPalette = CONS_TIMELINE_ITEM_PALETTE[iIdx % CONS_TIMELINE_ITEM_PALETTE.length];
                                     const renderMobileConsRun = (run, rIdx) => {
                                         const runSubTask = run.subTask !== undefined ? run.subTask : '';
                                         const runStatus = run.status || item.status || 'DANG_THI_CONG';
@@ -8067,7 +8064,6 @@ Nhiệm vụ của bạn:
                                             </div>
                                         `;
                                     };
-                                    const otherRuns = itemRuns.map((r, i) => ({ r, i })).filter(x => x.i !== primaryIdx);
                                     return `
                                         <div class="bg-white rounded-xl border border-[#D5C7B8] p-2 space-y-1.5 shadow-2xs">
                                             <div class="flex items-center gap-1.5">
@@ -8077,16 +8073,7 @@ Nhiệm vụ của bạn:
                                                     class="flex-1 min-w-0 text-xs font-extrabold text-slate-900 bg-transparent border-0 focus:bg-slate-50 rounded px-0.5 py-0.5 focus:outline-none">
                                             </div>
                                             <div class="space-y-1">
-                                                ${itemRuns[primaryIdx] ? renderMobileConsRun(itemRuns[primaryIdx], primaryIdx) : ''}
-                                                ${otherRuns.length > 0 ? `
-                                                    <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.remove();"
-                                                        class="w-full py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-bold transition">
-                                                        + Xem thêm ${otherRuns.length} lần khác
-                                                    </button>
-                                                    <div class="hidden space-y-1">
-                                                        ${otherRuns.map(x => renderMobileConsRun(x.r, x.i)).join('')}
-                                                    </div>
-                                                ` : ''}
+                                                ${sortedRuns.map(x => renderMobileConsRun(x.run, x.rIdx)).join('')}
                                             </div>
                                         </div>
                                     `;
@@ -13329,22 +13316,6 @@ Nhiệm vụ của bạn:
                 });
             }
         });
-
-        let deferredInstallPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            const btn = document.getElementById('btnInstallPWA');
-            if (btn) btn.classList.remove('hidden');
-        });
-        async function installPWAApp() {
-            if (!deferredInstallPrompt) return;
-            deferredInstallPrompt.prompt();
-            await deferredInstallPrompt.userChoice;
-            deferredInstallPrompt = null;
-            const btn = document.getElementById('btnInstallPWA');
-            if (btn) btn.classList.add('hidden');
-        }
 
 </script>
 </body>
