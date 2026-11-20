@@ -7914,8 +7914,8 @@ Nhiệm vụ của bạn:
                 // Dựng Khối Bảng Dự Án Riêng Biệt (Project Card Block)
                 html += `
                     <div id="cons-project-card-${proj.id}" 
-                         style="border-left: 8px solid ${thm.accentColor || '#C59B27'} !important;"
-                         class="${isMobileViewMode ? 'w-full flex-shrink-0 snap-center max-h-[calc(100vh-175px)] flex flex-col' : 'mb-6'} bg-white rounded-2xl border-t border-r border-b border-[#D5C7B8] shadow-md overflow-hidden transition-all duration-200">
+                         ${isMobileViewMode ? '' : `style="border-left: 8px solid ${thm.accentColor || '#C59B27'} !important;"`}
+                         class="${isMobileViewMode ? 'w-full flex-shrink-0 snap-center max-h-[calc(100vh-175px)] flex flex-col border' : 'mb-6 border-t border-r border-b'} bg-white rounded-2xl border-[#D5C7B8] shadow-md overflow-hidden transition-all duration-200">
                         <!-- 1. Thanh Header Công Trình -->
                         ${isMobileViewMode ? `
                             <div class="${thm.headerBg} text-[#FAF6F0] px-2.5 py-2 flex items-center justify-between gap-2 ${thm.headerBorder} flex-shrink-0">
