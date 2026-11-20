@@ -390,7 +390,14 @@
             display: none !important;
         }
         body.mobile-view-mode #progressMobileCards {
-            display: block !important;
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            gap: 12px;
+            padding: 10px 12px 64px 12px !important;
         }
         body.mobile-view-mode #smartDatePopover {
             max-width: calc(100vw - 16px) !important;
@@ -445,13 +452,15 @@
             display: none !important;
         }
         body.mobile-view-mode #staffCardsGrid {
-            flex-wrap: nowrap !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 6px !important;
+            overflow: visible !important;
         }
-        body.mobile-view-mode #staffCardsGrid::-webkit-scrollbar {
-            display: none;
+        body.mobile-view-mode #staffCardsGrid > div {
+            min-width: 0 !important;
+            max-width: none !important;
+            padding: 6px !important;
         }
         body.mobile-view-mode #projectGridSummaryWrapper,
         body.mobile-view-mode #ganttStaffSubtitle,
@@ -459,6 +468,7 @@
         body.mobile-view-mode #ganttStaffStats,
         body.mobile-view-mode #btnUndo,
         body.mobile-view-mode #btnRedo,
+        body.mobile-view-mode #tabBtn-details,
         body.mobile-view-mode #tabBtn-recruitment,
         body.mobile-view-mode #tabBtn-archive,
         body.mobile-view-mode #btnSortActive {
@@ -466,7 +476,7 @@
         }
         body.mobile-view-mode #headerTabsRow {
             display: grid !important;
-            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
             overflow: visible !important;
         }
         body.mobile-view-mode #headerTabsRow button {
@@ -3911,6 +3921,12 @@
 
         function applyMobileViewMode() {
             document.body.classList.toggle('mobile-view-mode', isMobileViewMode);
+            if (isMobileViewMode) {
+                const detailsTab = document.getElementById('tab-details');
+                if (detailsTab && !detailsTab.classList.contains('hidden')) {
+                    switchTab('progress');
+                }
+            }
             const btn = document.getElementById('btnMobileView');
             if (btn) {
                 if (isMobileViewMode) {
@@ -5878,8 +5894,7 @@ Nhiệm vụ của bạn:
                 if (!isMobileViewMode) {
                     mobileContainer.innerHTML = '';
                 } else {
-                    let mobileHtml = '';
-                    let mIdx = 0;
+                    let mobileEntries = [];
                     sortedProjects.forEach((proj, pIdx) => {
                         let filteredTasks = proj.tasks.filter(task => {
                             const matchStatus = activeStatusFilter === 'ALL' || task.status === activeStatusFilter;
@@ -5900,19 +5915,23 @@ Nhiệm vụ của bạn:
                                 return aActive - bActive;
                             });
                         }
+                        mobileEntries.push({ proj, pIdx, filteredTasks });
+                    });
 
+                    let mobileHtml = '';
+                    mobileEntries.forEach(({ proj, pIdx, filteredTasks }, mIdx) => {
                         const doneTasks = proj.tasks.filter(t => t.status === 'DA_CHOT' || t.status === 'GUI_HS' || t.status === 'GUI_KH').length;
                         const progressPct = proj.tasks.length > 0 ? Math.round((doneTasks / proj.tasks.length) * 100) : 0;
                         const projTheme = PROJECT_COLOR_THEMES[pIdx % PROJECT_COLOR_THEMES.length];
 
                         mobileHtml += `
-                            <div class="bg-white rounded-2xl border border-[#D5C7B8] shadow-sm overflow-hidden">
-                                <div class="bg-[#211B18] text-[#FAF6F0] px-2.5 py-2 flex items-center justify-between gap-2">
-                                    <div onclick="switchTabToProjectDetails(${proj.id})" class="flex items-center gap-2 min-w-0 flex-1 cursor-pointer">
+                            <div class="w-full flex-shrink-0 snap-center bg-white rounded-2xl border border-[#D5C7B8] shadow-sm overflow-hidden flex flex-col max-h-[calc(100vh-175px)]">
+                                <div class="bg-[#211B18] text-[#FAF6F0] px-2.5 py-2 flex items-center justify-between gap-2 flex-shrink-0">
+                                    <div class="flex items-center gap-2 min-w-0 flex-1">
                                         <span class="w-6 h-6 rounded-full ${projTheme.badgeBg} font-black text-[11px] flex items-center justify-center flex-shrink-0 ring-1 ring-white/30">${pIdx + 1}</span>
                                         <div class="min-w-0 flex-1">
                                             <div class="font-black text-xs uppercase text-white truncate">${proj.name}</div>
-                                            <div class="text-[10px] text-[#D9C4B0] font-semibold">${proj.lead || 'Chưa giao'} • ${doneTasks}/${proj.tasks.length} việc</div>
+                                            <div class="text-[10px] text-[#D9C4B0] font-semibold">${proj.lead || 'Chưa giao'} • ${doneTasks}/${proj.tasks.length} việc • <span class="text-[#F0CAA0]">${mIdx + 1}/${mobileEntries.length} ◀ Vuốt ▶</span></div>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-1.5 flex-shrink-0">
@@ -5920,7 +5939,7 @@ Nhiệm vụ của bạn:
                                         <button onclick="addNewTask(${proj.id})" class="w-6 h-6 rounded-lg bg-white/15 text-white font-black text-xs flex items-center justify-center" title="Thêm việc mới">+</button>
                                     </div>
                                 </div>
-                                <div class="p-2 space-y-1.5 bg-[#FAF6F0]/60">
+                                <div class="p-2 space-y-1.5 bg-[#FAF6F0]/60 flex-1 overflow-y-auto">
                                     ${filteredTasks.map(task => {
                                         const runs = task.runs || [];
                                         let primaryIdx = 0;
@@ -7886,9 +7905,9 @@ Nhiệm vụ của bạn:
                 html += `
                     <div id="cons-project-card-${proj.id}" 
                          style="border-left: 8px solid ${thm.accentColor || '#C59B27'} !important;"
-                         class="bg-white rounded-2xl border-t border-r border-b border-[#D5C7B8] shadow-md overflow-hidden transition-all duration-200 mb-6">
+                         class="${isMobileViewMode ? 'w-full flex-shrink-0 snap-center max-h-[calc(100vh-175px)] flex flex-col' : 'mb-6'} bg-white rounded-2xl border-t border-r border-b border-[#D5C7B8] shadow-md overflow-hidden transition-all duration-200">
                         <!-- 1. Thanh Header Công Trình -->
-                        <div class="${thm.headerBg} text-[#FAF6F0] px-4 py-3 flex flex-wrap items-center justify-between gap-3 ${thm.headerBorder}">
+                        <div class="${thm.headerBg} text-[#FAF6F0] px-3 sm:px-4 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2 sm:gap-3 ${thm.headerBorder} flex-shrink-0">
                             <div class="flex items-center gap-3 flex-wrap flex-1 min-w-[280px]">
                                 <span style="background-color: ${thm.accentColor || '#C59B27'};" class="w-8 h-8 rounded-xl text-white font-black text-sm flex items-center justify-center shadow-md ring-2 ring-white/40 flex-shrink-0">
                                     ${pIdx + 1}
@@ -7961,7 +7980,7 @@ Nhiệm vụ của bạn:
 
                         <!-- 2. Bảng Hạng Mục Thi Công của công trình này -->
                         ${isMobileViewMode ? `
-                            <div class="p-2.5 space-y-2.5 bg-[#FAF6F0]/60">
+                            <div class="p-2.5 space-y-2.5 bg-[#FAF6F0]/60 flex-1 overflow-y-auto">
                                 ${filteredItems.map((item, iIdx) => {
                                     const itemPalette = CONS_TIMELINE_ITEM_PALETTE[iIdx % CONS_TIMELINE_ITEM_PALETTE.length];
                                     const itemRuns = (Array.isArray(item.runs) && item.runs.length > 0)
@@ -8062,9 +8081,12 @@ Nhiệm vụ của bạn:
             });
 
             if (!html) {
-                html = `<div class="p-8 text-center text-slate-500 font-semibold text-xs bg-white rounded-2xl border border-[#D5C7B8]">Không có hạng mục thi công nào trong bộ lọc này.</div>`;
+                html = `<div class="p-8 text-center text-slate-500 font-semibold text-xs bg-white rounded-2xl border border-[#D5C7B8] w-full">Không có hạng mục thi công nào trong bộ lọc này.</div>`;
             }
 
+            container.className = isMobileViewMode
+                ? 'flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-3 pb-14'
+                : 'space-y-5';
             container.innerHTML = html;
             setTimeout(() => {
                 document.querySelectorAll('#constructionTableContainer textarea').forEach(el => autoGrowTextarea(el));
@@ -8647,37 +8669,81 @@ Nhiệm vụ của bạn:
             const sortBtnLabel = staffGanttSortOrder === 'newest_first' ? '⬇ Mới → Cũ' : '⬆ Cũ → Mới';
 
             if (isMobileViewMode) {
-                const mobileRows = staffTasks.map(item => {
-                    const { proj, task, matchedRunIndices } = item;
-                    const cleanName = task.name.replace(/^[\.\s]+/, '');
-                    const primaryRunIdx = matchedRunIndices[0] || 0;
-                    let sIso = '', eIso = '';
-                    matchedRunIndices.forEach(rIdx => {
-                        const r = task.runs[rIdx];
-                        if (!r) return;
-                        const s = parseToISODate(r.dateReceive || r.datePlan);
-                        const e = parseToISODate(r.dateActual || r.datePlan || r.dateReceive);
-                        if (s && (!sIso || s < sIso)) sIso = s;
-                        if (e && (!eIso || e > eIso)) eIso = e;
+                const activeStaffList = staffList.filter(s => s !== 'Chưa giao');
+                const buildRowsForStaff = (sName) => {
+                    const list = [];
+                    projectsData.forEach((p, pIdx) => {
+                        p.tasks.forEach(t => {
+                            const matched = [];
+                            t.runs.forEach((r, rIdx) => {
+                                if (isStaffMatchingRun(r.staff, sName)) matched.push(rIdx);
+                            });
+                            if (matched.length > 0) {
+                                let latest = '';
+                                matched.forEach(rIdx => {
+                                    const d = parseToISODate(t.runs[rIdx].dateReceive || t.runs[rIdx].datePlan || t.runs[rIdx].dateActual);
+                                    if (d && d > latest) latest = d;
+                                });
+                                list.push({ proj: p, projOrder: pIdx, task: t, matchedRunIndices: matched, sortDate: latest || '0000-00-00' });
+                            }
+                        });
                     });
-                    let barClass = 'bg-indigo-600 text-white';
-                    if (task.status === 'DA_CHOT' || task.status === 'GUI_HS') barClass = 'bg-emerald-600 text-white';
-                    else if (task.status === 'GUI_KH') barClass = 'bg-sky-600 text-white';
-                    else if (task.status === 'DIEU_CHINH') barClass = 'bg-amber-600 text-white';
-                    else if (eIso && eIso < todayStr) barClass = 'bg-rose-600 text-white';
-                    return {
-                        subtitle: proj.name,
-                        title: cleanName,
-                        badgeHtml: `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold flex-shrink-0 ${STATUS_CONFIG[task.status]?.class || 'status-chua-pc'}">${STATUS_CONFIG[task.status]?.label || ''}</span>`,
-                        startIso: sIso,
-                        endIso: eIso,
-                        barClass,
-                        onClickAttr: `onclick="openGanttTaskEditor(${proj.id}, ${task.id}, ${primaryRunIdx}, this)"`
-                    };
-                });
-                const minIso = minD ? minD.toISOString().split('T')[0] : todayStr;
-                const maxIso = maxD ? maxD.toISOString().split('T')[0] : todayStr;
-                vp.innerHTML = renderMobileTimelineViewHtml(mobileRows, minIso, maxIso, todayStr, `Nhân sự ${staffName} chưa có đầu việc nào.`);
+                    list.sort((a, b) => staffGanttSortOrder === 'newest_first'
+                        ? (b.sortDate.localeCompare(a.sortDate) || b.projOrder - a.projOrder)
+                        : (a.sortDate.localeCompare(b.sortDate) || a.projOrder - b.projOrder));
+
+                    return list.map(item => {
+                        const { proj, task, matchedRunIndices } = item;
+                        const cleanName = task.name.replace(/^[\.\s]+/, '');
+                        const primaryRunIdx = matchedRunIndices[0] || 0;
+                        let sIso = '', eIso = '';
+                        matchedRunIndices.forEach(rIdx => {
+                            const r = task.runs[rIdx];
+                            if (!r) return;
+                            const s = parseToISODate(r.dateReceive || r.datePlan);
+                            const e = parseToISODate(r.dateActual || r.datePlan || r.dateReceive);
+                            if (s && (!sIso || s < sIso)) sIso = s;
+                            if (e && (!eIso || e > eIso)) eIso = e;
+                        });
+                        let barClass = 'bg-indigo-600 text-white';
+                        if (task.status === 'DA_CHOT' || task.status === 'GUI_HS') barClass = 'bg-emerald-600 text-white';
+                        else if (task.status === 'GUI_KH') barClass = 'bg-sky-600 text-white';
+                        else if (task.status === 'DIEU_CHINH') barClass = 'bg-amber-600 text-white';
+                        else if (eIso && eIso < todayStr) barClass = 'bg-rose-600 text-white';
+                        return {
+                            subtitle: proj.name,
+                            title: cleanName,
+                            badgeHtml: `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold flex-shrink-0 ${STATUS_CONFIG[task.status]?.class || 'status-chua-pc'}">${STATUS_CONFIG[task.status]?.label || ''}</span>`,
+                            startIso: sIso,
+                            endIso: eIso,
+                            barClass,
+                            onClickAttr: `onclick="openGanttTaskEditor(${proj.id}, ${task.id}, ${primaryRunIdx}, this)"`
+                        };
+                    });
+                };
+
+                vp.innerHTML = `
+                    <div id="mobileStaffSwipeTrack" class="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-3 p-2">
+                        ${activeStaffList.map((sName, sIdx) => {
+                            const rows = buildRowsForStaff(sName);
+                            return `
+                                <div data-staff-slide="${sName}" class="w-full flex-shrink-0 snap-center rounded-xl border border-[#D5C7B8] bg-white overflow-hidden flex flex-col max-h-[calc(100vh-300px)]">
+                                    <div class="bg-[#211B18] text-white px-3 py-1.5 flex items-center justify-between text-xs font-extrabold flex-shrink-0">
+                                        <span>👤 ${sName} (${rows.length} việc)</span>
+                                        <span class="text-[10px] text-[#F0CAA0]">${sIdx + 1}/${activeStaffList.length} ◀ Vuốt ▶</span>
+                                    </div>
+                                    <div class="flex-1 overflow-y-auto">
+                                        ${renderMobileTimelineViewHtml(rows, todayStr, todayStr, todayStr, `Nhân sự ${sName} chưa có đầu việc nào.`)}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                setTimeout(() => {
+                    const slide = vp.querySelector(`[data-staff-slide="${staffName}"]`);
+                    if (slide) slide.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
+                }, 0);
                 return;
             }
 
