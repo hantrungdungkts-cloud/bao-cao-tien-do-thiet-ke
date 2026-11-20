@@ -493,6 +493,8 @@
         body.mobile-view-mode tr[data-staff-gantt-row] td.cons-sticky-col-1 button {
             display: none !important;
         }
+        body.mobile-view-mode #ganttChartViewport { max-height: none !important; border: none !important; }
+        body.mobile-view-mode #staffGanttSection { border: none !important; background: transparent !important; box-shadow: none !important; }
 </style>
 </head>
 <body class="min-h-screen flex flex-col bg-[#F4EFEA] text-[#211B18]">
@@ -711,7 +713,7 @@
         <!-- TAB 2: NHÂN SỰ & BIỂU ĐỒ GANTT -->
         <section id="tab-staff" class="hidden bg-[#F4EFEA] shadow-sm border-b border-[#D5C7B8] overflow-hidden flex flex-col relative w-full flex-1">
             <!-- Thanh lọc & tác vụ Nhân sự (Chuẩn Tab 4) -->
-            <div class="px-3.5 py-2 bg-[#FAF6F0] border-b border-[#D5C7B8] flex flex-col gap-1.5 w-full flex-shrink-0 sticky top-0 z-50 shadow-xs">
+            <div class="mobile-hide px-3.5 py-2 bg-[#FAF6F0] border-b border-[#D5C7B8] flex flex-col gap-1.5 w-full flex-shrink-0 sticky top-0 z-50 shadow-xs">
                 <!-- Hàng 1: Tiêu đề, Chế độ xem & Thêm NS (Cân đối 2 bên) -->
                 <div class="flex flex-wrap items-center justify-between gap-2 w-full">
                     <div class="flex items-center gap-2 flex-wrap">
@@ -748,8 +750,8 @@
             </div>
 
             <!-- Nội dung Tab 2: Danh sách thẻ NS & Biểu đồ Gantt -->
-            <div class="p-3 space-y-3 overflow-y-auto flex-1">
-                <div class="bg-[#FAF6F0] rounded-2xl p-2 shadow-xs border border-[#D5C7B8] w-full">
+            <div class="p-2 sm:p-3 space-y-3 overflow-y-auto flex-1">
+                <div class="mobile-hide bg-[#FAF6F0] rounded-2xl p-2 shadow-xs border border-[#D5C7B8] w-full">
                     <div id="staffCardsGrid" class="flex flex-wrap items-stretch gap-1.5 py-0.5 w-full">
                         <!-- Rendered by JS -->
                     </div>
@@ -757,7 +759,7 @@
 
                 <!-- Gantt Chart Container Luxury Card -->
                 <div id="staffGanttSection" class="bg-white rounded-2xl border-2 border-[#D5C7B8] shadow-md overflow-hidden w-full">
-                    <div class="bg-gradient-to-r from-[#211B18] via-[#2E231E] to-[#211B18] px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-[#3D2C22] border-l-[6px] border-l-[#C59B27]">
+                    <div class="mobile-hide bg-gradient-to-r from-[#211B18] via-[#2E231E] to-[#211B18] px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-[#3D2C22] border-l-[6px] border-l-[#C59B27]">
                         <div class="flex items-center gap-3">
                             <div id="ganttStaffBadge" class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#C59B27] to-[#8C6239] text-[#1F1713] font-black flex items-center justify-center text-sm shadow-xs flex-shrink-0 ring-1 ring-white/30">
                                 ĐĐ
@@ -8723,11 +8725,11 @@ Nhiệm vụ của bạn:
                 };
 
                 vp.innerHTML = `
-                    <div id="mobileStaffSwipeTrack" class="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-3 p-2">
+                    <div id="mobileStaffSwipeTrack" class="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-3 p-1">
                         ${activeStaffList.map((sName, sIdx) => {
                             const rows = buildRowsForStaff(sName);
                             return `
-                                <div data-staff-slide="${sName}" class="w-full flex-shrink-0 snap-center rounded-xl border border-[#D5C7B8] bg-white overflow-hidden flex flex-col max-h-[calc(100vh-300px)]">
+                                <div data-staff-slide="${sName}" class="w-full flex-shrink-0 snap-center rounded-xl border border-[#D5C7B8] bg-white overflow-hidden flex flex-col max-h-[calc(100vh-145px)]">
                                     <div class="bg-[#211B18] text-white px-3 py-1.5 flex items-center justify-between text-xs font-extrabold flex-shrink-0">
                                         <span>👤 ${sName} (${rows.length} việc)</span>
                                         <span class="text-[10px] text-[#F0CAA0]">${sIdx + 1}/${activeStaffList.length} ◀ Vuốt ▶</span>
