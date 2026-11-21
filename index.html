@@ -510,8 +510,9 @@
     <!-- TOP NAVIGATION BAR (CỐ ĐỊNH TRÊN CÙNG) -->
     <header id="topNavHeader" class="sticky top-0 z-[100] bg-[#211B18] text-[#FAF6F0] px-3 py-2 flex flex-wrap xl:flex-nowrap items-center justify-between gap-2 shadow-lg border-b border-[#382F2A]">
         <div class="flex items-center gap-1.5 min-w-0 flex-shrink-0">
-            <div class="px-2.5 py-1 rounded-lg border border-[#A69688]/40 bg-[#A69688]/10 text-[#EBDFD3] font-extrabold text-[11px] tracking-wider uppercase shadow-sm truncate">
-                BÁO CÁO TIẾN ĐỘ THIẾT KẾ
+            <div class="px-2.5 py-1 rounded-lg border border-[#C59B27]/50 bg-[#C59B27]/15 text-[#F0CAA0] font-extrabold text-[11px] tracking-wider uppercase shadow-sm truncate flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-[#C59B27] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+                <span>BÁO CÁO TIẾN ĐỘ THIẾT KẾ</span>
             </div>
             <button id="headerBrandBtnTimeline" onclick="switchTab('staff')" class="px-2.5 py-1 rounded-lg border border-[#A69688]/30 bg-[#2D2521] hover:bg-[#382F2A] text-[#D9C4B0] font-bold text-[11px] transition flex items-center gap-1 whitespace-nowrap">
                 <span>TIMELINE</span>
@@ -524,22 +525,28 @@
 
         <!-- Center Tabs -->
         <div id="headerTabsRow" class="flex items-center bg-[#14100E] p-1 rounded-xl border border-[#382F2A] flex-wrap xl:flex-nowrap gap-0.5">
-            <button id="tabBtn-progress" onclick="switchTab('progress')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap">
-                1. Bảng Tiến Độ
+            <button id="tabBtn-progress" onclick="switchTab('progress')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1 whitespace-nowrap">
+                <svg class="w-3.5 h-3.5 text-[#C59B27] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                <span>1. Bảng Tiến Độ</span>
             </button>
-            <button id="tabBtn-staff" onclick="switchTab('staff')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap">
-                2. Nhân Sự (Gantt)
+            <button id="tabBtn-staff" onclick="switchTab('staff')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span>2. Nhân Sự (Gantt)</span>
             </button>
-            <button id="tabBtn-details" onclick="switchTab('details')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap">
-                3. Chi Tiết DA
+            <button id="tabBtn-details" onclick="switchTab('details')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                <span>3. Chi Tiết DA</span>
             </button>
-            <button id="tabBtn-construction" onclick="switchTab('construction')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap">
-                4. Tiến Độ Thi Công
+            <button id="tabBtn-construction" onclick="switchTab('construction')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                <span>4. Tiến Độ Thi Công</span>
             </button>
-            <button id="tabBtn-recruitment" onclick="switchTab('recruitment')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap">
-                5. Tuyển Dụng NS
+            <button id="tabBtn-recruitment" onclick="switchTab('recruitment')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span>5. Tuyển Dụng NS</span>
             </button>
             <button id="tabBtn-archive" onclick="switchTab('archive')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                 <span>6. Kho Lưu Trữ</span>
                 <span id="archiveBadgeCount" class="px-1.5 py-0.2 rounded-full bg-[#8C6239] text-white text-[10px] font-black hidden">0</span>
             </button>
@@ -5700,6 +5707,42 @@ Nhiệm vụ của bạn:
             renderProgressTable();
         }
 
+        function getDomainItemIconSvg(name, category = 'design') {
+            const s = (name || '').toLowerCase();
+            const svgWrap = (cls, pathHtml) => `<span class="inline-flex items-center justify-center w-4 h-4 rounded ${cls} flex-shrink-0"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${pathHtml}</svg></span>`;
+            if (category === 'construction') {
+                if (/gỗ|nội thất|xưởng|tủ|bàn|ghế/.test(s)) {
+                    return svgWrap('bg-amber-50 text-amber-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M4 10V7a2 2 0 012-2h12a2 2 0 012 2v3M3 10h18v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5zm3 7v2m12-2v2"/>');
+                }
+                if (/quảng cáo|biển|chữ|logo|decal|bảng/.test(s)) {
+                    return svgWrap('bg-indigo-50 text-indigo-600', '<path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>');
+                }
+                if (/điện|nước|me|điều hòa|ánh sáng|đèn/.test(s)) {
+                    return svgWrap('bg-yellow-50 text-yellow-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>');
+                }
+                if (/đồ rời|decor|rèm|trang trí/.test(s)) {
+                    return svgWrap('bg-teal-50 text-teal-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M9 18h6m-5 3h4M12 3a6 6 0 00-4 10.472V15a1 1 0 001 1h6a1 1 0 001-1v-1.528A6 6 0 0012 3z"/>');
+                }
+                if (/vệ sinh|bàn giao|hoàn thiện/.test(s)) {
+                    return svgWrap('bg-emerald-50 text-emerald-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>');
+                }
+                return svgWrap('bg-orange-50 text-orange-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>');
+            }
+            if (/mb|mặt bằng|công năng/.test(s)) {
+                return svgWrap('bg-sky-50 text-sky-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm0 6h10m0-8v18m0-9h8"/>');
+            }
+            if (/3d|phối cảnh|render/.test(s)) {
+                return svgWrap('bg-violet-50 text-violet-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>');
+            }
+            if (/kttc|kỹ thuật|bản vẽ|hồ sơ|trần|điện|nước|kết cấu|me/.test(s)) {
+                return svgWrap('bg-amber-50 text-amber-800', '<path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 2v6h6M8 13h8M8 17h5"/>');
+            }
+            if (/khảo sát|đo đạc/.test(s)) {
+                return svgWrap('bg-emerald-50 text-emerald-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>');
+            }
+            return svgWrap('bg-slate-100 text-slate-700', '<path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>');
+        }
+
         // --- RENDER BẢNG TIẾN ĐỘ (TAB 1) ---
         function renderProgressTable() {
             const tbody = document.getElementById('progressTableBody');
@@ -5836,11 +5879,11 @@ Nhiệm vụ của bạn:
                                     ondragleave="handleTaskDragLeave(event)"
                                     ondrop="handleTaskDrop(event, ${proj.id}, ${task.id})"
                                     class="px-1.5 py-0.5 align-middle border-r border-slate-300 ${taskBottomBorder} bg-white transition-colors group/task">
-                                    <div class="flex items-center gap-1">
+                                    <div class="flex items-center gap-1.5">
                                         <span class="cursor-grab active:cursor-grabbing text-slate-400 hover:text-indigo-600 font-bold text-xs px-0.5 select-none" title="Giữ chuột và kéo thả để đổi vị trí đầu việc trong dự án">⋮⋮</span>
-                                        <span class="font-black text-base text-slate-800 leading-none select-none">.</span>
+                                        ${getDomainItemIconSvg(task.name, 'design')}
                                         <input type="text" value="${task.name.replace(/^[\.\s]+/, '')}" onchange="updateTaskName(${proj.id}, ${task.id}, this.value)"
-                                            class="w-full text-xs font-normal text-slate-900 bg-transparent border-0 focus:bg-slate-50 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-indigo-400">
+                                            class="w-full text-xs font-medium text-slate-900 bg-transparent border-0 focus:bg-slate-50 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-indigo-400">
                                     </div>
                                 </td>
                             `;
@@ -5966,7 +6009,10 @@ Nhiệm vụ của bạn:
                                             const doneShort = doneDateIso ? `${doneDateIso.slice(8, 10)}/${doneDateIso.slice(5, 7)}` : '';
                                             return `
                                                 <div class="bg-white/80 rounded-lg border border-emerald-200/80 px-2.5 py-1.5 flex items-center justify-between gap-2">
-                                                    <span class="text-[11px] font-bold text-emerald-800 truncate">✓ ${task.name.replace(/^[\.\s]+/, '')}</span>
+                                                    <div class="flex items-center gap-1.5 min-w-0 flex-1">
+                                                        ${getDomainItemIconSvg(task.name, 'design')}
+                                                        <span class="text-[11px] font-bold text-emerald-800 truncate">${task.name.replace(/^[\.\s]+/, '')}</span>
+                                                    </div>
                                                     <span class="text-[10px] font-semibold text-emerald-700 flex-shrink-0">${primaryRun.staff && primaryRun.staff !== 'Chưa giao' ? primaryRun.staff : ''}${doneShort ? ` • ${doneShort}` : ''}</span>
                                                 </div>
                                             `;
@@ -5994,8 +6040,11 @@ Nhiệm vụ của bạn:
                                         return `
                                             <div class="bg-white rounded-xl border border-[#E3D3C1] p-2 space-y-1.5 shadow-2xs">
                                                 <div class="flex items-center justify-between gap-2">
-                                                    <input type="text" value="${task.name.replace(/^[\.\s]+/, '')}" onchange="updateTaskName(${proj.id}, ${task.id}, this.value)"
-                                                        class="flex-1 min-w-0 text-xs font-extrabold text-[#211B18] bg-transparent border-0 focus:bg-slate-50 rounded px-0.5 py-0.5 focus:outline-none">
+                                                    <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                                                        ${getDomainItemIconSvg(task.name, 'design')}
+                                                        <input type="text" value="${task.name.replace(/^[\.\s]+/, '')}" onchange="updateTaskName(${proj.id}, ${task.id}, this.value)"
+                                                            class="flex-1 min-w-0 text-xs font-extrabold text-[#211B18] bg-transparent border-0 focus:bg-slate-50 rounded px-0.5 py-0.5 focus:outline-none">
+                                                    </div>
                                                     <select onchange="updateTaskStatus(${proj.id}, ${task.id}, this.value)"
                                                         class="status-pill !w-auto max-w-[140px] flex-shrink-0 ${STATUS_CONFIG[task.status]?.class || 'status-chua-pc'}">
                                                         ${Object.entries(STATUS_CONFIG).map(([k, cfg]) => `<option value="${k}" ${task.status === k ? 'selected' : ''}>${cfg.label}</option>`).join('')}
@@ -6795,37 +6844,37 @@ Nhiệm vụ của bạn:
             const tabArchive = document.getElementById('tab-archive');
             if (tabArchive) tabArchive.classList.add('hidden');
 
-            document.getElementById('tabBtn-progress').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
-            document.getElementById('tabBtn-staff').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
-            document.getElementById('tabBtn-details').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
-            document.getElementById('tabBtn-recruitment').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
-            document.getElementById('tabBtn-construction').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white whitespace-nowrap';
+            document.getElementById('tabBtn-progress').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
+            document.getElementById('tabBtn-staff').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
+            document.getElementById('tabBtn-details').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
+            document.getElementById('tabBtn-recruitment').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
+            document.getElementById('tabBtn-construction').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
             const tabBtnArchive = document.getElementById('tabBtn-archive');
             if (tabBtnArchive) tabBtnArchive.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
 
             if (tabName === 'progress') {
                 document.getElementById('tab-progress').classList.remove('hidden');
-                document.getElementById('tabBtn-progress').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
+                document.getElementById('tabBtn-progress').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1 whitespace-nowrap';
                 renderStatusFilters();
                 renderProgressTable();
             } else if (tabName === 'staff') {
                 document.getElementById('tab-staff').classList.remove('hidden');
-                document.getElementById('tabBtn-staff').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
+                document.getElementById('tabBtn-staff').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1 whitespace-nowrap';
                 renderStaffSection();
                 setTimeout(() => {
                     centerAllGanttToToday();
                 }, 60);
             } else if (tabName === 'details') {
                 document.getElementById('tab-details').classList.remove('hidden');
-                document.getElementById('tabBtn-details').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
+                document.getElementById('tabBtn-details').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1 whitespace-nowrap';
                 renderProjectSummary();
             } else if (tabName === 'recruitment') {
                 document.getElementById('tab-recruitment').classList.remove('hidden');
-                document.getElementById('tabBtn-recruitment').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
+                document.getElementById('tabBtn-recruitment').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1 whitespace-nowrap';
                 renderRecruitmentSection();
             } else if (tabName === 'construction') {
                 document.getElementById('tab-construction').classList.remove('hidden');
-                document.getElementById('tabBtn-construction').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] whitespace-nowrap';
+                document.getElementById('tabBtn-construction').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1 whitespace-nowrap';
                 renderConstructionSection();
             } else if (tabName === 'archive') {
                 if (tabArchive) tabArchive.classList.remove('hidden');
@@ -7834,8 +7883,8 @@ Nhiệm vụ của bạn:
                                 </td>
                                 <td rowspan="${itemRunCount}" class="p-1.5 align-middle border-r border-slate-200 ${itemBottomBorder} bg-white">
                                     <div class="flex items-center gap-1.5">
-                                        <span class="w-2.5 h-2.5 rounded-full ${itemPalette.dot} flex-shrink-0 shadow-2xs" title="Màu định danh hạng mục trên Timeline"></span>
-                                        <input type="text" value="${item.name}" onchange="updateConstructionItemField(${proj.id}, ${item.id}, 'name', this.value)"
+                                        ${getDomainItemIconSvg(item.name, 'construction')}
+                                        <input type="text" value="${item.name.replace(/^[\.\s]+/, '')}" onchange="updateConstructionItemField(${proj.id}, ${item.id}, 'name', this.value)"
                                             class="w-full text-xs font-bold text-slate-900 bg-transparent border-0 focus:bg-slate-50 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#8C6239]">
                                     </div>
                                 </td>
@@ -8065,7 +8114,7 @@ Nhiệm vụ của bạn:
                                         <div class="bg-white rounded-xl border border-[#D5C7B8] p-2 space-y-1.5 shadow-2xs">
                                             <div class="flex items-center gap-1.5">
                                                 <span class="w-4 h-4 rounded-full bg-slate-100 text-slate-600 font-black text-[9px] flex items-center justify-center flex-shrink-0">${iIdx + 1}</span>
-                                                <span class="w-2 h-2 rounded-full ${itemPalette.dot} flex-shrink-0"></span>
+                                                ${getDomainItemIconSvg(item.name, 'construction')}
                                                 <input type="text" value="${item.name.replace(/^[\.\s]+/, '')}" onchange="updateConstructionItemField(${proj.id}, ${item.id}, 'name', this.value)"
                                                     class="flex-1 min-w-0 text-xs font-extrabold text-slate-900 bg-transparent border-0 focus:bg-slate-50 rounded px-0.5 py-0.5 focus:outline-none">
                                             </div>
