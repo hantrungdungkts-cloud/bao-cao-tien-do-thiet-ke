@@ -5707,6 +5707,17 @@ Nhiệm vụ của bạn:
             renderProgressTable();
         }
 
+        function renderProjectHouseBadgeHtml(num, accentColor = '#8C6239') {
+            return `
+                <span class="relative inline-flex items-center justify-center w-8 h-8 mx-auto flex-shrink-0 drop-shadow-xs" title="Dự án #${num}">
+                    <svg class="w-8 h-8 absolute inset-0" style="color: ${accentColor};" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.36 2.53a1 1 0 011.28 0l9 7.5A1 1 0 0122 10.8V20.5a1.5 1.5 0 01-1.5 1.5h-17A1.5 1.5 0 012 20.5v-9.7a1 1 0 01.36-.77l9-7.5z"/>
+                    </svg>
+                    <span class="relative z-10 text-white font-black text-[11px] leading-none pt-1.5 select-none">${num}</span>
+                </span>
+            `;
+        }
+
         function getDomainItemIconSvg(name, category = 'design') {
             const s = (name || '').toLowerCase();
             const svgWrap = (cls, pathHtml) => `<span class="inline-flex items-center justify-center w-4 h-4 rounded ${cls} flex-shrink-0"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${pathHtml}</svg></span>`;
@@ -5817,7 +5828,7 @@ Nhiệm vụ của bạn:
                                 <td rowspan="${totalProjectRows}" class="${projTheme.sttBg} font-extrabold text-center align-middle text-base border-r-2 border-slate-400 border-b border-b-slate-300 select-none">
                                     <div class="flex flex-col items-center justify-center gap-0.5 py-0.5">
                                         <button onclick="moveProjectOrder(${proj.id}, -1)" ${pIdx === 0 ? 'disabled class="opacity-30 cursor-not-allowed text-[10px]"' : 'class="hover:scale-125 transition text-[10px] font-bold"'} title="Di chuyển lên">▲</button>
-                                        <span class="w-7 h-7 rounded-full ${projTheme.badgeBg} font-black text-xs flex items-center justify-center shadow-md mx-auto my-0.5 ring-1 ring-white/30">${pIdx + 1}</span>
+                                        ${renderProjectHouseBadgeHtml(pIdx + 1, '#9A6B3B')}
                                         <button onclick="moveProjectOrder(${proj.id}, 1)" ${pIdx === sortedProjects.length - 1 ? 'disabled class="opacity-30 cursor-not-allowed text-[10px]"' : 'class="hover:scale-125 transition text-[10px] font-bold"'} title="Di chuyển xuống">▼</button>
                                     </div>
                                 </td>
@@ -5878,9 +5889,9 @@ Nhiệm vụ của bạn:
                                     ondragover="handleTaskDragOver(event, ${proj.id}, ${task.id})"
                                     ondragleave="handleTaskDragLeave(event)"
                                     ondrop="handleTaskDrop(event, ${proj.id}, ${task.id})"
-                                    class="px-1.5 py-0.5 align-middle border-r border-slate-300 ${taskBottomBorder} bg-white transition-colors group/task">
+                                    title="Kéo thả đầu việc để đổi vị trí trong dự án"
+                                    class="px-1.5 py-0.5 align-middle border-r border-slate-300 ${taskBottomBorder} bg-white transition-colors group/task cursor-grab active:cursor-grabbing">
                                     <div class="flex items-center gap-1.5">
-                                        <span class="cursor-grab active:cursor-grabbing text-slate-400 hover:text-indigo-600 font-bold text-xs px-0.5 select-none" title="Giữ chuột và kéo thả để đổi vị trí đầu việc trong dự án">⋮⋮</span>
                                         ${getDomainItemIconSvg(task.name, 'design')}
                                         <input type="text" value="${task.name.replace(/^[\.\s]+/, '')}" onchange="updateTaskName(${proj.id}, ${task.id}, this.value)"
                                             class="w-full text-xs font-medium text-slate-900 bg-transparent border-0 focus:bg-slate-50 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-indigo-400">
@@ -5903,6 +5914,7 @@ Nhiệm vụ của bạn:
                                             ×
                                         </button>
                                     `}
+                                    <svg class="w-3 h-3 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     <span class="text-[11px] font-bold text-slate-500 flex-shrink-0">${rIdx + 1}:</span>
                                     <input type="text" list="staffOptionsList-${proj.id}-${task.id}-${rIdx}" value="${run.staff === 'Chưa giao' ? '' : run.staff}" placeholder="Nhân sự..." onchange="updateRunStaff(${proj.id}, ${task.id}, ${rIdx}, this.value)"
                                         class="flex-1 text-[11px] font-bold bg-transparent border-0 rounded px-0.5 py-0.5 text-slate-900 focus:outline-none truncate">
@@ -5981,7 +5993,7 @@ Nhiệm vụ của bạn:
                             <div class="w-full flex-shrink-0 snap-center bg-white rounded-2xl border border-[#D5C7B8] shadow-sm overflow-hidden flex flex-col max-h-[calc(100vh-175px)]">
                                 <div class="bg-[#211B18] text-[#FAF6F0] px-2.5 py-2 flex items-center justify-between gap-2 flex-shrink-0">
                                     <div class="flex items-center gap-2 min-w-0 flex-1">
-                                        <span class="w-6 h-6 rounded-full ${projTheme.badgeBg} font-black text-[11px] flex items-center justify-center flex-shrink-0 ring-1 ring-white/30">${pIdx + 1}</span>
+                                        ${renderProjectHouseBadgeHtml(pIdx + 1, '#C59B27')}
                                         <div class="min-w-0 flex-1">
                                             <div class="font-black text-xs uppercase text-white truncate">${proj.name}</div>
                                             <div class="text-[10px] text-[#D9C4B0] font-semibold">${proj.lead || 'Chưa giao'} • ${doneTasks}/${proj.tasks.length} việc • <span class="text-[#F0CAA0]">${mIdx + 1}/${mobileEntries.length} ◀ Vuốt ▶</span></div>
@@ -8441,8 +8453,11 @@ Nhiệm vụ của bạn:
                                     class="w-full px-1.5 py-0.5 text-xs sm:text-[13.5px] font-black rounded bg-white text-slate-900 border-2 border-amber-500 focus:outline-none">
                             ` : `
                                 <span onclick="event.stopPropagation(); startRenameStaff(${realIdx})" 
-                                      class="font-black text-xs sm:text-[13.5px] truncate uppercase cursor-pointer hover:text-amber-800 transition ${isSelected ? 'text-[#8C6239]' : 'text-[#211B18]'}" 
-                                      title="Click vào tên để sửa">${staffName}</span>
+                                      class="inline-flex items-center gap-1 font-black text-xs sm:text-[13.5px] truncate uppercase cursor-pointer hover:text-amber-800 transition ${isSelected ? 'text-[#8C6239]' : 'text-[#211B18]'}" 
+                                      title="Click vào tên để sửa">
+                                      <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-75" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                      <span class="truncate">${staffName}</span>
+                                </span>
                                 ${isSelected ? `<span class="w-1.5 h-1.5 rounded-full bg-[#8C6239] animate-pulse flex-shrink-0" title="Đang xem"></span>` : ''}
                             `}
                         </div>
