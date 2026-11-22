@@ -765,16 +765,16 @@
             </div>
 
             <!-- Nội dung Tab 2: Danh sách thẻ NS & Biểu đồ Gantt -->
-            <div class="p-0 space-y-0 overflow-y-auto flex-1">
-                <div class="mobile-hide bg-[#FAF6F0] rounded-none p-1.5 border-b border-[#D5C7B8] w-full">
+            <div class="p-0 space-y-0 overflow-y-auto flex-1 flex flex-col min-h-0">
+                <div class="mobile-hide bg-[#FAF6F0] rounded-none p-1.5 border-b border-[#D5C7B8] w-full flex-shrink-0">
                     <div id="staffCardsGrid" class="flex flex-wrap items-stretch gap-1.5 py-0.5 w-full">
                         <!-- Rendered by JS -->
                     </div>
                 </div>
 
                 <!-- Gantt Chart Container -->
-                <div id="staffGanttSection" class="bg-white rounded-none border-0 overflow-hidden w-full">
-                    <div class="mobile-hide bg-gradient-to-r from-[#211B18] via-[#2E231E] to-[#211B18] px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 border-b border-[#3D2C22] border-l-[6px] border-l-[#C59B27]">
+                <div id="staffGanttSection" class="bg-white rounded-none border-0 overflow-hidden w-full flex-1 flex flex-col min-h-0">
+                    <div class="mobile-hide bg-gradient-to-r from-[#211B18] via-[#2E231E] to-[#211B18] px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 border-b border-[#3D2C22] flex-shrink-0">
                         <div class="flex items-center gap-3">
                             <div id="ganttStaffBadge" class="w-8 h-8 rounded-none bg-gradient-to-br from-[#C59B27] to-[#8C6239] text-[#1F1713] font-black flex items-center justify-center text-sm flex-shrink-0 ring-1 ring-white/30">
                                 ĐĐ
@@ -797,12 +797,12 @@
                         </div>
                     </div>
 
-                    <div id="ganttChartViewport" class="overflow-x-auto max-h-[480px] bg-white border-b border-[#D5C7B8] rounded-none">
+                    <div id="ganttChartViewport" class="overflow-auto flex-1 min-h-[calc(100vh-215px)] bg-white border-b border-[#D5C7B8] rounded-none">
                         <!-- Rendered by JS -->
                     </div>
 
-                    <div id="staffAIAnalysisPanel" class="p-3 border-t border-[#D5C7B8]"></div>
-                    <div id="staffAITrainingStudioPanel" class="p-3 border-t border-[#D5C7B8]"></div>
+                    <div id="staffAIAnalysisPanel" class="p-3 border-t border-[#D5C7B8] empty:hidden"></div>
+                    <div id="staffAITrainingStudioPanel" class="p-3 border-t border-[#D5C7B8] empty:hidden"></div>
                 </div>
             </div>
         </section>
