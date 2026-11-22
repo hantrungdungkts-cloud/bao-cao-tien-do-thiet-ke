@@ -851,8 +851,8 @@
                     <!-- Rendered by JS -->
                 </div>
 
-                <div id="projectGridSummaryWrapper" class="bg-[#FAF6F0] rounded-none p-1.5 border-b border-[#D5C7B8] w-full">
-                    <div id="projectGridList" class="flex flex-wrap items-stretch gap-1.5 py-0.5 w-full">
+                <div id="projectGridSummaryWrapper" class="bg-[#FAF6F0] rounded-none p-2 border-b border-[#D5C7B8] w-full">
+                    <div id="projectGridList" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2 py-0.5 w-full">
                         <!-- Rendered by JS -->
                     </div>
                 </div>
@@ -9804,23 +9804,23 @@ Nhiệm vụ của bạn:
                     : { accentColor: '#C59B27' };
                 return `
                     <div onclick="document.getElementById('project-detail-card-${p.id}')?.scrollIntoView({behavior:'smooth'})"
-                        style="border-left: 3.5px solid ${thm?.accentColor || '#C59B27'} !important;"
-                        class="p-1.5 sm:p-2 rounded-none bg-white hover:bg-[#FAF6F0] border border-[#D5C7B8] shadow-none cursor-pointer transition flex-1 min-w-[130px] sm:min-w-[145px] max-w-[195px] flex flex-col justify-between">
+                        style="border-left: 4px solid ${thm?.accentColor || '#C59B27'} !important;"
+                        class="p-2 rounded-xl bg-white hover:bg-[#FAF6F0] border border-[#D5C7B8] shadow-2xs cursor-pointer transition min-w-0 flex flex-col justify-between">
                         
                         <!-- Dòng 1: STT & Chủ trì bên trái, % hoàn thành bên phải -->
-                        <div class="flex items-center justify-between text-[10px] font-bold text-[#7E634F] leading-none">
-                            <span class="flex items-center gap-1 min-w-0">
-                                <span style="background-color: ${thm?.accentColor || '#C59B27'};" class="w-3.5 h-3.5 rounded text-white text-[9px] font-black inline-flex items-center justify-center flex-shrink-0">${idx + 1}</span>
-                                <span class="truncate max-w-[65px] text-[10px] font-bold">${p.lead || 'Chưa giao'}</span>
+                        <div class="flex items-center justify-between text-[11px] font-bold text-[#7E634F] leading-none gap-1">
+                            <span class="flex items-center gap-1.5 min-w-0">
+                                <span style="background-color: ${thm?.accentColor || '#C59B27'};" class="w-4 h-4 rounded-md text-white text-[10px] font-black inline-flex items-center justify-center flex-shrink-0">${idx + 1}</span>
+                                <span class="truncate text-[11px] font-bold">${p.lead || 'Chưa giao'}</span>
                             </span>
-                            <span class="text-[10px] font-black ${ev.progressPct === 100 ? 'text-emerald-700' : 'text-[#8C6239]'} flex-shrink-0">${ev.progressPct}%</span>
+                            <span class="text-[11px] font-black ${ev.progressPct === 100 ? 'text-emerald-700' : 'text-[#8C6239]'} flex-shrink-0">${ev.progressPct}%</span>
                         </div>
 
                         <!-- Dòng 2: Tên dự án in hoa gọn gàng -->
-                        <div class="font-black text-xs sm:text-[12.5px] text-[#211B18] truncate my-1 leading-tight tracking-tight uppercase" title="${p.name}">${p.name}</div>
+                        <div class="font-black text-xs sm:text-[13px] text-[#211B18] truncate my-1.5 leading-tight tracking-tight uppercase" title="${p.name}">${p.name}</div>
 
                         <!-- Dòng 3: Thanh tiến độ tinh gọn -->
-                        <div class="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
+                        <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
                             <div class="h-full bg-emerald-600" style="width:${ev.progressPct}%"></div>
                         </div>
                     </div>
