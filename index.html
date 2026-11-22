@@ -857,7 +857,7 @@
                     </div>
                 </div>
 
-                <div id="projectDetailContainer" class="space-y-0 w-full">
+                <div id="projectDetailContainer" class="space-y-3 w-full pt-2 pb-4">
                     <!-- Rendered by JS -->
                 </div>
             </div>
@@ -910,8 +910,8 @@
             </div>
 
             <!-- Bảng Tiến Độ Thi Công — Từng công trình là một khối bảng độc lập kèm Timeline -->
-            <div id="constructionTableContainer" class="overflow-y-auto flex-1 h-[calc(100vh-135px)] w-full p-0 space-y-0">
-                <div id="constructionProjectsContainer" class="space-y-0">
+            <div id="constructionTableContainer" class="overflow-y-auto flex-1 h-[calc(100vh-135px)] w-full p-0 pt-2 pb-4 space-y-3">
+                <div id="constructionProjectsContainer" class="space-y-3">
                     <!-- Rendered by JS: Mỗi công trình là một bảng độc lập gồm Header, Bảng Hạng Mục và Biểu Đồ Timeline -->
                 </div>
                 <table class="hidden"><tbody id="constructionTableBody"></tbody></table>
@@ -7991,7 +7991,7 @@ Nhiệm vụ của bạn:
                 html += `
                     <div id="cons-project-card-${proj.id}" 
                          ${isMobileViewMode ? '' : `style="border-left: 6px solid ${thm.accentColor || '#C59B27'} !important;"`}
-                         class="${isMobileViewMode ? 'w-full flex-shrink-0 snap-center max-h-[calc(100vh-175px)] flex flex-col border' : 'mb-0 border-b-2'} bg-white rounded-none border-[#D5C7B8] shadow-none overflow-hidden transition-all duration-200">
+                         class="${isMobileViewMode ? 'w-full flex-shrink-0 snap-center max-h-[calc(100vh-175px)] flex flex-col border' : 'border-t border-b-2'} bg-white rounded-none border-[#D5C7B8] shadow-none overflow-hidden transition-all duration-200">
                         <!-- 1. Thanh Header Công Trình -->
                         ${isMobileViewMode ? `
                             <div class="${thm.headerBg} text-[#FAF6F0] px-2.5 py-2 flex items-center justify-between gap-2 ${thm.headerBorder} flex-shrink-0">
@@ -9858,7 +9858,7 @@ Nhiệm vụ của bạn:
                 return `
                     <div id="project-detail-card-${p.id}" 
                          style="border-left: 6px solid ${thm.accentColor || '#C59B27'} !important;"
-                         class="bg-white rounded-none border-b-2 border-[#D5C7B8] shadow-none overflow-hidden mb-0 transition-all duration-200">
+                         class="bg-white rounded-none border-t border-b-2 border-[#D5C7B8] shadow-none overflow-hidden transition-all duration-200">
                         <!-- Thanh Header chuẩn Executive Luxury Tab 4 -->
                         <div class="${thm.headerBg} px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-[#D5C7B8]">
                             <div class="flex items-center gap-3 flex-wrap flex-1 min-w-[260px]">
