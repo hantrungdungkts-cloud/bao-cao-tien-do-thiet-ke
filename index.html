@@ -8440,17 +8440,17 @@ Nhiệm vụ của bạn:
 
                 return `
                     <div onclick="selectStaffForGantt('${staffName}')"
-                        style="border-left: 3.5px solid ${thm.accentColor} !important;"
-                        class="p-1.5 sm:p-2 rounded-none border transition cursor-pointer select-none flex-1 min-w-[125px] sm:min-w-[135px] max-w-[180px] flex flex-col justify-between ${isSelected ? 'bg-[#FAF6F0] ring-2 ring-[#8C6239] border-[#8C6239]' : 'bg-white hover:bg-[#FAF6F0] border-[#D5C7B8]'}">
+                        style="border-left: 4px solid ${thm.accentColor} !important;"
+                        class="p-2 sm:p-2.5 rounded-xl border transition cursor-pointer select-none flex-1 min-w-[135px] sm:min-w-[150px] max-w-[200px] flex flex-col justify-between shadow-2xs ${isSelected ? 'bg-[#FAF6F0] ring-2 ring-[#8C6239] border-[#8C6239]' : 'bg-white hover:bg-[#FAF6F0] border-[#D5C7B8]'}">
                         
                         <!-- Dòng 1: STT/Màu, Số việc, Nút xóa -->
-                        <div class="flex items-center justify-between text-[10px] font-bold text-[#7E634F] leading-none">
-                            <span class="flex items-center gap-1 min-w-0">
-                                <span style="background-color: ${thm.accentColor};" class="w-3.5 h-3.5 rounded text-white text-[9px] font-black inline-flex items-center justify-center flex-shrink-0">${sIdx + 1}</span>
-                                <span class="text-[9.5px] font-extrabold ${isSelected ? 'text-[#8C6239]' : 'text-slate-600'} truncate">${summary.totalTasks} việc</span>
+                        <div class="flex items-center justify-between text-[11px] font-bold text-[#7E634F] leading-none">
+                            <span class="flex items-center gap-1.5 min-w-0">
+                                <span style="background-color: ${thm.accentColor};" class="w-4 h-4 rounded-md text-white text-[10px] font-black inline-flex items-center justify-center flex-shrink-0">${sIdx + 1}</span>
+                                <span class="text-[11px] font-extrabold ${isSelected ? 'text-[#8C6239]' : 'text-slate-700'} truncate">${summary.totalTasks} việc</span>
                             </span>
                             <div class="flex items-center gap-1 flex-shrink-0 opacity-60 hover:opacity-100 transition">
-                                <button onclick="event.stopPropagation(); removeStaffMember('${staffName}')" title="Xóa nhân sự" class="text-[12px] text-slate-400 hover:text-rose-600 font-black leading-none px-0.5">×</button>
+                                <button onclick="event.stopPropagation(); removeStaffMember('${staffName}')" title="Xóa nhân sự" class="text-[13px] text-slate-400 hover:text-rose-600 font-black leading-none px-0.5">×</button>
                             </div>
                         </div>
 
@@ -8461,25 +8461,25 @@ Nhiệm vụ của bạn:
                                     onclick="event.stopPropagation()"
                                     onkeydown="handleRenameStaffKey(event, ${realIdx})"
                                     onblur="commitRenameStaff(${realIdx}, this.value)"
-                                    class="w-full px-1.5 py-0.5 text-xs sm:text-[13.5px] font-black rounded bg-white text-slate-900 border-2 border-amber-500 focus:outline-none">
+                                    class="w-full px-1.5 py-0.5 text-sm sm:text-[15px] font-black rounded-lg bg-white text-slate-900 border-2 border-amber-500 focus:outline-none">
                             ` : `
                                 <span onclick="event.stopPropagation(); startRenameStaff(${realIdx})" 
-                                      class="inline-flex items-center gap-1.5 font-black text-xs sm:text-[13.5px] truncate uppercase cursor-pointer hover:text-amber-800 transition ${isSelected ? 'text-[#8C6239]' : 'text-[#211B18]'}" 
+                                      class="inline-flex items-center gap-1.5 font-black text-sm sm:text-[15px] truncate uppercase cursor-pointer hover:text-amber-800 transition ${isSelected ? 'text-[#8C6239]' : 'text-[#211B18]'}" 
                                       title="Click vào tên để sửa">
                                       ${renderStaffPersonIconSvg('md')}
                                       <span class="truncate">${staffName}</span>
                                 </span>
-                                ${isSelected ? `<span class="w-1.5 h-1.5 rounded-full bg-[#8C6239] animate-pulse flex-shrink-0" title="Đang xem"></span>` : ''}
+                                ${isSelected ? `<span class="w-2 h-2 rounded-full bg-[#8C6239] animate-pulse flex-shrink-0" title="Đang xem"></span>` : ''}
                             `}
                         </div>
 
                         <!-- Dòng 3: Tiến độ hoàn thành & Thanh tiến độ -->
                         <div>
-                            <div class="flex items-center justify-between text-[9px] font-bold text-slate-500 leading-none mb-1">
+                            <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 leading-none mb-1.5">
                                 <span>Làm: <strong class="text-indigo-700 font-black">${summary.activeTasks}</strong></span>
                                 <span>Xong: <strong class="text-emerald-700 font-black">${summary.doneTasks}</strong></span>
                             </div>
-                            <div class="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
+                            <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
                                 <div class="h-full bg-emerald-600" style="width:${pctDone}%"></div>
                             </div>
                         </div>
