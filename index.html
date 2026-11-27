@@ -14297,7 +14297,7 @@ Nhiệm vụ của bạn:
             const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
             const ctx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: false, linkedStaffName: null };
             const myStaffLower = (ctx.linkedStaffName || '').trim().toLowerCase();
-            return (appointmentsData || []).filter(r => {
+            const rawList = (appointmentsData || []).filter(r => {
                 if (ctx.isAdmin) {
                     if (r.scope === 'team' || r.scope === 'project') return true;
                     if (/\b(họp|giao ban)\b/i.test(r.title || '')) return true;
@@ -14316,6 +14316,20 @@ Nhiệm vụ của bạn:
                 if (myStaffLower && (r.staff || '').trim().toLowerCase() === myStaffLower) return true;
                 return false;
             }).map(r => (r.scope === 'team' || r.scope === 'project') ? { ...r, done: isReminderDoneForCurrentUser(r) } : r);
+
+            const seenAutoKeys = new Set();
+            const seenAutoSem = new Set();
+            return rawList.filter(r => {
+                if (!r.isAutoDeadline) return true;
+                if (r.autoKey) {
+                    if (seenAutoKeys.has(r.autoKey)) return false;
+                    seenAutoKeys.add(r.autoKey);
+                }
+                const semKey = `${(r.projectName || '').trim().toLowerCase()}|${(r.title || '').trim().toLowerCase()}|${r.date || ''}|${(r.staff || '').trim().toLowerCase()}`;
+                if (seenAutoSem.has(semKey)) return false;
+                seenAutoSem.add(semKey);
+                return true;
+            });
         }
 
         function syncTab1DeadlinesToPersonalReminders() {
@@ -14365,6 +14379,7 @@ Nhiệm vụ của bạn:
                         );
 
                         if (existing) {
+                            const nextNote = 'Tự động đồng bộ từ Bảng Tiến Độ (Tab 2)';
                             if (
                                 existing.autoKey !== stableKey ||
                                 existing.title !== nextTitle ||
@@ -14375,7 +14390,8 @@ Nhiệm vụ của bạn:
                                 (existing.actualDate || '') !== nextActual ||
                                 (existing.lateCompletedDays || 0) !== lateCompletedDays ||
                                 (existing.staff || '') !== nextStaff ||
-                                (existing.runLabel || '') !== runLabel
+                                (existing.runLabel || '') !== runLabel ||
+                                (existing.note || '') !== nextNote
                             ) {
                                 existing.autoKey = stableKey;
                                 existing.title = nextTitle;
@@ -14387,6 +14403,7 @@ Nhiệm vụ của bạn:
                                 existing.lateCompletedDays = lateCompletedDays;
                                 existing.staff = nextStaff;
                                 existing.runLabel = runLabel;
+                                existing.note = nextNote;
                                 changedCount++;
                             }
                             return;
@@ -14416,8 +14433,9 @@ Nhiệm vụ của bạn:
                 });
             });
 
-            // Xóa các bản ghi tự động cũ đã bị xóa/sửa ngày ra khỏi diện đến hạn ở Tab 2 hoặc bị trùng key cũ
+            // Xóa các bản ghi tự động cũ đã bị xóa/sửa ngày ra khỏi diện đến hạn ở Tab 2 hoặc bị trùng key/nội dung
             const seenAutoKeys = new Set();
+            const seenAutoSemantic = new Set();
             const beforeLen = appointmentsData.length;
             appointmentsData = appointmentsData.filter(a => {
                 if (!a.isAutoDeadline) return true;
@@ -14425,7 +14443,10 @@ Nhiệm vụ của bạn:
                 if (ctx.isAdmin && (a.ownerEmail || '').toLowerCase() !== curEmail) return false;
                 if (!a.autoKey || !activeKeys.has(a.autoKey)) return false;
                 if (seenAutoKeys.has(a.autoKey)) return false;
+                const semKey = `${(a.projectName || '').trim().toLowerCase()}|${(a.title || '').trim().toLowerCase()}|${a.date || ''}|${(a.staff || '').trim().toLowerCase()}`;
+                if (seenAutoSemantic.has(semKey)) return false;
                 seenAutoKeys.add(a.autoKey);
+                seenAutoSemantic.add(semKey);
                 return true;
             });
             if (appointmentsData.length !== beforeLen) changedCount++;
