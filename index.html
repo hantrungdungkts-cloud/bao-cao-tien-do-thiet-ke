@@ -503,6 +503,67 @@
         }
         body.mobile-view-mode #ganttChartViewport { max-height: none !important; border: none !important; }
         body.mobile-view-mode #staffGanttSection { border: none !important; background: transparent !important; box-shadow: none !important; }
+        /* Ẩn tuyệt đối Tab 4, 5, 6 cho cấp Trưởng nhóm (role-leader) và Nhân sự (role-member) */
+        body.role-member #tabBtn-construction,
+        body.role-member #tabBtn-recruitment,
+        body.role-member #tabBtn-archive,
+        body.role-leader #tabBtn-construction,
+        body.role-leader #tabBtn-recruitment,
+        body.role-leader #tabBtn-archive {
+            display: none !important;
+        }
+        /* Cấp Nhân sự (kể cả Chủ trì): chỉ Quản trị mới có quyền Xóa dự án / Sao chép / Di chuyển / Lưu kho */
+        body.role-member #tab-progress button[onclick*="deleteProject"],
+        body.role-member #tab-progress button[onclick*="duplicateProject"],
+        body.role-member #tab-progress button[onclick*="moveProjectOrder"],
+        body.role-member #tab-progress button[onclick*="archive"],
+        body.role-member #tab-staff button[onclick*="delete"],
+        body.role-member #tab-staff button[onclick*="archive"],
+        body.role-member #tab-details button[onclick*="deleteProject"],
+        body.role-member #tab-details button[onclick*="archive"] {
+            display: none !important;
+        }
+        /* Nếu Nhân sự KHÔNG phải Chủ trì của dự án đó (.member-readonly-proj) -> Chỉ xem & ghi chú */
+        body.role-member .member-readonly-proj button[onclick*="deleteTask"],
+        body.role-member .member-readonly-proj button[onclick*="remove"],
+        body.role-member .member-readonly-proj button[onclick*="addNewTask"],
+        body.role-member .member-readonly-proj button[onclick*="addTaskRun"],
+        body.role-member .member-readonly-proj button[onclick*="removeTaskRun"],
+        body.role-member .member-readonly-proj button[onclick*="openGanttTaskEditor"] {
+            display: none !important;
+        }
+        body.role-member .member-readonly-proj input,
+        body.role-member .member-readonly-proj select,
+        body.role-member .member-readonly-proj textarea:not([onchange*="updateTaskNote"]),
+        body.role-member .member-readonly-proj td[onmousedown],
+        body.role-member .member-readonly-proj td[onclick*="openSmartDate"] {
+            pointer-events: none !important;
+            cursor: default !important;
+        }
+        /* Tab 7 Mobile Compact App Layout */
+        body.mobile-view-mode #remOuterWrap { padding: 8px !important; gap: 8px !important; }
+        body.mobile-view-mode #remMainGrid { display: flex !important; flex-direction: column !important; gap: 8px !important; }
+        body.mobile-view-mode #remLeftCol,
+        body.mobile-view-mode #remRightCol { width: 100% !important; min-width: 0 !important; }
+        body.mobile-view-mode #remHeroCard { padding: 10px 12px !important; border-radius: 12px !important; }
+        body.mobile-view-mode #remHeroIcon { width: 34px !important; height: 34px !important; border-radius: 10px !important; }
+        body.mobile-view-mode #remHeroIcon svg { width: 18px !important; height: 18px !important; }
+        body.mobile-view-mode #remHeroKpis { gap: 4px !important; width: 100%; }
+        body.mobile-view-mode #remHeroKpis > button { padding: 6px 4px !important; min-width: 0 !important; border-radius: 10px !important; text-align: center !important; overflow: hidden !important; }
+        body.mobile-view-mode #remMobileToggleRow { display: flex !important; }
+        body.mobile-view-mode #remCalendarWrap:not(.mobile-open),
+        body.mobile-view-mode #remComposerWrap:not(.mobile-open) { display: none !important; }
+        body.mobile-view-mode #remFilterSearchCard { padding: 8px !important; border-radius: 12px !important; gap: 6px !important; flex-direction: column !important; align-items: stretch !important; }
+        body.mobile-view-mode #remindersListContainer .rem-agenda-card { padding: 9px 10px !important; border-radius: 12px !important; gap: 8px !important; }
+        @media (max-width: 767px) {
+            #remOuterWrap { padding: 8px !important; gap: 8px !important; }
+            #remHeroCard { padding: 10px 12px !important; border-radius: 12px !important; }
+            #remMobileToggleRow { display: flex !important; }
+            #remCalendarWrap:not(.mobile-open),
+            #remComposerWrap:not(.mobile-open) { display: none !important; }
+            #remFilterSearchCard { padding: 8px !important; border-radius: 12px !important; }
+            #remindersListContainer .rem-agenda-card { padding: 9px 10px !important; border-radius: 12px !important; gap: 8px !important; }
+        }
 </style>
 </head>
 <body class="min-h-screen flex flex-col bg-[#F4EFEA] text-[#211B18]">
@@ -525,29 +586,34 @@
 
         <!-- Center Tabs -->
         <div id="headerTabsRow" class="flex items-center bg-[#14100E] p-1 rounded-xl border border-[#382F2A] flex-wrap xl:flex-nowrap gap-0.5">
-            <button id="tabBtn-progress" onclick="switchTab('progress')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1.5 whitespace-nowrap">
-                <svg class="w-4 h-4 text-[#C59B27] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                <span>1. Bảng Tiến Độ</span>
+            <button id="tabBtn-reminders" onclick="switchTab('reminders')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1.5 whitespace-nowrap">
+                <svg class="w-4 h-4 text-[#C59B27] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                <span>1. Đặt Hẹn & Nhắc</span>
+                <span id="reminderBadgeCount" class="px-1.5 py-0.2 rounded-full bg-rose-600 text-white text-[10px] font-black hidden">0</span>
+            </button>
+            <button id="tabBtn-progress" onclick="switchTab('progress')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5 whitespace-nowrap">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                <span>2. Bảng Tiến Độ</span>
             </button>
             <button id="tabBtn-staff" onclick="switchTab('staff')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5 whitespace-nowrap">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <span>2. Nhân Sự (Gantt)</span>
+                <span>3. Nhân Sự (Gantt)</span>
             </button>
             <button id="tabBtn-details" onclick="switchTab('details')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5 whitespace-nowrap">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                <span>3. Chi Tiết DA</span>
+                <span>4. Chi Tiết DA</span>
             </button>
             <button id="tabBtn-construction" onclick="switchTab('construction')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5 whitespace-nowrap">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-                <span>4. Tiến Độ Thi Công</span>
+                <span>5. Tiến Độ Thi Công</span>
             </button>
             <button id="tabBtn-recruitment" onclick="switchTab('recruitment')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5 whitespace-nowrap">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <span>5. Tuyển Dụng NS</span>
+                <span>6. Tuyển Dụng NS</span>
             </button>
             <button id="tabBtn-archive" onclick="switchTab('archive')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5 whitespace-nowrap">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-                <span>6. Kho Lưu Trữ</span>
+                <span>7. Kho Lưu Trữ</span>
                 <span id="archiveBadgeCount" class="px-1.5 py-0.2 rounded-full bg-[#8C6239] text-white text-[10px] font-black hidden">0</span>
             </button>
         </div>
@@ -572,6 +638,14 @@
             <button onclick="toggleScheduleAlert()" id="btnScheduleAlert" class="px-2.5 py-1.5 rounded-lg bg-[#35251D] border border-[#8C5230]/60 text-[#F0CAA0] text-[11px] font-bold transition whitespace-nowrap">
                 Báo Lịch: BẬT
             </button>
+            <div id="authUserPill" class="hidden flex items-center gap-1 pl-1.5 pr-1 py-0.5 rounded-lg bg-[#2D2521] border border-[#8C6239]/50 text-[#FAF6F0] text-[11px] font-bold whitespace-nowrap">
+                <button onclick="openGoogleAccessModal()" class="flex items-center gap-1.5 hover:text-[#F0CAA0] transition" title="Quản lý tài khoản Google được phép truy cập">
+                    <img id="authUserAvatar" src="" alt="" class="w-5 h-5 rounded-full hidden border border-[#F0CAA0]/50">
+                    <span id="authUserEmailShort" class="max-w-[110px] truncate">Tài khoản</span>
+                    <span class="px-1 py-0.2 bg-[#8C6239] text-white text-[9px] font-black rounded">👥 Gmail</span>
+                </button>
+                <button onclick="signOutGoogleAccount()" class="px-1.5 py-0.5 rounded bg-rose-900/60 hover:bg-rose-700 text-rose-200 hover:text-white text-[10px] font-extrabold transition" title="Đăng xuất tài khoản Google">Thoát</button>
+            </div>
         </div>
     </header>
 
@@ -658,7 +732,7 @@
     <main class="flex-1 p-0 w-full max-w-none flex flex-col">
 
         <!-- TAB 1: BẢNG TIẾN ĐỘ -->
-        <section id="tab-progress" class="bg-[#F4EFEA] shadow-sm border-b border-[#D5C7B8] overflow-hidden flex flex-col relative w-full flex-1">
+        <section id="tab-progress" class="hidden bg-[#F4EFEA] shadow-sm border-b border-[#D5C7B8] overflow-hidden flex flex-col relative w-full flex-1">
             <!-- Thanh lọc trạng thái & nút chức năng Tiến độ Thiết Kế (Chuẩn Tab 4) -->
             <div id="statusFilterBar" class="px-3.5 py-2 bg-[#FAF6F0] border-b border-[#D5C7B8] flex flex-col gap-1.5 w-full flex-shrink-0 sticky top-0 z-50 shadow-xs">
                 <!-- Hàng 1: Thanh Công Cụ Tác Vụ & Xuất Báo Cáo (Cân đối 2 bên) -->
@@ -1012,6 +1086,205 @@
             <div class="p-1.5 sm:p-2 space-y-2 overflow-y-auto flex-1">
                 <div id="archiveItemsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                     <!-- Rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: ĐẶT HẸN & NHẮC LỊCH CÁ NHÂN (EXECUTIVE PLANNER UI) -->
+        <section id="tab-reminders" class="bg-gradient-to-br from-slate-100 via-[#F8F6F2] to-slate-100 overflow-y-auto flex flex-col relative w-full flex-1">
+            <div id="remOuterWrap" class="max-w-[1440px] w-full mx-auto p-3 sm:p-5 space-y-4">
+                <!-- 1. Hero Header + 4 Glassmorphic KPI Cards -->
+                <div id="remHeroCard" class="bg-gradient-to-r from-slate-900 via-[#1E2533] to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-lg border border-slate-700/60">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                        <div class="flex items-center justify-between gap-2.5 min-w-0">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div id="remHeroIcon" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 flex items-center justify-center shadow-md flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h2 class="text-sm sm:text-lg font-black tracking-tight text-white">Lịch Hẹn & Nhắc Việc</h2>
+                                        <span class="hidden sm:inline px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold uppercase tracking-wider">Personal Planner</span>
+                                    </div>
+                                    <p id="remHeroSubtitle" class="text-[11px] sm:text-xs text-slate-300 font-medium mt-0.5 truncate">Đồng bộ riêng tư theo Gmail • Tự động nhắc hạn Tab 1</p>
+                                </div>
+                            </div>
+                            <button onclick="requestBrowserNotificationPermission()" id="btnReminderNotifPerm" class="sm:hidden px-2.5 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white font-extrabold text-[10px] whitespace-nowrap flex-shrink-0">
+                                🔔 Nhắc
+                            </button>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div id="remHeroKpis" class="grid grid-cols-4 gap-2 w-full sm:w-auto">
+                                <!-- Rendered by JS -->
+                            </div>
+                            <button onclick="requestBrowserNotificationPermission()" class="hidden sm:flex px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-extrabold text-xs transition items-center gap-1.5 backdrop-blur-md whitespace-nowrap">
+                                <span>🔔 Bật Thông Báo</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thanh nút bật/tắt Form & Lịch trên điện thoại -->
+                <div id="remMobileToggleRow" class="hidden items-center gap-1.5">
+                    <button type="button" onclick="toggleMobileReminderPanel('composer')" class="flex-1 py-2 px-2.5 rounded-xl bg-slate-900 text-white font-extrabold text-[11px] shadow-xs flex items-center justify-center gap-1">
+                        <span>+ Đặt Hẹn</span>
+                    </button>
+                    <button type="button" onclick="toggleMobileReminderPanel('calendar')" class="py-2 px-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-extrabold text-[11px] shadow-xs flex items-center justify-center gap-1">
+                        <span>📅 Lịch</span>
+                    </button>
+                    <button type="button" onclick="document.getElementById('remAIInput')?.focus()" class="py-2 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-[11px] shadow-xs flex items-center justify-center gap-1">
+                        <span>✨ AI Nhắc</span>
+                    </button>
+                </div>
+
+                <!-- AI Trợ Lý Nhắc Việc Cá Nhân (Tối ưu cả Desktop & Mobile 1 chạm) -->
+                <div id="remAIAssistantCard" class="bg-white rounded-2xl border border-amber-200/90 shadow-sm p-3 sm:p-3.5 space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="w-7 h-7 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 flex items-center justify-center text-sm shadow-2xs flex-shrink-0">✨</span>
+                            <div class="min-w-0">
+                                <div class="text-xs font-black text-slate-900 truncate">Trợ Lý AI Nhắc Việc Thông Minh</div>
+                                <div class="text-[10px] font-semibold text-slate-500 truncate">Gõ tự nhiên để đặt hẹn (VD: "Mai 9h gặp anh Phúc") hoặc hỏi lịch hôm nay</div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="document.getElementById('remAIResponseBox')?.classList.add('hidden')" id="remAICloseBtn" class="hidden text-xs font-bold text-slate-400 hover:text-slate-700 px-1.5">✕</button>
+                    </div>
+
+                    <!-- Chip 1 chạm tối ưu cho điện thoại -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+                        <button type="button" onclick="runTab7AIReminderAction('Tóm tắt lịch hôm nay và việc cần ưu tiên')" class="px-2.5 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-[11px] font-extrabold whitespace-nowrap flex-shrink-0 transition">⚡ Tóm tắt hôm nay</button>
+                        <button type="button" onclick="runTab7AIReminderAction('Kiểm tra các việc quá hạn và gợi ý xử lý')" class="px-2.5 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-[11px] font-extrabold whitespace-nowrap flex-shrink-0 transition">🔥 Việc quá hạn</button>
+                        <button type="button" onclick="runTab7AIReminderAction('Quét hạn Tab 1 và cập nhật lịch nhắc')" class="px-2.5 py-1 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-[11px] font-extrabold whitespace-nowrap flex-shrink-0 transition">📅 Quét hạn Tab 1</button>
+                        <button type="button" onclick="runTab7AIReminderAction('Thông báo cho cả phòng mai 8h30 họp giao ban đầu tuần')" class="px-2.5 py-1 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[11px] font-extrabold whitespace-nowrap flex-shrink-0 transition">📢 Họp cả phòng</button>
+                        <button type="button" onclick="runTab7AIReminderAction('Nhắc mai 9h sáng kiểm tra tiến độ công việc')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-extrabold whitespace-nowrap flex-shrink-0 transition">➕ Mai 9h kiểm tra</button>
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); runTab7AIReminderAction();" class="flex items-center gap-1.5">
+                        <input type="text" id="remAIInput" placeholder="VD: Chiều nay 14h30 họp chốt 3D nhà chú Khải khẩn cấp..." class="flex-1 min-w-0 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-amber-500 text-xs font-semibold text-slate-900 focus:outline-none transition">
+                        <button type="submit" id="remAISendBtn" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs whitespace-nowrap flex items-center gap-1 transition active:scale-95 flex-shrink-0">
+                            <span>✨ Gửi AI</span>
+                        </button>
+                    </form>
+
+                    <div id="remAIResponseBox" class="hidden rounded-xl bg-gradient-to-br from-amber-50/80 to-slate-50 border border-amber-200/80 p-3 text-xs text-slate-800 leading-relaxed space-y-1">
+                    </div>
+                </div>
+
+                <!-- 2. Main 2-Column Split Workspace -->
+                <div id="remMainGrid" class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-start">
+                    <!-- Left Column: Mini Calendar + Quick Composer -->
+                    <div id="remLeftCol" class="lg:col-span-4 min-w-0 space-y-3 sm:space-y-4">
+                        <!-- Mini Interactive Monthly Calendar -->
+                        <div id="remCalendarWrap">
+                            <div id="remMiniCalendar" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-4">
+                                <!-- Rendered by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Composer Card -->
+                        <div id="remComposerWrap">
+                        <form id="addReminderForm" onsubmit="submitNewReminder(event)" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-4 space-y-2.5">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                                <span class="text-xs font-black uppercase text-slate-800 tracking-wide flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                    <span>Đặt Lịch Hẹn Mới</span>
+                                </span>
+                                <span class="text-[10px] font-bold text-slate-400">Nhắc tự động</span>
+                            </div>
+
+                            <div class="space-y-2.5 text-xs">
+                                <div>
+                                    <label class="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">Nội dung hẹn / Nhắc việc *</label>
+                                    <input type="text" id="remTitleInput" required placeholder="VD: Gặp anh Phúc chốt phương án 3D..." class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-900 font-bold focus:outline-none focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition">
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">Ngày hẹn *</label>
+                                        <input type="date" id="remDateInput" required class="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-900 font-bold focus:outline-none focus:bg-white focus:border-amber-500 transition">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">Giờ hẹn *</label>
+                                        <input type="time" id="remTimeInput" required value="09:00" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-900 font-bold focus:outline-none focus:bg-white focus:border-amber-500 transition">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">Nhắc trước</label>
+                                        <select id="remBeforeInput" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-900 font-bold focus:outline-none focus:bg-white focus:border-amber-500">
+                                            <option value="0">Đúng giờ</option>
+                                            <option value="15" selected>Trước 15 phút</option>
+                                            <option value="30">Trước 30 phút</option>
+                                            <option value="60">Trước 1 giờ</option>
+                                            <option value="1440">Trước 1 ngày</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">Mức độ</label>
+                                        <select id="remPriorityInput" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-900 font-bold focus:outline-none focus:bg-white focus:border-amber-500">
+                                            <option value="NORMAL">Bình thường</option>
+                                            <option value="HIGH">⭐ Quan trọng</option>
+                                            <option value="URGENT">🔥 Khẩn cấp</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">Dự án liên quan</label>
+                                    <select id="remProjectInput" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-800 font-semibold focus:outline-none focus:bg-white focus:border-amber-500">
+                                        <option value="">— Chung / Không gắn dự án —</option>
+                                    </select>
+                                </div>
+
+                                <div id="remStaffSelectWrap" class="hidden">
+                                    <label class="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">Gửi nhắc cho nhân sự (Quản trị)</label>
+                                    <select id="remStaffInput" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-800 font-semibold focus:outline-none focus:bg-white focus:border-amber-500">
+                                        <option value="">— Cá nhân tôi —</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">Địa điểm / Ghi chú</label>
+                                    <input type="text" id="remNoteInput" placeholder="VD: Văn phòng / Online / SĐT khách..." class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-800 font-medium focus:outline-none focus:bg-white focus:border-amber-500 transition">
+                                </div>
+
+                                <label id="remScopeTeamWrap" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-50/80 border border-purple-200 cursor-pointer select-none">
+                                    <input type="checkbox" id="remScopeTeamCheckbox" class="w-4 h-4 accent-purple-700 rounded">
+                                    <span class="text-[11px] font-extrabold text-purple-900">📢 Thông báo cho cả phòng (tất cả nhân sự)</span>
+                                </label>
+
+                                <label id="remScopeProjectWrap" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-50/80 border border-indigo-200 cursor-pointer select-none">
+                                    <input type="checkbox" id="remScopeProjectCheckbox" class="w-4 h-4 accent-indigo-700 rounded">
+                                    <span class="text-[11px] font-extrabold text-indigo-900">🏛️ Thông báo họp cho tất cả nhân sự tham gia dự án</span>
+                                </label>
+
+                                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-slate-900 via-[#2C241F] to-amber-700 hover:brightness-110 text-white font-black text-xs shadow-md transition active:scale-[0.99] flex items-center justify-center gap-1.5">
+                                    <span>+ Tạo Lịch Hẹn Mới</span>
+                                </button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Filters + Grouped Agenda Feed -->
+                    <div id="remRightCol" class="lg:col-span-8 min-w-0 space-y-3">
+                        <div id="remFilterSearchCard" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                            <div id="reminderFilterBadges" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                                <!-- Rendered by JS -->
+                            </div>
+                            <div class="flex items-center bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 gap-1.5 focus-within:bg-white focus-within:border-amber-500 transition flex-shrink-0">
+                                <span class="text-slate-400 text-xs">🔍</span>
+                                <input type="text" id="reminderSearchInput" oninput="onReminderSearchInput(this.value)" placeholder="Tìm lịch hẹn..." class="text-xs font-semibold text-slate-800 bg-transparent focus:outline-none w-36 sm:w-44">
+                                <button onclick="clearReminderSearch()" id="btnClearReminderSearch" class="text-slate-400 hover:text-slate-600 text-xs hidden font-bold">✕</button>
+                            </div>
+                        </div>
+
+                        <div id="remindersListContainer" class="space-y-3">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1721,14 +1994,85 @@
         </button>
     </div>
 
+    <!-- GOOGLE AUTHENTICATION GATE OVERLAY (BẮT BUỘC ĐĂNG NHẬP GMAIL ĐƯỢC CẤP QUYỀN) -->
+    <div id="googleAuthGateModal" class="fixed inset-0 z-[99999] bg-[#211B18] flex items-center justify-center p-4">
+        <div class="bg-[#FAF6F0] border-2 border-[#8C6239] max-w-md w-full p-6 shadow-2xl space-y-4 text-center">
+            <div class="w-14 h-14 mx-auto bg-[#211B18] text-[#C59B27] flex items-center justify-center border border-[#8C6239]">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <div>
+                <h2 class="text-base font-black uppercase text-[#211B18] tracking-wide">Báo Cáo Tiến Độ Thiết Kế</h2>
+                <p class="text-xs font-semibold text-[#7E634F] mt-1">Vui lòng đăng nhập bằng tài khoản Google đã được cấp quyền để xem và cập nhật dữ liệu công việc & nhân sự.</p>
+            </div>
+
+            <div id="googleAuthLoadingBox" class="py-3 text-xs font-bold text-[#8C6239]">
+                ⏳ Đang kiểm tra phiên đăng nhập Google...
+            </div>
+
+            <div id="googleAuthSignInBox" class="hidden space-y-3">
+                <button onclick="signInWithGoogleAccount()" class="w-full py-2.5 px-4 bg-[#211B18] hover:bg-[#382F2A] text-white font-extrabold text-xs uppercase tracking-wide flex items-center justify-center gap-2.5 border border-[#8C6239] transition active:scale-95">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.77 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.91 6.16-4.91z"/><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58l3.76 2.92c2.2-2.03 3.66-5.02 3.66-8.74z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#34A853" d="M12 23c3.24 0 5.95-1.08 7.93-2.91l-3.76-2.92c-1.08.72-2.45 1.16-4.17 1.16-2.86 0-5.29-2.31-6.16-4.91H2.18v2.84C3.99 20.53 7.7 23 12 23z"/></svg>
+                    <span>Đăng nhập bằng Google</span>
+                </button>
+                <p id="googleAuthErrorMsg" class="text-[11px] font-bold text-rose-700 hidden"></p>
+            </div>
+
+            <div id="googleAuthDeniedBox" class="hidden space-y-3 bg-rose-50 border border-rose-200 p-3 text-left">
+                <div class="text-xs font-black text-rose-800">⛔ Tài khoản chưa được cấp quyền</div>
+                <div class="text-[11px] font-semibold text-rose-700 leading-relaxed">
+                    Email <strong id="googleDeniedEmail" class="underline"></strong> chưa có trong danh sách tài khoản Google được phép truy cập hệ thống.
+                </div>
+                <div class="text-[11px] text-slate-600">Hãy liên hệ quản trị viên để thêm Gmail này vào mục <strong>👥 Gmail</strong> trên thanh công cụ, hoặc đổi sang tài khoản Google khác.</div>
+                <button onclick="signOutGoogleAccount()" class="w-full py-2 px-3 bg-rose-700 hover:bg-rose-800 text-white font-extrabold text-xs transition">
+                    Đăng xuất & Đổi tài khoản Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL QUẢN LÝ TÀI KHOẢN GOOGLE ĐƯỢC PHÉP TRUY CẬP -->
+    <div id="googleAccessModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-[9998] hidden flex items-center justify-center p-4" onclick="closeGoogleAccessModal()">
+        <div class="bg-white border-2 border-[#211B18] max-w-lg w-full p-5 shadow-2xl space-y-3" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between border-b border-[#D5C7B8] pb-2">
+                <div>
+                    <h3 class="text-sm font-black uppercase text-[#211B18]">👥 Quản Lý Tài Khoản Google Truy Cập</h3>
+                    <p class="text-[11px] text-[#7E634F] font-semibold">Chỉ các Gmail trong danh sách dưới đây mới được xem & cập nhật dữ liệu.</p>
+                </div>
+                <button onclick="closeGoogleAccessModal()" class="text-slate-400 hover:text-rose-600 font-black text-lg leading-none px-1">✕</button>
+            </div>
+
+            <form onsubmit="addAllowedGoogleEmail(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2 text-xs">
+                <input type="email" id="newAllowedEmailInput" required placeholder="Nhập Gmail nhân sự..." class="sm:col-span-5 px-2.5 py-1.5 border border-[#D5C7B8] bg-[#FAF6F0] font-bold text-[#211B18] focus:outline-none focus:border-[#8C6239]">
+                <select id="newAllowedStaffInput" class="sm:col-span-3 px-2 py-1.5 border border-[#D5C7B8] bg-white font-bold text-[#211B18]">
+                    <option value="">— Gắn vị trí NS —</option>
+                </select>
+                <select id="newAllowedRoleInput" class="sm:col-span-2 px-2 py-1.5 border border-[#D5C7B8] bg-white font-bold text-[#211B18]">
+                    <option value="member">Nhân sự</option>
+                    <option value="admin">Quản trị</option>
+                </select>
+                <button type="submit" class="sm:col-span-2 px-3 py-1.5 bg-[#211B18] hover:bg-[#382F2A] text-white font-black whitespace-nowrap">+ Thêm</button>
+            </form>
+
+            <div id="allowedEmailsListContainer" class="max-h-64 overflow-y-auto divide-y divide-slate-200 border border-[#D5C7B8] bg-[#FAF6F0]/40 text-xs">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+    </div>
+
     <!-- FIREBASE SDKs (Optional Live Sync) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         window.initializeApp = initializeApp;
         window.getAuth = getAuth;
+        window.GoogleAuthProvider = GoogleAuthProvider;
+        window.signInWithPopup = signInWithPopup;
+        window.signInWithRedirect = signInWithRedirect;
+        window.getRedirectResult = getRedirectResult;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.signOut = signOut;
         window.signInAnonymously = signInAnonymously;
         window.signInWithCustomToken = signInWithCustomToken;
         window.getFirestore = getFirestore;
@@ -2830,13 +3174,20 @@
         let appStateRedoStack = [];
         const MAX_HISTORY_STEPS = 60;
 
+        // --- DỮ LIỆU ĐẶT HẸN & NHẮC LỊCH (TAB 7) ---
+        let appointmentsData = [];
+        let activeReminderFilter = 'ALL';
+        let reminderSearchKeyword = '';
+        const notifiedReminderKeys = new Set();
+
         function captureStateSnapshot() {
             return JSON.stringify({
                 projectsData,
                 staffList,
                 candidatesData,
                 constructionProjectsData,
-                archiveData
+                archiveData,
+                appointmentsData
             });
         }
 
@@ -2876,6 +3227,7 @@
                 candidatesData = parsed.candidatesData || candidatesData;
                 constructionProjectsData = parsed.constructionProjectsData || constructionProjectsData;
                 archiveData = parsed.archiveData || archiveData;
+                appointmentsData = parsed.appointmentsData || appointmentsData;
 
                 closeSmartDate();
                 closeGanttTaskEditor();
@@ -2908,6 +3260,7 @@
                 candidatesData = parsed.candidatesData || candidatesData;
                 constructionProjectsData = parsed.constructionProjectsData || constructionProjectsData;
                 archiveData = parsed.archiveData || archiveData;
+                appointmentsData = parsed.appointmentsData || appointmentsData;
 
                 closeSmartDate();
                 closeGanttTaskEditor();
@@ -3430,6 +3783,12 @@
                                     if (parsedArchive) archiveData = parsedArchive;
                                 } catch (e) {}
                             }
+                            if (typeof cloudData.appointmentsDataJson === 'string') {
+                                try {
+                                    const parsedRem = JSON.parse(cloudData.appointmentsDataJson);
+                                    if (Array.isArray(parsedRem)) appointmentsData = parsedRem;
+                                } catch (e) {}
+                            }
                             if (Array.isArray(parsedProjects)) {
                                 lastAppliedRevision = remoteRev;
                                 applyIncomingRealtimeState(parsedProjects, parsedStaff, cloudData.updatedAt, 'Cloud');
@@ -3581,12 +3940,315 @@
             measurementId: "G-QV577JW6JP"
         });
         const __app_id = "dungx-progress-tracker";
+        let allowedGoogleUsers = [];
+        let currentAuthedGoogleUser = null;
+        let hasBootstrappedWorkspaceListeners = false;
+
+        function showAuthGateState(state, detail = '') {
+            const modal = document.getElementById('googleAuthGateModal');
+            const loadingBox = document.getElementById('googleAuthLoadingBox');
+            const signInBox = document.getElementById('googleAuthSignInBox');
+            const deniedBox = document.getElementById('googleAuthDeniedBox');
+            const errMsg = document.getElementById('googleAuthErrorMsg');
+            const deniedEmail = document.getElementById('googleDeniedEmail');
+            if (!modal) return;
+
+            if (state === 'granted') {
+                modal.classList.add('hidden');
+                return;
+            }
+            modal.classList.remove('hidden');
+            if (loadingBox) loadingBox.classList.toggle('hidden', state !== 'loading');
+            if (signInBox) signInBox.classList.toggle('hidden', state !== 'signin');
+            if (deniedBox) deniedBox.classList.toggle('hidden', state !== 'denied');
+            if (state === 'signin' && errMsg) {
+                if (detail) {
+                    errMsg.innerText = detail;
+                    errMsg.classList.remove('hidden');
+                } else {
+                    errMsg.classList.add('hidden');
+                }
+            }
+            if (state === 'denied' && deniedEmail) {
+                deniedEmail.innerText = detail || '';
+            }
+        }
+
+        async function signInWithGoogleAccount() {
+            if (!auth || !window.GoogleAuthProvider) return;
+            showAuthGateState('loading');
+            try {
+                const provider = new window.GoogleAuthProvider();
+                provider.setCustomParameters({ prompt: 'select_account' });
+                await window.signInWithPopup(auth, provider);
+            } catch (e) {
+                if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
+                    try {
+                        const provider = new window.GoogleAuthProvider();
+                        provider.setCustomParameters({ prompt: 'select_account' });
+                        await window.signInWithRedirect(auth, provider);
+                        return;
+                    } catch (re) {
+                        showAuthGateState('signin', `Lỗi đăng nhập Google: ${re.message || re.code}`);
+                        return;
+                    }
+                }
+                showAuthGateState('signin', `Không thể đăng nhập Google (${e.code || e.message}). Hãy chắc chắn đã bật Google Sign-In trong Firebase Authentication.`);
+            }
+        }
+
+        async function signOutGoogleAccount() {
+            if (!auth || !window.signOut) return;
+            try {
+                if (window._liveWorkspaceUnsub) { window._liveWorkspaceUnsub(); window._liveWorkspaceUnsub = null; }
+                if (window._accessControlUnsub) { window._accessControlUnsub(); window._accessControlUnsub = null; }
+                hasBootstrappedWorkspaceListeners = false;
+                currentAuthedGoogleUser = null;
+                document.getElementById('authUserPill')?.classList.add('hidden');
+                await window.signOut(auth);
+            } catch (e) {}
+        }
+
+        function getCurrentUserAccessContext() {
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            if (!curEmail) return { role: 'admin', isAdmin: true, isLeader: false, isMember: false, linkedStaffName: null, email: '' };
+            const entry = allowedGoogleUsers.find(u => (u.email || '').toLowerCase() === curEmail);
+            const rawRole = entry?.role || 'admin';
+            const role = rawRole === 'admin' ? 'admin' : 'member';
+            return {
+                role,
+                isAdmin: role === 'admin',
+                isLeader: false,
+                isMember: role !== 'admin',
+                linkedStaffName: role === 'admin' ? null : (entry?.staffName || ''),
+                email: curEmail
+            };
+        }
+
+        function isProjectLeadForCurrentUser(projIdOrObj) {
+            const ctx = getCurrentUserAccessContext();
+            if (ctx.isAdmin) return true;
+            const proj = (typeof projIdOrObj === 'object' && projIdOrObj)
+                ? projIdOrObj
+                : (projectsData || []).find(p => Number(p.id) === Number(projIdOrObj));
+            if (!proj) return false;
+            const target = (ctx.linkedStaffName || '').trim().toLowerCase();
+            if (!target) return false;
+            return (proj.lead || '').trim().toLowerCase() === target;
+        }
+
+        function canUserEditProjectName(proj) {
+            return isProjectLeadForCurrentUser(proj);
+        }
+
+        async function changeAllowedUserRole(email, newRole) {
+            const target = (email || '').toLowerCase();
+            const entry = allowedGoogleUsers.find(u => (u.email || '').toLowerCase() === target);
+            if (!entry) return;
+            entry.role = newRole;
+            await saveAccessControlToCloud();
+            renderAllowedEmailsList();
+            showToast(`✅ Đã cập nhật quyền ${target}`);
+        }
+
+        function getStaffBoundEmail(staffName) {
+            const target = (staffName || '').trim().toLowerCase();
+            const found = allowedGoogleUsers.find(u => (u.staffName || '').trim().toLowerCase() === target);
+            return found ? found.email : '';
+        }
+
+        function getStaffBoundRole(staffName) {
+            const target = (staffName || '').trim().toLowerCase();
+            const found = allowedGoogleUsers.find(u => (u.staffName || '').trim().toLowerCase() === target);
+            return found ? (found.role || 'member') : 'member';
+        }
+
+        async function setStaffRoleBinding(staffName, newRole) {
+            const target = (staffName || '').trim().toLowerCase();
+            const found = allowedGoogleUsers.find(u => (u.staffName || '').trim().toLowerCase() === target);
+            if (!found) {
+                showToast(`⚠ Hãy nhập Gmail cho ${staffName} trước khi chọn cấp quyền!`);
+                renderStaffSection();
+                return;
+            }
+            found.role = newRole;
+            await saveAccessControlToCloud();
+            renderStaffSection();
+            renderAllowedEmailsList();
+            showToast(`✅ Đã cập nhật quyền cho ${staffName}`);
+        }
+
+        async function setStaffGmailBinding(staffName, rawEmail) {
+            const email = (rawEmail || '').trim().toLowerCase();
+            const target = (staffName || '').trim().toLowerCase();
+            // Xóa liên kết cũ của vị trí nhân sự này (giữ lại admin nếu trùng)
+            allowedGoogleUsers = allowedGoogleUsers.filter(u => !((u.staffName || '').trim().toLowerCase() === target && u.role !== 'admin'));
+            if (email) {
+                if (!email.includes('@')) {
+                    showToast('⚠ Gmail không hợp lệ!');
+                    renderStaffSection();
+                    return;
+                }
+                const existing = allowedGoogleUsers.find(u => (u.email || '').toLowerCase() === email);
+                if (existing) {
+                    existing.staffName = staffName;
+                } else {
+                    allowedGoogleUsers.push({
+                        email,
+                        role: 'member',
+                        staffName,
+                        addedAt: new Date().toISOString()
+                    });
+                }
+            }
+            await saveAccessControlToCloud();
+            renderStaffSection();
+            renderAllowedEmailsList();
+            showToast(email ? `✅ Đã gắn Gmail ${email} cho ${staffName}` : `🔓 Đã gỡ Gmail khỏi ${staffName}`);
+        }
+
+        function applyRoleBasedUIRestrictions() {
+            const ctx = getCurrentUserAccessContext();
+            document.body.classList.toggle('role-member', ctx.isMember);
+            document.body.classList.toggle('role-leader', ctx.isLeader);
+            // Tab 4, 5, 6 chỉ dành cho Quản trị (cấp 1)
+            ['tabBtn-construction', 'tabBtn-recruitment', 'tabBtn-archive'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.toggle('hidden', !ctx.isAdmin);
+            });
+            // Nút quản lý Gmail & chỉnh sửa giao diện (#btnCompact, #newStaffInput) chỉ dành cho Quản trị
+            const gmailBtn = document.querySelector('#authUserPill button[onclick="openGoogleAccessModal()"] span:last-child');
+            if (gmailBtn) gmailBtn.classList.toggle('hidden', !ctx.isAdmin);
+            const btnCompact = document.getElementById('btnCompact');
+            if (btnCompact) btnCompact.classList.toggle('hidden', !ctx.isAdmin);
+            const addStaffWrap = document.getElementById('newStaffInput')?.parentElement;
+            if (addStaffWrap) addStaffWrap.classList.toggle('hidden', !ctx.isAdmin);
+            const remTeamWrap = document.getElementById('remScopeTeamWrap');
+            if (remTeamWrap) remTeamWrap.classList.toggle('hidden', !ctx.isAdmin);
+
+            // Nút Thêm Dự Án: Chỉ Quản trị được dùng (Chủ trì & Nhân sự đều bị ẩn)
+            document.querySelectorAll('button[onclick*="openAddProjectModal"]').forEach(btn => {
+                btn.classList.toggle('hidden', !ctx.isAdmin);
+            });
+
+            // Chế độ AI: Nhân sự (cấp 3) không được sử dụng
+            const floatingCluster = document.getElementById('floatingActionCluster');
+            if (floatingCluster) {
+                const aiFloatBtn = floatingCluster.querySelector('button[onclick="toggleGlobalAIAssistant()"]');
+                if (aiFloatBtn) aiFloatBtn.classList.toggle('hidden', ctx.isMember);
+            }
+            document.querySelectorAll('button[onclick*="AI"]').forEach(btn => {
+                btn.classList.toggle('hidden', ctx.isMember);
+            });
+
+            if (!ctx.isAdmin && ctx.linkedStaffName) {
+                selectedStaffForGantt = ctx.linkedStaffName;
+            }
+        }
+
+        function openGoogleAccessModal() {
+            const ctx = getCurrentUserAccessContext();
+            if (!ctx.isAdmin) {
+                showToast('ℹ Chỉ Quản trị viên mới có thể quản lý danh sách Gmail.');
+                return;
+            }
+            const staffSel = document.getElementById('newAllowedStaffInput');
+            if (staffSel) {
+                staffSel.innerHTML = `<option value="">— Gắn vị trí NS —</option>` +
+                    (staffList || []).filter(s => s !== 'Chưa giao').map(s => `<option value="${s}">${s}</option>`).join('');
+            }
+            renderAllowedEmailsList();
+            document.getElementById('googleAccessModal')?.classList.remove('hidden');
+        }
+
+        function closeGoogleAccessModal() {
+            document.getElementById('googleAccessModal')?.classList.add('hidden');
+        }
+
+        function renderAllowedEmailsList() {
+            const box = document.getElementById('allowedEmailsListContainer');
+            if (!box) return;
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            const isAdmin = allowedGoogleUsers.some(u => u.email === curEmail && u.role === 'admin');
+            if (allowedGoogleUsers.length === 0) {
+                box.innerHTML = `<div class="p-4 text-center text-slate-500 font-semibold">Chưa có tài khoản nào.</div>`;
+                return;
+            }
+            box.innerHTML = allowedGoogleUsers.map(u => {
+                const isSelf = u.email === curEmail;
+                const roleLabel = u.role === 'admin' ? '👑 1. Quản trị' : (u.role === 'leader' ? '⭐ 2. Trưởng nhóm' : '👤 3. Nhân sự');
+                return `
+                    <div class="px-3 py-2 flex items-center justify-between gap-2 bg-white">
+                        <div class="min-w-0 flex-1">
+                            <div class="font-extrabold text-[#211B18] truncate">${u.email} ${isSelf ? '<span class="text-[10px] text-emerald-700 font-black">(Bạn)</span>' : ''}</div>
+                            <div class="text-[10px] text-[#7E634F] font-semibold">
+                                ${roleLabel}${u.staffName ? ` • Vị trí: <strong class="text-[#211B18]">${u.staffName}</strong>` : ''}
+                            </div>
+                        </div>
+                        ${(!isSelf && isAdmin) ? `
+                            <div class="flex items-center gap-1 flex-shrink-0">
+                                <select onchange="changeAllowedUserRole('${u.email}', this.value)" class="px-1.5 py-1 border border-[#D5C7B8] bg-[#FAF6F0] text-[10px] font-bold text-[#211B18]">
+                                    <option value="member" ${u.role === 'member' ? 'selected' : ''}>3. Nhân sự</option>
+                                    <option value="leader" ${u.role === 'leader' ? 'selected' : ''}>2. Trưởng nhóm</option>
+                                    <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>1. Quản trị</option>
+                                </select>
+                                <button onclick="removeAllowedGoogleEmail('${u.email}')" class="px-2 py-1 bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white border border-rose-200 font-extrabold text-[10px] transition">Xóa</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function saveAccessControlToCloud() {
+            if (!db) return;
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'design-progress-default-app';
+            const acRef = window.doc(db, 'artifacts', appId, 'public', 'data', 'design_app_state', 'access_control');
+            await window.setDoc(acRef, {
+                allowedUsersJson: JSON.stringify(allowedGoogleUsers),
+                updatedAt: new Date().toISOString()
+            });
+        }
+
+        async function addAllowedGoogleEmail(event) {
+            event.preventDefault();
+            const inp = document.getElementById('newAllowedEmailInput');
+            const roleSel = document.getElementById('newAllowedRoleInput');
+            const staffSel = document.getElementById('newAllowedStaffInput');
+            const email = (inp?.value || '').trim().toLowerCase();
+            const staffName = (staffSel?.value || '').trim();
+            if (!email || !email.includes('@')) return;
+            const existing = allowedGoogleUsers.find(u => u.email === email);
+            if (existing) {
+                existing.role = roleSel?.value || existing.role;
+                if (staffName) existing.staffName = staffName;
+            } else {
+                allowedGoogleUsers.push({
+                    email,
+                    role: roleSel?.value || 'member',
+                    staffName,
+                    addedAt: new Date().toISOString()
+                });
+            }
+            await saveAccessControlToCloud();
+            if (inp) inp.value = '';
+            renderAllowedEmailsList();
+            renderStaffSection();
+            showToast(`✅ Đã lưu Gmail: ${email}${staffName ? ` (${staffName})` : ''}`);
+        }
+
+        async function removeAllowedGoogleEmail(email) {
+            const target = (email || '').toLowerCase();
+            allowedGoogleUsers = allowedGoogleUsers.filter(u => u.email !== target);
+            await saveAccessControlToCloud();
+            renderAllowedEmailsList();
+            showToast(`🗑️ Đã xóa quyền của: ${target}`);
+        }
+
         async function initFirebaseSync() {
             try {
                 if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-                    loadFromStorage();
-                    updateSyncBadgeUI('local', 'Trực tuyến (Đa cửa sổ)');
-                    initAppUI();
+                    showAuthGateState('signin', 'Chưa cấu hình Firebase để xác thực Google.');
                     return;
                 }
 
@@ -3597,21 +4259,116 @@
                 db = window.getFirestore(app);
                 auth = window.getAuth(app);
 
-                // RULE 3: Auth Before Queries
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await window.signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await window.signInAnonymously(auth).catch(() => {});
+                if (window.getRedirectResult) {
+                    await window.getRedirectResult(auth).catch(() => {});
                 }
 
-                currentUserId = auth.currentUser?.uid || clientSessionId;
+                window.onAuthStateChanged(auth, async (user) => {
+                    if (!user || user.isAnonymous || !user.email) {
+                        if (window._liveWorkspaceUnsub) { window._liveWorkspaceUnsub(); window._liveWorkspaceUnsub = null; }
+                        if (window._accessControlUnsub) { window._accessControlUnsub(); window._accessControlUnsub = null; }
+                        hasBootstrappedWorkspaceListeners = false;
+                        currentAuthedGoogleUser = null;
+                        document.getElementById('authUserPill')?.classList.add('hidden');
+                        showAuthGateState('signin');
+                        return;
+                    }
 
-                // RULE 1: Strict Path `/artifacts/{appId}/public/data/{collectionName}/{documentId}` (6 segments)
-                const docRef = window.doc(db, 'artifacts', appId, 'public', 'data', 'design_app_state', 'live_workspace');
-                let hasReceivedFirstCloudSnapshot = false;
+                    currentAuthedGoogleUser = user;
+                    currentUserId = user.uid || clientSessionId;
+                    const userEmail = user.email.toLowerCase();
+                    showAuthGateState('loading');
 
-                // Real-time listener with error callback
-                window.onSnapshot(docRef, (docSnap) => {
+                    try {
+                        const acRef = window.doc(db, 'artifacts', appId, 'public', 'data', 'design_app_state', 'access_control');
+                        const acSnap = await window.getDoc(acRef);
+                        if (acSnap.exists() && typeof acSnap.data().allowedUsersJson === 'string') {
+                            try {
+                                const parsed = JSON.parse(acSnap.data().allowedUsersJson);
+                                allowedGoogleUsers = Array.isArray(parsed) ? parsed : [];
+                            } catch (e) { allowedGoogleUsers = []; }
+                        } else {
+                            allowedGoogleUsers = [];
+                        }
+
+                        // Nếu danh sách chưa có ai, tài khoản Google đầu tiên tự động làm Quản trị viên
+                        if (allowedGoogleUsers.length === 0) {
+                            allowedGoogleUsers = [{
+                                email: userEmail,
+                                role: 'admin',
+                                name: user.displayName || userEmail,
+                                addedAt: new Date().toISOString()
+                            }];
+                            await saveAccessControlToCloud();
+                        }
+
+                        const isAllowed = allowedGoogleUsers.some(u => (u.email || '').toLowerCase() === userEmail);
+                        if (!isAllowed) {
+                            showAuthGateState('denied', user.email);
+                            return;
+                        }
+
+                        // Được phép truy cập
+                        const pill = document.getElementById('authUserPill');
+                        const avatar = document.getElementById('authUserAvatar');
+                        const shortEl = document.getElementById('authUserEmailShort');
+                        if (pill) pill.classList.remove('hidden');
+                        if (shortEl) shortEl.innerText = user.displayName || user.email;
+                        if (avatar && user.photoURL) {
+                            avatar.src = user.photoURL;
+                            avatar.classList.remove('hidden');
+                        }
+
+                        showAuthGateState('granted');
+                        applyRoleBasedUIRestrictions();
+                        startAuthorizedWorkspaceListeners(appId);
+                        const _ctxNow = getCurrentUserAccessContext();
+                        if (!_ctxNow.isAdmin) {
+                            setTimeout(() => switchTab('staff'), 50);
+                        }
+
+                        if (!window._accessControlUnsub) {
+                            window._accessControlUnsub = window.onSnapshot(acRef, (snap) => {
+                                if (snap.exists() && typeof snap.data().allowedUsersJson === 'string') {
+                                    try {
+                                        const parsed = JSON.parse(snap.data().allowedUsersJson);
+                                        if (Array.isArray(parsed)) {
+                                            allowedGoogleUsers = parsed;
+                                            applyRoleBasedUIRestrictions();
+                                            renderAllowedEmailsList();
+                                            if (typeof renderStaffSection === 'function') renderStaffSection();
+                                            const stillAllowed = allowedGoogleUsers.some(u => (u.email || '').toLowerCase() === userEmail);
+                                            if (!stillAllowed) {
+                                                if (window._liveWorkspaceUnsub) { window._liveWorkspaceUnsub(); window._liveWorkspaceUnsub = null; }
+                                                hasBootstrappedWorkspaceListeners = false;
+                                                showAuthGateState('denied', user.email);
+                                            }
+                                        }
+                                    } catch (e) {}
+                                }
+                            });
+                        }
+                    } catch (err) {
+                        console.warn('Access check error:', err);
+                        showAuthGateState('signin', `Lỗi kiểm tra quyền truy cập: ${err.message || err.code}`);
+                    }
+                });
+            } catch (e) {
+                console.warn("Error initializing Firebase:", e);
+                showAuthGateState('signin', `Lỗi khởi tạo Firebase: ${e.message}`);
+            }
+        }
+
+        function startAuthorizedWorkspaceListeners(appId) {
+            if (hasBootstrappedWorkspaceListeners) return;
+            hasBootstrappedWorkspaceListeners = true;
+            loadFromStorage();
+            initAppUI();
+
+            const docRef = window.doc(db, 'artifacts', appId, 'public', 'data', 'design_app_state', 'live_workspace');
+            let hasReceivedFirstCloudSnapshot = false;
+
+            window._liveWorkspaceUnsub = window.onSnapshot(docRef, (docSnap) => {
                     // non-blocking auth check
                     if (docSnap.exists()) {
                         const cloudData = docSnap.data();
@@ -3654,6 +4411,12 @@
                                 if (parsedArchive) archiveData = parsedArchive;
                             } catch (e) {}
                         }
+                        if (typeof cloudData.appointmentsDataJson === 'string') {
+                            try {
+                                const parsedRem = JSON.parse(cloudData.appointmentsDataJson);
+                                if (Array.isArray(parsedRem)) appointmentsData = parsedRem;
+                            } catch (e) {}
+                        }
 
                         if (Array.isArray(parsedProjects)) {
                             const remoteRev = Number(cloudData.revision || 0);
@@ -3688,31 +4451,8 @@
                     updateSyncBadgeUI('online', 'Trực tuyến (Live Sync)');
                 }, (error) => {
                     console.warn("Firestore snapshot error:", error);
-                    loadFromStorage();
                     updateSyncBadgeUI('local', 'Đồng bộ Cục bộ');
-                    if (!isFirebaseInitialized) {
-                        isFirebaseInitialized = true;
-                        initAppUI();
-                    }
                 });
-
-                setTimeout(() => {
-                    if (!isFirebaseInitialized) {
-                        loadFromStorage();
-                        isFirebaseInitialized = true;
-                        initAppUI();
-                    }
-                }, 700);
-
-            } catch (e) {
-                console.warn("Error initializing Firebase:", e);
-                loadFromStorage();
-                updateSyncBadgeUI('local', 'Đồng bộ Cục bộ');
-                if (!isFirebaseInitialized) {
-                    isFirebaseInitialized = true;
-                    initAppUI();
-                }
-            }
         }
 
         function loadFromStorage() {
@@ -3793,6 +4533,9 @@
                             candidates: Array.isArray(parsed.archiveData.candidates) ? parsed.archiveData.candidates : []
                         };
                     }
+                    if (parsed && Array.isArray(parsed.appointmentsData)) {
+                        appointmentsData = parsed.appointmentsData;
+                    }
                 }
             } catch (e) {
                 console.warn('Không thể tải dữ liệu từ bộ nhớ trình duyệt:', e);
@@ -3807,6 +4550,7 @@
                     candidatesData,
                     constructionProjectsData,
                     archiveData,
+                    appointmentsData,
                     senderId: clientSessionId,
                     updatedAt: new Date().toISOString()
                 };
@@ -3865,6 +4609,7 @@
                     constructionProjectsDataJson: JSON.stringify(constructionProjectsData),
                     candidatesDataJson: JSON.stringify(candidatesData),
                     archiveDataJson: JSON.stringify(archiveData),
+                    appointmentsDataJson: JSON.stringify(appointmentsData),
                     senderId: clientSessionId,
                     revision: rev,
                     updatedAt: nowIso
@@ -3924,7 +4669,12 @@
             if (document.getElementById('tab-archive') && !document.getElementById('tab-archive').classList.contains('hidden')) {
                 renderArchiveSection();
             }
+            if (document.getElementById('tab-reminders') && !document.getElementById('tab-reminders').classList.contains('hidden')) {
+                renderRemindersSection();
+            }
             updateArchiveBadge();
+            if (typeof updateReminderBadge === 'function') updateReminderBadge();
+            if (typeof notifyIncomingTeamOrProjectMeetings === 'function') notifyIncomingTeamOrProjectMeetings();
         }
 
         function refreshAllViews() {
@@ -4031,6 +4781,10 @@
 
         // --- TRỢ LÝ AI TỔNG QUAN TOÀN BỘ 3 TAB (GLOBAL AI ASSISTANT) ---
         function toggleGlobalAIAssistant() {
+            if (typeof getCurrentUserAccessContext === 'function' && getCurrentUserAccessContext().isMember) {
+                showToast('⛔ Tài khoản Nhân sự không được phép sử dụng chế độ AI.');
+                return;
+            }
             isGlobalAIOpen = !isGlobalAIOpen;
             const modal = document.getElementById('globalAIAssistantModal');
             if (!modal) return;
@@ -4639,6 +5393,10 @@ Nhiệm vụ:
 
         // --- HỆ THỐNG PHÂN TÍCH & ĐÁNH GIÁ AI (TAB 2: NHÂN SỰ & TAB 3: CHI TIẾT DỰ ÁN) ---
         function toggleStaffAIAnalysis() {
+            if (typeof getCurrentUserAccessContext === 'function' && getCurrentUserAccessContext().isMember) {
+                showToast('⛔ Tài khoản Nhân sự không được phép sử dụng chế độ AI.');
+                return;
+            }
             showStaffAIPanel = !showStaffAIPanel;
             renderStaffAIAnalysis();
         }
@@ -5090,11 +5848,19 @@ Nhiệm vụ của bạn:
         }
 
         function toggleOverviewProjectAI() {
+            if (typeof getCurrentUserAccessContext === 'function' && getCurrentUserAccessContext().isMember) {
+                showToast('⛔ Tài khoản Nhân sự không được phép sử dụng chế độ AI.');
+                return;
+            }
             showOverviewProjectAI = !showOverviewProjectAI;
             renderOverviewProjectAI();
         }
 
         function toggleSingleProjectAI(projId) {
+            if (typeof getCurrentUserAccessContext === 'function' && getCurrentUserAccessContext().isMember) {
+                showToast('⛔ Tài khoản Nhân sự không được phép sử dụng chế độ AI.');
+                return;
+            }
             openProjectAIIds[projId] = !openProjectAIIds[projId];
             renderProjectSummary();
         }
@@ -5783,7 +6549,14 @@ Nhiệm vụ của bạn:
             let html = '';
 
             sortedProjects.forEach((proj, pIdx) => {
+                const accessCtx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: true, linkedStaffName: null };
                 let filteredTasks = proj.tasks.filter(task => {
+                    if (!accessCtx.isAdmin) {
+                        const targetStaff = (accessCtx.linkedStaffName || '').trim().toLowerCase();
+                        if (!targetStaff) return false;
+                        const hasStaff = task.runs.some(r => (r.staff || '').trim().toLowerCase() === targetStaff) || (proj.lead || '').trim().toLowerCase() === targetStaff;
+                        if (!hasStaff) return false;
+                    }
                     const matchStatus = activeStatusFilter === 'ALL' || task.status === activeStatusFilter;
                     const matchSearch = !searchVal ||
                         proj.name.toLowerCase().includes(searchVal) ||
@@ -5833,7 +6606,7 @@ Nhiệm vụ của bạn:
 
                         const runBottomBorder = isLastRunOfTask ? taskBottomBorder : 'border-b-0';
 
-                        html += `<tr class="bg-white hover:bg-slate-50/80 transition">`;
+                        html += `<tr class="bg-white hover:bg-slate-50/80 transition ${isProjectLeadForCurrentUser(proj) ? '' : 'member-readonly-proj'}">`;
 
                         if (isFirstRowOfProject) {
                             html += `
@@ -5846,8 +6619,8 @@ Nhiệm vụ của bạn:
                                 </td>
                                 <td rowspan="${totalProjectRows}" class="p-1.5 align-middle border-r-2 border-slate-300 border-b border-b-slate-300 bg-gradient-to-b ${projTheme.cardBg} shadow-none relative">
                                     <div class="mb-0.5 p-0 bg-transparent rounded border-0 shadow-none">
-                                        <input type="text" value="${proj.name}" onchange="updateProjectField(${proj.id}, 'name', this.value)"
-                                            class="w-full font-black text-slate-900 text-xs uppercase tracking-tight bg-transparent border-0 hover:bg-slate-50/50 focus:bg-white rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-indigo-500" title="Tên dự án">
+                                        <input type="text" value="${proj.name}" ${canUserEditProjectName(proj) ? '' : 'readonly'} onchange="updateProjectField(${proj.id}, 'name', this.value)"
+                                            class="w-full font-black text-slate-900 text-xs uppercase tracking-tight bg-transparent border-0 ${canUserEditProjectName(proj) ? 'hover:bg-slate-50/50 focus:bg-white focus:ring-1 focus:ring-indigo-500' : 'cursor-default'} rounded px-1 py-0.5 focus:outline-none" title="${canUserEditProjectName(proj) ? 'Tên dự án (Click để sửa)' : 'Chỉ Quản trị / Trưởng nhóm được sửa tên dự án'}">
                                     </div>
                                     <div class="space-y-0.5 text-[11px] text-slate-600 mb-0.5 px-0.5">
                                         <div class="flex items-center justify-between gap-1">
@@ -6175,6 +6948,18 @@ Nhiệm vụ của bạn:
         // --- CÁC HÀM XỬ LÝ SỰ KIỆN & CẬP NHẬT DỮ LIỆU ---
         function updateProjectField(projId, field, val) {
             const p = projectsData.find(x => x.id === Number(projId));
+            if (field === 'name' && typeof canUserEditProjectName === 'function' && p && !canUserEditProjectName(p)) {
+                showToast('⛔ Bạn không có quyền chỉnh sửa tên dự án này.');
+                renderProgressTable();
+                if (!document.getElementById('tab-details').classList.contains('hidden')) renderProjectSummary();
+                return;
+            }
+            if (typeof getCurrentUserAccessContext === 'function' && getCurrentUserAccessContext().isMember && field !== 'customNotes' && !isProjectLeadForCurrentUser(p)) {
+                showToast('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới được chỉnh sửa thông tin dự án này.');
+                renderProgressTable();
+                if (!document.getElementById('tab-details').classList.contains('hidden')) renderProjectSummary();
+                return;
+            }
             
             pushStateToHistory();
             if (p) {
@@ -6196,7 +6981,19 @@ Nhiệm vụ của bạn:
             }
         }
 
+        function isMemberBlockedAction(toastMsg = '⛔ Chỉ Quản trị hoặc Chủ trì dự án này mới có quyền chỉnh sửa.', projId = null) {
+            if (typeof getCurrentUserAccessContext === 'function' && getCurrentUserAccessContext().isMember) {
+                if (projId !== null && typeof isProjectLeadForCurrentUser === 'function' && isProjectLeadForCurrentUser(projId)) {
+                    return false;
+                }
+                showToast(toastMsg);
+                return true;
+            }
+            return false;
+        }
+
         function updateProjectLead(projId, newLead) {
+            if (isMemberBlockedAction('⛔ Chỉ Quản trị mới có quyền đổi Chủ trì dự án.', null)) { renderProgressTable(); return; }
             const p = projectsData.find(x => x.id === Number(projId));
             
             pushStateToHistory();
@@ -6208,6 +7005,7 @@ Nhiệm vụ của bạn:
         }
 
         function updateTaskName(projId, taskId, newName) {
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới được sửa tên đầu việc.', projId)) { refreshAllViewsPreservingScroll(); return; }
             const p = projectsData.find(x => x.id === Number(projId));
             if (!p) return;
             const t = p.tasks.find(x => x.id === Number(taskId));
@@ -6222,6 +7020,7 @@ Nhiệm vụ của bạn:
         }
 
         function updateTaskStatus(projId, taskId, newStatus) {
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới được đổi trạng thái.', projId)) { refreshAllViewsPreservingScroll(); return; }
             const p = projectsData.find(x => x.id === Number(projId));
             if (!p) return;
             const t = p.tasks.find(x => x.id === Number(taskId));
@@ -6248,6 +7047,7 @@ Nhiệm vụ của bạn:
         }
 
         function updateRunStaff(projId, taskId, runIdx, newStaff) {
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới được phân công nhân sự.', projId)) { refreshAllViewsPreservingScroll(); return; }
             const p = projectsData.find(x => x.id === Number(projId));
             if (!p) return;
             const t = p.tasks.find(x => x.id === Number(taskId));
@@ -6274,6 +7074,7 @@ Nhiệm vụ của bạn:
         }
 
         function updateTaskRunField(projId, taskId, runIdx, fieldName, value) {
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới được sửa lần triển khai!', projId)) { refreshAllViewsPreservingScroll(); return; }
             const p = projectsData.find(x => Number(x.id) === Number(projId));
             if (!p) return;
             const t = p.tasks.find(x => Number(x.id) === Number(taskId));
@@ -6285,6 +7086,7 @@ Nhiệm vụ của bạn:
         }
 
         function addTaskRun(projId, taskId) {
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới có quyền thêm lần triển khai (L2, L3...).', projId)) return;
             const p = projectsData.find(x => x.id === Number(projId));
             if (!p) return;
             const t = p.tasks.find(x => x.id === Number(taskId));
@@ -6303,6 +7105,7 @@ Nhiệm vụ của bạn:
         }
 
         function removeTaskRun(projId, taskId, runIdx) {
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới có quyền xóa lần triển khai (L2, L3...)!', projId)) return;
             showConfirmModal(
                 "Xóa Lần Triển Khai (L" + (Number(runIdx) + 1) + ")",
                 "Bạn có chắc chắn muốn xóa lần triển khai này không?",
@@ -6324,6 +7127,7 @@ Nhiệm vụ của bạn:
         }
 
         function addNewTask(projId) {
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới có quyền thêm đầu việc!', projId)) return;
             const p = projectsData.find(x => x.id === Number(projId));
             pushStateToHistory();
             if (!p) return;
@@ -6342,6 +7146,7 @@ Nhiệm vụ của bạn:
         }
 
         function deleteTask(projId, taskId) {
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới có quyền xóa đầu việc!', projId)) return;
             showConfirmModal(
                 "Xóa Đầu Việc",
                 "Bạn có chắc chắn muốn xóa đầu việc này khỏi dự án?",
@@ -6360,6 +7165,10 @@ Nhiệm vụ của bạn:
         }
 
         function deleteProject(projId) {
+            if (typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                showToast('⛔ Chỉ Quản trị viên mới có quyền xóa dự án!');
+                return;
+            }
             showConfirmModal(
                 "Xóa Dự Án",
                 "Bạn có chắc chắn muốn xóa toàn bộ dự án này không?",
@@ -6379,6 +7188,10 @@ Nhiệm vụ của bạn:
         }
 
         function openAddProjectModal() {
+            if (typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                showToast('⛔ Chỉ tài khoản Quản trị mới có quyền thêm dự án mới!');
+                return;
+            }
             const modal = document.getElementById('addProjectModal');
             if (modal) modal.classList.remove('hidden');
             const nameInp = document.getElementById('modalProjName');
@@ -6400,6 +7213,10 @@ Nhiệm vụ của bạn:
         }
 
         function confirmAddProject() {
+            if (typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                showToast('⛔ Chỉ tài khoản Quản trị mới có quyền thêm dự án mới!');
+                return;
+            }
             const nameInp = document.getElementById('modalProjName');
             const addrInp = document.getElementById('modalProjAddress');
             const phoneInp = document.getElementById('modalProjPhone');
@@ -6454,6 +7271,10 @@ Nhiệm vụ của bạn:
         }
 
         function duplicateProject(projId) {
+            if (typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                showToast('⛔ Chỉ tài khoản Quản trị mới có quyền sao chép dự án!');
+                return;
+            }
             const pIndex = projectsData.findIndex(x => x.id === Number(projId));
             if (pIndex === -1) return;
             const p = projectsData[pIndex];
@@ -6590,6 +7411,10 @@ Nhiệm vụ của bạn:
             const rIdx = Number(inputEl.getAttribute('data-run-idx'));
             const fieldName = inputEl.getAttribute('data-field');
             const isCons = inputEl.getAttribute('data-is-cons') === '1';
+
+            if (!isCons && isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới được đổi ngày!', pId)) {
+                return;
+            }
 
             document.querySelectorAll('.date-input-field').forEach(el => el.classList.remove('date-input-active'));
             inputEl.classList.add('date-input-active');
@@ -6820,6 +7645,10 @@ Nhiệm vụ của bạn:
             const rIdx = Number(inputEl.getAttribute('data-run-idx'));
             const fieldName = inputEl.getAttribute('data-field');
             const isCons = inputEl.getAttribute('data-is-cons') === '1';
+            if (!isCons && isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới được đổi ngày!', pId)) {
+                if (typeof renderProgressTable === 'function') renderProgressTable();
+                return;
+            }
 
             const rawVal = inputEl.value.trim();
             if (isCons) {
@@ -6860,6 +7689,9 @@ Nhiệm vụ của bạn:
 
         // --- CÁC TAB KHÁC & MODAL ---
         function switchTab(tabName) {
+            if ((tabName === 'construction' || tabName === 'recruitment' || tabName === 'archive') && typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                tabName = 'staff';
+            }
             document.getElementById('tab-progress').classList.add('hidden');
             document.getElementById('tab-staff').classList.add('hidden');
             document.getElementById('tab-details').classList.add('hidden');
@@ -6867,6 +7699,8 @@ Nhiệm vụ của bạn:
             document.getElementById('tab-construction').classList.add('hidden');
             const tabArchive = document.getElementById('tab-archive');
             if (tabArchive) tabArchive.classList.add('hidden');
+            const tabReminders = document.getElementById('tab-reminders');
+            if (tabReminders) tabReminders.classList.add('hidden');
 
             document.getElementById('tabBtn-progress').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
             document.getElementById('tabBtn-staff').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
@@ -6875,6 +7709,8 @@ Nhiệm vụ của bạn:
             document.getElementById('tabBtn-construction').className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
             const tabBtnArchive = document.getElementById('tabBtn-archive');
             if (tabBtnArchive) tabBtnArchive.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1 whitespace-nowrap';
+            const tabBtnReminders = document.getElementById('tabBtn-reminders');
+            if (tabBtnReminders) tabBtnReminders.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition text-[#A69688] hover:text-white flex items-center gap-1.5 whitespace-nowrap';
 
             if (tabName === 'progress') {
                 document.getElementById('tab-progress').classList.remove('hidden');
@@ -6904,7 +7740,12 @@ Nhiệm vụ của bạn:
                 if (tabArchive) tabArchive.classList.remove('hidden');
                 if (tabBtnArchive) tabBtnArchive.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1 whitespace-nowrap';
                 renderArchiveSection();
+            } else if (tabName === 'reminders') {
+                if (tabReminders) tabReminders.classList.remove('hidden');
+                if (tabBtnReminders) tabBtnReminders.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition bg-[#211B18] text-white shadow border border-[#382F2A] flex items-center gap-1.5 whitespace-nowrap';
+                renderRemindersSection();
             }
+            if (typeof applyRoleBasedUIRestrictions === 'function') applyRoleBasedUIRestrictions();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -8423,7 +9264,12 @@ Nhiệm vụ của bạn:
             const grid = document.getElementById('staffCardsGrid');
             if (!grid) return;
 
-            const activeStaffList = staffList.filter(s => s !== 'Chưa giao');
+            const accessCtx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: true, linkedStaffName: null };
+            let activeStaffList = staffList.filter(s => s !== 'Chưa giao');
+            if (!accessCtx.isAdmin) {
+                const target = (accessCtx.linkedStaffName || '').trim().toLowerCase();
+                activeStaffList = activeStaffList.filter(s => s.trim().toLowerCase() === target);
+            }
             if (!activeStaffList.includes(selectedStaffForGantt) && activeStaffList.length > 0) {
                 selectedStaffForGantt = activeStaffList[0];
             }
@@ -8433,6 +9279,7 @@ Nhiệm vụ của bạn:
                 const isSelected = staffName === selectedStaffForGantt;
                 const summary = getStaffWorkloadSummary(staffName);
                 const isEditing = editingStaffIndex === realIdx;
+                const boundEmail = (typeof getStaffBoundEmail === 'function') ? getStaffBoundEmail(staffName) : '';
                 const thm = (typeof CONS_PROJECT_THEMES !== 'undefined' && CONS_PROJECT_THEMES.length > 0)
                     ? CONS_PROJECT_THEMES[sIdx % CONS_PROJECT_THEMES.length]
                     : { accentColor: '#C59B27' };
@@ -8441,7 +9288,7 @@ Nhiệm vụ của bạn:
                 return `
                     <div onclick="selectStaffForGantt('${staffName}')"
                         style="border-left: 4px solid ${thm.accentColor} !important;"
-                        class="p-2 sm:p-2.5 rounded-xl border transition cursor-pointer select-none flex-1 min-w-[135px] sm:min-w-[150px] max-w-[200px] flex flex-col justify-between shadow-2xs ${isSelected ? 'bg-[#FAF6F0] ring-2 ring-[#8C6239] border-[#8C6239]' : 'bg-white hover:bg-[#FAF6F0] border-[#D5C7B8]'}">
+                        class="p-2 sm:p-2.5 rounded-xl border transition cursor-pointer select-none flex-1 min-w-[145px] sm:min-w-[165px] max-w-[220px] flex flex-col justify-between shadow-2xs ${isSelected ? 'bg-[#FAF6F0] ring-2 ring-[#8C6239] border-[#8C6239]' : 'bg-white hover:bg-[#FAF6F0] border-[#D5C7B8]'}">
                         
                         <!-- Dòng 1: STT/Màu, Số việc, Nút xóa -->
                         <div class="flex items-center justify-between text-[11px] font-bold text-[#7E634F] leading-none">
@@ -8449,9 +9296,10 @@ Nhiệm vụ của bạn:
                                 <span style="background-color: ${thm.accentColor};" class="w-4 h-4 rounded-md text-white text-[10px] font-black inline-flex items-center justify-center flex-shrink-0">${sIdx + 1}</span>
                                 <span class="text-[11px] font-extrabold ${isSelected ? 'text-[#8C6239]' : 'text-slate-700'} truncate">${summary.totalTasks} việc</span>
                             </span>
+                            ${accessCtx.isAdmin ? `
                             <div class="flex items-center gap-1 flex-shrink-0 opacity-60 hover:opacity-100 transition">
                                 <button onclick="event.stopPropagation(); removeStaffMember('${staffName}')" title="Xóa nhân sự" class="text-[13px] text-slate-400 hover:text-rose-600 font-black leading-none px-0.5">×</button>
-                            </div>
+                            </div>` : ''}
                         </div>
 
                         <!-- Dòng 2: Tên nhân sự nổi bật (click vào tên để sửa) -->
@@ -8483,6 +9331,28 @@ Nhiệm vụ của bạn:
                                 <div class="h-full bg-emerald-600" style="width:${pctDone}%"></div>
                             </div>
                         </div>
+
+                        <!-- Dòng 4: Gắn Gmail & Cấp quyền 3 cấp cho nhân sự -->
+                        ${accessCtx.isAdmin ? `
+                            <div onclick="event.stopPropagation()" class="mt-1.5 pt-1.5 border-t border-slate-200/80 space-y-1">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[10px] text-[#8C6239] flex-shrink-0" title="Gmail nhân sự đăng nhập">✉</span>
+                                    <input type="email" value="${boundEmail}" placeholder="Add Gmail..."
+                                        onchange="setStaffGmailBinding('${staffName}', this.value)"
+                                        onkeydown="if(event.key==='Enter'){this.blur();}"
+                                        title="Nhập Gmail cho ${staffName} rồi nhấn Enter để cấp quyền"
+                                        class="w-full text-[10px] font-bold bg-transparent border border-transparent hover:border-[#D5C7B8] focus:border-[#8C6239] focus:bg-white rounded px-1 py-0.5 text-slate-700 placeholder:text-slate-400 focus:outline-none truncate">
+                                </div>
+                                ${boundEmail ? `
+                                    <select onchange="setStaffRoleBinding('${staffName}', this.value)"
+                                        class="w-full text-[10px] font-extrabold bg-[#FAF6F0] border border-[#D5C7B8] rounded px-1.5 py-0.5 text-[#211B18] focus:outline-none focus:border-[#8C6239]"
+                                        title="Chọn quyền tài khoản cho ${staffName}">
+                                        <option value="member" ${getStaffBoundRole(staffName) !== 'admin' ? 'selected' : ''}>Nhân sự (Chủ trì DA được sửa)</option>
+                                        <option value="admin" ${getStaffBoundRole(staffName) === 'admin' ? 'selected' : ''}>Quản trị (Toàn quyền)</option>
+                                    </select>
+                                ` : ''}
+                            </div>
+                        ` : (boundEmail ? `<div class="mt-1.5 pt-1 border-t border-slate-200/80 text-[10px] font-bold text-emerald-700 truncate">✉ ${boundEmail}</div>` : '')}
                     </div>
                 `;
             }).join('');
@@ -8896,7 +9766,7 @@ Nhiệm vụ của bạn:
                             const firstJump = item.sortDate !== '0000-00-00' ? item.sortDate : '';
                             const primaryRunIdx = matchedRunIndices[0] || 0;
                             return `
-                                <tr class="hover:bg-amber-50/40 group" data-staff-gantt-row="${proj.id}-${task.id}">
+                                <tr class="hover:bg-amber-50/40 group ${isProjectLeadForCurrentUser(proj) ? '' : 'member-readonly-proj'}" data-staff-gantt-row="${proj.id}-${task.id}">
                                     <td class="cons-sticky-col-1 px-2.5 py-1.5 border-r border-b border-slate-200 w-[290px] min-w-[290px] max-w-[310px] sticky left-0 z-30 bg-white group-hover:bg-[#FAF6F0] shadow-[2px_0_4px_rgba(0,0,0,0.08)]"
                                         style="position: sticky; left: 0; z-index: 30 !important; background-color: #ffffff;">
                                         <div class="flex items-center justify-between gap-1">
@@ -9645,6 +10515,7 @@ Nhiệm vụ của bạn:
 
         function startProjDetailGanttDrag(event, projId, taskId, runIdx, dateStr) {
             if (event.button !== 0) return;
+            if (isMemberBlockedAction('⛔ Chỉ Chủ trì dự án hoặc Quản trị mới được sửa timeline!', projId)) return;
             projGanttDragState = {
                 projId: Number(projId),
                 taskId: Number(taskId),
@@ -9797,7 +10668,15 @@ Nhiệm vụ của bạn:
                 }
             }
 
-            grid.innerHTML = projectsData.map((p, idx) => {
+            const accessCtx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: true, linkedStaffName: null };
+            const visibleProjects = accessCtx.isAdmin ? projectsData : projectsData.filter(p => {
+                const target = (accessCtx.linkedStaffName || '').trim().toLowerCase();
+                if (!target) return false;
+                if ((p.lead || '').trim().toLowerCase() === target) return true;
+                return (p.tasks || []).some(t => (t.runs || []).some(r => (r.staff || '').trim().toLowerCase() === target));
+            });
+
+            grid.innerHTML = visibleProjects.map((p, idx) => {
                 const ev = evaluateProjectAI(p);
                 const thm = (typeof CONS_PROJECT_THEMES !== 'undefined' && CONS_PROJECT_THEMES.length > 0)
                     ? CONS_PROJECT_THEMES[idx % CONS_PROJECT_THEMES.length]
@@ -9827,7 +10706,7 @@ Nhiệm vụ của bạn:
                 `;
             }).join('');
 
-            detailContainer.innerHTML = projectsData.map((p, idx) => {
+            detailContainer.innerHTML = visibleProjects.map((p, idx) => {
                 const ev = evaluateProjectAI(p);
                 const isAIOpen = !!openProjectAIIds[p.id];
                 const isInfoOpen = !!openProjectInfoIds[p.id];
@@ -9858,7 +10737,7 @@ Nhiệm vụ của bạn:
                 return `
                     <div id="project-detail-card-${p.id}" 
                          style="border-left: 6px solid ${thm.accentColor || '#C59B27'} !important;"
-                         class="bg-white rounded-none border-t border-b-2 border-[#D5C7B8] shadow-none overflow-hidden transition-all duration-200">
+                         class="bg-white rounded-none border-t border-b-2 border-[#D5C7B8] shadow-none overflow-hidden transition-all duration-200 ${isProjectLeadForCurrentUser(p) ? '' : 'member-readonly-proj'}">
                         <!-- Thanh Header chuẩn Executive Luxury Tab 4 -->
                         <div class="${thm.headerBg} px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-[#D5C7B8]">
                             <div class="flex items-center gap-3 flex-wrap flex-1 min-w-[260px]">
@@ -12346,6 +13225,10 @@ Nhiệm vụ của bạn:
         }
 
         function deleteStaffTaskTimelineDirect(projId, taskId, runIdx) {
+            if (typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                showToast('⛔ Chỉ tài khoản Quản trị mới có quyền xóa timeline!');
+                return;
+            }
             const p = projectsData.find(x => Number(x.id) === Number(projId));
             if (!p) return;
             const t = (p.tasks || []).find(x => Number(x.id) === Number(taskId));
@@ -12448,6 +13331,10 @@ Nhiệm vụ của bạn:
 
         // --- 1. LƯU KHO & KHÔI PHỤC DỰ ÁN THIẾT KẾ (TAB 1 & 3) ---
         function archiveDesignProject(projId) {
+            if (typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                showToast('⛔ Chỉ tài khoản Quản trị mới có quyền chuyển dự án vào Kho Lưu Trữ!');
+                return;
+            }
             const pIdx = projectsData.findIndex(p => Number(p.id) === Number(projId));
             if (pIdx === -1) return;
             const proj = projectsData[pIdx];
@@ -12538,6 +13425,10 @@ Nhiệm vụ của bạn:
         }
 
         function archiveCurrentStaff() {
+            if (typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                showToast('⛔ Chỉ tài khoản Quản trị mới có quyền chuyển vào Kho Lưu Trữ!');
+                return;
+            }
             if (selectedStaffForGantt) {
                 archiveStaffMember(selectedStaffForGantt);
             }
@@ -12583,6 +13474,10 @@ Nhiệm vụ của bạn:
 
         // --- 3. LƯU KHO & KHÔI PHỤC CÔNG TRÌNH THI CÔNG (TAB 4) ---
         function archiveConstructionProject(projId) {
+            if (typeof getCurrentUserAccessContext === 'function' && !getCurrentUserAccessContext().isAdmin) {
+                showToast('⛔ Chỉ tài khoản Quản trị mới có quyền chuyển công trình vào Kho Lưu Trữ!');
+                return;
+            }
             const cpIdx = constructionProjectsData.findIndex(cp => Number(cp.id) === Number(projId));
             if (cpIdx === -1) return;
             const proj = constructionProjectsData[cpIdx];
@@ -13364,6 +14259,1184 @@ Nhiệm vụ của bạn:
             if (modal) modal.classList.add('hidden');
         }
 
+        // --- LOGIC TAB 7: ĐẶT HẸN & NHẮC LỊCH CÁ NHÂN + THÔNG BÁO CẢ PHÒNG / HỌP DỰ ÁN ---
+        function getProjectParticipantInfo(projectNameLabel) {
+            const clean = (projectNameLabel || '').replace(/^\[(TK|TC)\]\s*/i, '').trim().toLowerCase();
+            if (!clean) return { proj: null, staffNames: [], emails: [] };
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            const staffSet = new Set();
+            const proj = (projectsData || []).find(p => (p.name || '').trim().toLowerCase() === clean);
+            if (proj) {
+                if (proj.lead && proj.lead !== 'Chưa giao') staffSet.add(proj.lead.trim());
+                (proj.tasks || []).forEach(t => (t.runs || []).forEach(r => {
+                    if (r.staff && r.staff !== 'Chưa giao') staffSet.add(r.staff.trim());
+                }));
+            }
+            const staffNames = Array.from(staffSet);
+            const emailSet = new Set();
+            if (curEmail) emailSet.add(curEmail);
+            staffNames.forEach(s => {
+                const em = (typeof getStaffBoundEmail === 'function') ? getStaffBoundEmail(s) : '';
+                if (em) emailSet.add(em.toLowerCase());
+            });
+            return { proj, staffNames, emails: Array.from(emailSet) };
+        }
+
+        function isReminderDoneForCurrentUser(r) {
+            if (!r) return false;
+            if (r.scope === 'team' || r.scope === 'project') {
+                const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+                if (Array.isArray(r.doneByEmails)) {
+                    return r.doneByEmails.includes(curEmail);
+                }
+            }
+            return Boolean(r.done);
+        }
+
+        function getPersonalRemindersForCurrentUser() {
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            const ctx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: false, linkedStaffName: null };
+            const myStaffLower = (ctx.linkedStaffName || '').trim().toLowerCase();
+            return (appointmentsData || []).filter(r => {
+                if (ctx.isAdmin) {
+                    if (r.scope === 'team' || r.scope === 'project') return true;
+                    if (/\b(họp|giao ban)\b/i.test(r.title || '')) return true;
+                    if (r.isAutoDeadline && (!curEmail || (r.ownerEmail || '').toLowerCase() === curEmail)) return true;
+                }
+                if (r.scope === 'team') return true;
+                if (r.scope === 'project') {
+                    if (!curEmail) return true;
+                    if ((r.ownerEmail || '').toLowerCase() === curEmail) return true;
+                    if (Array.isArray(r.targetEmails) && r.targetEmails.some(e => (e || '').toLowerCase() === curEmail)) return true;
+                    if (myStaffLower && (r.staff || '').toLowerCase().includes(myStaffLower)) return true;
+                    return false;
+                }
+                if (!curEmail) return true;
+                if ((r.ownerEmail || '').toLowerCase() === curEmail) return true;
+                if (myStaffLower && (r.staff || '').trim().toLowerCase() === myStaffLower) return true;
+                return false;
+            }).map(r => (r.scope === 'team' || r.scope === 'project') ? { ...r, done: isReminderDoneForCurrentUser(r) } : r);
+        }
+
+        function syncTab1DeadlinesToPersonalReminders() {
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            if (!curEmail) return;
+            const ctx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: false, linkedStaffName: null };
+            const userEntry = allowedGoogleUsers.find(u => (u.email || '').toLowerCase() === curEmail);
+            const staffName = (ctx.linkedStaffName || userEntry?.staffName || '').trim();
+            if (!ctx.isAdmin && !staffName) return;
+
+            const todayIso = getTodayLocalISO();
+            const targetLower = staffName.toLowerCase();
+            if (!Array.isArray(appointmentsData)) appointmentsData = [];
+            let changedCount = 0;
+            const activeKeys = new Set();
+
+            (projectsData || []).forEach(proj => {
+                (proj.tasks || []).forEach(task => {
+                    (task.runs || []).forEach((run, rIdx) => {
+                        const runStaff = (run.staff || '').trim().toLowerCase();
+                        const runStaffTokens = runStaff.split(/[+,/]/).map(s => s.trim()).filter(Boolean);
+                        if (!ctx.isAdmin && runStaff !== targetLower && !runStaffTokens.includes(targetLower)) return;
+
+                        const planIso = parseToISODate(run.datePlan);
+                        const actualIso = parseToISODate(run.dateActual);
+                        if (!actualIso && (!planIso || planIso > todayIso)) return;
+
+                        const refDateIso = planIso || actualIso;
+                        const runLabel = `L${rIdx + 1}`;
+                        const isCompleted = Boolean(actualIso) || task.status === 'DA_CHOT' || task.status === 'GUI_HS';
+                        const lateCompletedDays = (actualIso && planIso && actualIso > planIso)
+                            ? Math.round((new Date(actualIso) - new Date(planIso)) / 86400000)
+                            : 0;
+                        const stableKey = `tab1_${curEmail}_${proj.id}_${task.id}_${rIdx}`;
+                        activeKeys.add(stableKey);
+
+                        const cleanName = (task.name || '').replace(/^[\.\s]+/, '');
+                        const nextTitle = `${cleanName} (${runLabel})`;
+                        const nextProjectName = `[TK] ${proj.name}`;
+                        const nextStaff = run.staff || proj.lead || staffName;
+                        const nextPriority = (!isCompleted && planIso && planIso < todayIso) ? 'URGENT' : 'HIGH';
+                        const nextActual = actualIso || '';
+
+                        const existing = appointmentsData.find(a =>
+                            a.autoKey === stableKey ||
+                            (typeof a.autoKey === 'string' && a.autoKey.startsWith(stableKey + '_'))
+                        );
+
+                        if (existing) {
+                            if (
+                                existing.autoKey !== stableKey ||
+                                existing.title !== nextTitle ||
+                                existing.date !== refDateIso ||
+                                existing.projectName !== nextProjectName ||
+                                existing.priority !== nextPriority ||
+                                existing.done !== isCompleted ||
+                                (existing.actualDate || '') !== nextActual ||
+                                (existing.lateCompletedDays || 0) !== lateCompletedDays ||
+                                (existing.staff || '') !== nextStaff ||
+                                (existing.runLabel || '') !== runLabel
+                            ) {
+                                existing.autoKey = stableKey;
+                                existing.title = nextTitle;
+                                existing.date = refDateIso;
+                                existing.projectName = nextProjectName;
+                                existing.priority = nextPriority;
+                                existing.done = isCompleted;
+                                existing.actualDate = nextActual;
+                                existing.lateCompletedDays = lateCompletedDays;
+                                existing.staff = nextStaff;
+                                existing.runLabel = runLabel;
+                                changedCount++;
+                            }
+                            return;
+                        }
+
+                        appointmentsData.push({
+                            id: Date.now() + Math.floor(Math.random() * 10000) + changedCount,
+                            autoKey: stableKey,
+                            ownerEmail: curEmail,
+                            title: nextTitle,
+                            date: refDateIso,
+                            time: '09:00',
+                            remindBefore: 0,
+                            priority: nextPriority,
+                            projectName: nextProjectName,
+                            staff: nextStaff,
+                            runLabel,
+                            note: 'Tự động đồng bộ từ Bảng Tiến Độ (Tab 2)',
+                            isAutoDeadline: true,
+                            actualDate: nextActual,
+                            lateCompletedDays,
+                            done: isCompleted,
+                            createdAt: new Date().toISOString()
+                        });
+                        changedCount++;
+                    });
+                });
+            });
+
+            // Xóa các bản ghi tự động cũ đã bị xóa/sửa ngày ra khỏi diện đến hạn ở Tab 2 hoặc bị trùng key cũ
+            const seenAutoKeys = new Set();
+            const beforeLen = appointmentsData.length;
+            appointmentsData = appointmentsData.filter(a => {
+                if (!a.isAutoDeadline) return true;
+                if (!ctx.isAdmin && (a.ownerEmail || '').toLowerCase() !== curEmail) return true;
+                if (ctx.isAdmin && (a.ownerEmail || '').toLowerCase() !== curEmail) return false;
+                if (!a.autoKey || !activeKeys.has(a.autoKey)) return false;
+                if (seenAutoKeys.has(a.autoKey)) return false;
+                seenAutoKeys.add(a.autoKey);
+                return true;
+            });
+            if (appointmentsData.length !== beforeLen) changedCount++;
+
+            if (changedCount > 0) {
+                saveToStorage();
+                updateReminderBadge();
+            }
+        }
+
+        function updateReminderBadge() {
+            const badge = document.getElementById('reminderBadgeCount');
+            if (!badge) return;
+            const todayIso = getTodayLocalISO();
+            const myReminders = getPersonalRemindersForCurrentUser();
+            const activeCount = myReminders.filter(r => !r.done && (!r.date || r.date <= todayIso)).length;
+            if (activeCount > 0) {
+                badge.innerText = activeCount;
+                badge.classList.remove('hidden');
+            } else {
+                const totalPending = myReminders.filter(r => !r.done).length;
+                if (totalPending > 0) {
+                    badge.innerText = totalPending;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
+        function setReminderFilter(filterKey) {
+            activeReminderFilter = filterKey;
+            renderRemindersSection();
+        }
+
+        function onReminderSearchInput(val) {
+            reminderSearchKeyword = val || '';
+            const clearBtn = document.getElementById('btnClearReminderSearch');
+            if (clearBtn) clearBtn.classList.toggle('hidden', !reminderSearchKeyword);
+            renderRemindersSection();
+        }
+
+        function clearReminderSearch() {
+            reminderSearchKeyword = '';
+            const inp = document.getElementById('reminderSearchInput');
+            if (inp) inp.value = '';
+            const clearBtn = document.getElementById('btnClearReminderSearch');
+            if (clearBtn) clearBtn.classList.add('hidden');
+            renderRemindersSection();
+        }
+
+        function requestBrowserNotificationPermission() {
+            if (!('Notification' in window)) {
+                showToast('Trình duyệt này không hỗ trợ thông báo đẩy, app vẫn sẽ hiện nhắc nhở trên màn hình.');
+                return;
+            }
+            Notification.requestPermission().then((perm) => {
+                const btn = document.getElementById('btnReminderNotifPerm');
+                if (perm === 'granted') {
+                    showToast('🔔 Đã bật thông báo nhắc lịch thành công!');
+                    if (btn) btn.innerHTML = '<span>🔔 Thông Báo: BẬT</span>';
+                } else {
+                    showToast('ℹ Bạn có thể bật lại quyền thông báo trong cài đặt trình duyệt.');
+                }
+            });
+        }
+
+        function submitNewReminder(event) {
+            event.preventDefault();
+            const titleEl = document.getElementById('remTitleInput');
+            const dateEl = document.getElementById('remDateInput');
+            const timeEl = document.getElementById('remTimeInput');
+            const beforeEl = document.getElementById('remBeforeInput');
+            const priorityEl = document.getElementById('remPriorityInput');
+            const projEl = document.getElementById('remProjectInput');
+            const staffEl = document.getElementById('remStaffInput');
+            const noteEl = document.getElementById('remNoteInput');
+
+            const title = (titleEl?.value || '').trim();
+            const date = dateEl?.value || getTodayLocalISO();
+            const time = timeEl?.value || '09:00';
+            if (!title) {
+                showToast('⚠ Vui lòng nhập nội dung lịch hẹn!');
+                return;
+            }
+
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            const ctx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: true, linkedStaffName: null };
+            const isTeam = Boolean(document.getElementById('remScopeTeamCheckbox')?.checked) && ctx.isAdmin;
+            const projNameVal = projEl?.value || '';
+            const wantProjMeeting = Boolean(document.getElementById('remScopeProjectCheckbox')?.checked) && !isTeam;
+            let finalScope = isTeam ? 'team' : 'personal';
+            let targetEmails = [];
+            const chosenStaff = ctx.isAdmin ? (staffEl?.value || '').trim() : '';
+            const chosenStaffEmail = (chosenStaff && typeof getStaffBoundEmail === 'function') ? getStaffBoundEmail(chosenStaff) : '';
+            let targetOwner = (finalScope === 'personal' && chosenStaffEmail) ? chosenStaffEmail : curEmail;
+            let finalStaffLabel = isTeam ? 'Cả phòng' : (chosenStaff || ctx.linkedStaffName || curEmail);
+
+            if (wantProjMeeting) {
+                if (!projNameVal) {
+                    showToast('⚠ Vui lòng chọn dự án bạn làm Chủ trì trước khi gửi thông báo họp dự án!');
+                    return;
+                }
+                const pInfo = getProjectParticipantInfo(projNameVal);
+                if (!pInfo.proj || (!ctx.isAdmin && !isProjectLeadForCurrentUser(pInfo.proj))) {
+                    showToast('⛔ Chỉ Chủ trì dự án này hoặc Quản trị mới có quyền tạo lịch họp cho dự án này!');
+                    return;
+                }
+                finalScope = 'project';
+                targetEmails = pInfo.emails;
+                targetOwner = curEmail;
+                finalStaffLabel = pInfo.staffNames.join(', ') || 'Nhân sự dự án';
+            }
+
+            if (!Array.isArray(appointmentsData)) appointmentsData = [];
+            const creatorName = ctx.linkedStaffName || currentAuthedGoogleUser?.displayName || (curEmail ? curEmail.split('@')[0] : 'Quản trị');
+            appointmentsData.push({
+                id: Date.now() + Math.floor(Math.random() * 1000),
+                ownerEmail: targetOwner,
+                createdByName: creatorName,
+                createdByEmail: curEmail,
+                scope: finalScope,
+                targetEmails,
+                doneByEmails: [],
+                title,
+                date,
+                time,
+                remindBefore: Number(beforeEl?.value || 15),
+                priority: priorityEl?.value || 'NORMAL',
+                projectName: projNameVal,
+                staff: finalStaffLabel,
+                note: (noteEl?.value || '').trim(),
+                done: false,
+                createdAt: new Date().toISOString()
+            });
+
+            if (titleEl) titleEl.value = '';
+            if (noteEl) noteEl.value = '';
+            remSelectedCalDate = '';
+            activeReminderFilter = 'ALL';
+            saveToStorage();
+            updateReminderBadge();
+            renderRemindersSection();
+            showToast(`✅ Đã đặt lịch hẹn: ${title}`);
+        }
+
+        function toggleReminderDone(id) {
+            const item = (appointmentsData || []).find(r => String(r.id) === String(id));
+            if (!item) return;
+            if (item.scope === 'team' || item.scope === 'project') {
+                const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+                if (!Array.isArray(item.doneByEmails)) item.doneByEmails = [];
+                if (item.doneByEmails.includes(curEmail)) {
+                    item.doneByEmails = item.doneByEmails.filter(e => e !== curEmail);
+                } else {
+                    item.doneByEmails.push(curEmail);
+                }
+            } else {
+                item.done = !item.done;
+            }
+            saveToStorage();
+            updateReminderBadge();
+            renderRemindersSection();
+        }
+
+        function deleteReminder(id) {
+            const idx = (appointmentsData || []).findIndex(r => String(r.id) === String(id));
+            if (idx === -1) return;
+            const item = appointmentsData[idx];
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            const ctx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: true };
+            if ((item.scope === 'team' || item.scope === 'project') && !ctx.isAdmin && (item.ownerEmail || '').toLowerCase() !== curEmail) {
+                showToast('⛔ Chỉ Quản trị hoặc người tạo mới được xóa thông báo họp này.');
+                return;
+            }
+            appointmentsData.splice(idx, 1);
+            saveToStorage();
+            updateReminderBadge();
+            renderRemindersSection();
+            showToast('🗑️ Đã xóa lịch hẹn');
+        }
+
+        function notifyIncomingTeamOrProjectMeetings() {
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            if (!curEmail) return;
+            const myList = getPersonalRemindersForCurrentUser();
+            const storeKey = `app_seen_meeting_notifs_${curEmail}`;
+            let seenIds = [];
+            try { seenIds = JSON.parse(localStorage.getItem(storeKey) || '[]'); } catch (e) { seenIds = []; }
+            const seenSet = new Set(seenIds.map(String));
+            let changed = false;
+
+            myList.forEach(item => {
+                if (item.done) return;
+                if (item.scope !== 'project' && item.scope !== 'team') return;
+                const idStr = String(item.id);
+                if (seenSet.has(idStr)) return;
+                seenSet.add(idStr);
+                changed = true;
+                const dateDisp = item.date ? item.date.split('-').reverse().join('/') : '';
+                const prefix = item.scope === 'project' ? '🏛️ Họp dự án' : '📢 Thông báo phòng';
+                showToast(`${prefix}: ${item.title} (${item.time || '09:00'} ${dateDisp})`);
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    try {
+                        new Notification(prefix, {
+                            body: `${item.title}\n🕒 ${item.time || '09:00'} ngày ${dateDisp}${item.projectName ? ` • ${item.projectName}` : ''}`,
+                            icon: './icon-192.png'
+                        });
+                    } catch (e) {}
+                }
+            });
+
+            if (changed) {
+                try { localStorage.setItem(storeKey, JSON.stringify(Array.from(seenSet).slice(-200))); } catch (e) {}
+            }
+        }
+
+        function checkDueRemindersNow() {
+            notifyIncomingTeamOrProjectMeetings();
+            const myList = getPersonalRemindersForCurrentUser();
+            if (!isScheduleAlertOn || myList.length === 0) return;
+            const nowMs = Date.now();
+            myList.forEach(item => {
+                if (item.done || !item.date) return;
+                const timeStr = item.time || '09:00';
+                const targetMs = new Date(`${item.date}T${timeStr}:00`).getTime();
+                if (isNaN(targetMs)) return;
+                const remindMs = targetMs - (Number(item.remindBefore || 0) * 60 * 1000);
+                // Alert if within window [remindMs, targetMs + 60 mins]
+                const key = `${item.id}_${item.date}_${timeStr}`;
+                if (nowMs >= remindMs && nowMs <= targetMs + 3600000 && !notifiedReminderKeys.has(key)) {
+                    notifiedReminderKeys.add(key);
+                    const msg = `🔔 Nhắc hẹn (${timeStr} ${item.date.split('-').reverse().join('/')}): ${item.title}`;
+                    showToast(msg);
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        try {
+                            new Notification('Nhắc Lịch Công Việc', {
+                                body: `${item.title}${item.projectName ? ` • ${item.projectName}` : ''}${item.note ? `\n${item.note}` : ''}`,
+                                icon: './icon-192.png'
+                            });
+                        } catch (e) {}
+                    }
+                }
+            });
+        }
+
+        let remCalYear = new Date().getFullYear();
+        let remCalMonth = new Date().getMonth(); // 0-11
+        let remSelectedCalDate = '';
+
+        function toggleMobileReminderPanel(which) {
+            const targetId = which === 'calendar' ? 'remCalendarWrap' : 'remComposerWrap';
+            const otherId = which === 'calendar' ? 'remComposerWrap' : 'remCalendarWrap';
+            const el = document.getElementById(targetId);
+            const other = document.getElementById(otherId);
+            if (other) other.classList.remove('mobile-open');
+            if (el) el.classList.toggle('mobile-open');
+        }
+
+        // --- BỘ CHUYỂN ĐỔI ÂM LỊCH VIỆT NAM (UTC+7) & NGÀY LỄ ---
+        function jdFromDate(dd, mm, yy) {
+            const a = Math.floor((14 - mm) / 12);
+            const y = yy + 4800 - a;
+            const m = mm + 12 * a - 3;
+            let jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+            if (jd < 2299161) {
+                jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - 32083;
+            }
+            return jd;
+        }
+        function getNewMoonDay(k, timeZone) {
+            const T = k / 1236.85, T2 = T * T, T3 = T2 * T, dr = Math.PI / 180;
+            let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+            Jd1 += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+            const M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+            const Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+            const F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+            let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
+            C1 -= 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(dr * 2 * Mpr) - 0.0004 * Math.sin(dr * 3 * Mpr);
+            C1 += 0.0104 * Math.sin(dr * 2 * F) - 0.0051 * Math.sin(dr * (M + Mpr)) - 0.0074 * Math.sin(dr * (M - Mpr));
+            C1 += 0.0004 * Math.sin(dr * (2 * F + M)) - 0.0004 * Math.sin(dr * (2 * F - M)) - 0.0006 * Math.sin(dr * (2 * F + Mpr));
+            C1 += 0.0010 * Math.sin(dr * (2 * F - Mpr)) + 0.0005 * Math.sin(dr * (2 * Mpr + M));
+            const deltat = T < -11 ? 0.001 + 0.000839 * T + 0.0002261 * T2 - 0.00000845 * T3 - 0.000000081 * T * T3 : -0.000278 + 0.000265 * T + 0.000262 * T2;
+            return Math.floor(Jd1 + C1 - deltat + 0.5 + timeZone / 24);
+        }
+        function getSunLongitude(jdn, timeZone) {
+            const T = (jdn - 2451545.5 - timeZone / 24) / 36525, T2 = T * T, dr = Math.PI / 180;
+            const M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
+            const L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+            let DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M);
+            DL += (0.019993 - 0.000101 * T) * Math.sin(dr * 2 * M) + 0.000290 * Math.sin(dr * 3 * M);
+            let L = (L0 + DL) * dr;
+            L = L - Math.PI * 2 * Math.floor(L / (Math.PI * 2));
+            return Math.floor(L / Math.PI * 6);
+        }
+        function getLunarMonth11(yy, timeZone) {
+            const off = jdFromDate(31, 12, yy) - 2415021;
+            const k = Math.floor(off / 29.530588853);
+            let nm = getNewMoonDay(k, timeZone);
+            if (getSunLongitude(nm, timeZone) >= 9) nm = getNewMoonDay(k - 1, timeZone);
+            return nm;
+        }
+        function getLeapMonthOffset(a11, timeZone) {
+            const k = Math.floor((a11 - 2415021.076998695) / 29.530588853 + 0.5);
+            let last = 0, i = 1, arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+            do { last = arc; i++; arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone); } while (arc !== last && i < 14);
+            return i - 1;
+        }
+        function getVietnameseLunarDate(dd, mm, yy) {
+            const tz = 7;
+            const dayNumber = jdFromDate(dd, mm, yy);
+            const k = Math.floor((dayNumber - 2415021.076998695) / 29.530588853);
+            let monthStart = getNewMoonDay(k + 1, tz);
+            if (monthStart > dayNumber) monthStart = getNewMoonDay(k, tz);
+            let a11 = getLunarMonth11(yy, tz), b11 = a11, lunarYear;
+            if (a11 >= monthStart) { lunarYear = yy; a11 = getLunarMonth11(yy - 1, tz); }
+            else { lunarYear = yy + 1; b11 = getLunarMonth11(yy + 1, tz); }
+            const lunarDay = dayNumber - monthStart + 1;
+            const diff = Math.floor((monthStart - a11) / 29);
+            let lunarLeap = 0, lunarMonth = diff + 11;
+            if (b11 - a11 > 365) {
+                const leapOff = getLeapMonthOffset(a11, tz);
+                if (diff >= leapOff) { lunarMonth = diff + 10; if (diff === leapOff) lunarLeap = 1; }
+            }
+            if (lunarMonth > 12) lunarMonth -= 12;
+            if (lunarMonth >= 11 && diff < 4) lunarYear -= 1;
+            return { day: lunarDay, month: lunarMonth, year: lunarYear, leap: lunarLeap };
+        }
+        function getVietnameseHolidayLabel(dd, mm, lunarDay, lunarMonth) {
+            const solarMap = {
+                '1/1': 'Tết Dương lịch (Nghỉ lễ)',
+                '3/2': 'Thành lập Đảng CSVN',
+                '14/2': 'Lễ Tình nhân',
+                '27/2': 'Thầy thuốc Việt Nam',
+                '8/3': 'Quốc tế Phụ nữ',
+                '26/3': 'Thành lập Đoàn TNCS',
+                '30/4': 'Giải phóng miền Nam (Nghỉ lễ)',
+                '1/5': 'Quốc tế Lao động (Nghỉ lễ)',
+                '7/5': 'Chiến thắng Điện Biên Phủ',
+                '19/5': 'Sinh nhật Bác Hồ',
+                '1/6': 'Quốc tế Thiếu nhi',
+                '28/6': 'Gia đình Việt Nam',
+                '27/7': 'Thương binh - Liệt sĩ',
+                '19/8': 'Cách mạng tháng Tám',
+                '2/9': 'Quốc khánh 2/9 (Nghỉ lễ)',
+                '10/10': 'Giải phóng Thủ đô',
+                '13/10': 'Doanh nhân Việt Nam',
+                '20/10': 'Phụ nữ Việt Nam',
+                '20/11': 'Nhà giáo Việt Nam',
+                '22/12': 'Thành lập QĐND VN',
+                '24/12': 'Lễ Giáng sinh'
+            };
+            const lunarMap = {
+                '1/1': 'Mùng 1 Tết Nguyên Đán (Nghỉ lễ)',
+                '2/1': 'Mùng 2 Tết Nguyên Đán (Nghỉ lễ)',
+                '3/1': 'Mùng 3 Tết Nguyên Đán (Nghỉ lễ)',
+                '4/1': 'Mùng 4 Tết ÂL (Nghỉ lễ)',
+                '5/1': 'Mùng 5 Tết ÂL (Nghỉ lễ)',
+                '15/1': 'Rằm tháng Giêng (Tết Nguyên Tiêu)',
+                '3/3': 'Tết Hàn Thực',
+                '10/3': 'Giỗ Tổ Hùng Vương (Nghỉ lễ)',
+                '15/4': 'Lễ Phật Đản',
+                '5/5': 'Tết Đoan Ngọ',
+                '15/7': 'Lễ Vu Lan',
+                '15/8': 'Tết Trung Thu',
+                '9/9': 'Tết Trùng Cửu',
+                '10/10': 'Tết Cơm Mới',
+                '15/10': 'Rằm tháng Mười (Hạ Nguyên)',
+                '23/12': 'Ông Công Ông Táo',
+                '29/12': 'Tất niên / Giao thừa ÂL',
+                '30/12': '30 Tết / Giao thừa ÂL (Nghỉ lễ)'
+            };
+            return solarMap[`${dd}/${mm}`] || lunarMap[`${lunarDay}/${lunarMonth}`] || '';
+        }
+
+        function shiftRemCalendarMonth(delta) {
+            remCalMonth += delta;
+            if (remCalMonth < 0) { remCalMonth = 11; remCalYear--; }
+            if (remCalMonth > 11) { remCalMonth = 0; remCalYear++; }
+            renderRemindersSection();
+        }
+
+        function selectRemCalendarDate(iso) {
+            remSelectedCalDate = (remSelectedCalDate === iso) ? '' : iso;
+            const dateInp = document.getElementById('remDateInput');
+            if (dateInp && remSelectedCalDate) dateInp.value = remSelectedCalDate;
+            renderRemindersSection();
+        }
+
+        function renderRemindersSection() {
+            syncTab1DeadlinesToPersonalReminders();
+            const listContainer = document.getElementById('remindersListContainer');
+            const filterContainer = document.getElementById('reminderFilterBadges');
+            const calContainer = document.getElementById('remMiniCalendar');
+            const kpiContainer = document.getElementById('remHeroKpis');
+            const heroSub = document.getElementById('remHeroSubtitle');
+            if (!listContainer || !filterContainer) return;
+
+            const todayIso = getTodayLocalISO();
+            const dateInp = document.getElementById('remDateInput');
+            if (dateInp && !dateInp.value) dateInp.value = todayIso;
+
+            const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+            const curName = currentAuthedGoogleUser?.displayName || curEmail || 'Cá nhân';
+            const [tY, tM, tD] = todayIso.split('-').map(Number);
+            const todayLunar = getVietnameseLunarDate(tD, tM, tY);
+            if (heroSub) {
+                heroSub.innerHTML = `<strong class="text-amber-300">${curName}</strong> • Hôm nay: <strong>${tD}/${tM}/${tY}</strong> (Âm lịch: <strong class="text-amber-200">${todayLunar.day}/${todayLunar.month}${todayLunar.leap ? ' nhuận' : ''}</strong>)`;
+            }
+
+            const ctxRem = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: true, linkedStaffName: null };
+            const staffWrap = document.getElementById('remStaffSelectWrap');
+            const staffSel = document.getElementById('remStaffInput');
+            if (staffWrap) staffWrap.classList.toggle('hidden', !ctxRem.isAdmin);
+            if (staffSel && ctxRem.isAdmin) {
+                const prevS = staffSel.value;
+                staffSel.innerHTML = `<option value="">— Cá nhân tôi —</option>` +
+                    (staffList || []).filter(s => s !== 'Chưa giao').map(s => `<option value="${s}">${s}</option>`).join('');
+                if (prevS) staffSel.value = prevS;
+            }
+
+            const projSel = document.getElementById('remProjectInput');
+            if (typeof syncTab1DeadlinesToPersonalReminders === 'function') syncTab1DeadlinesToPersonalReminders();
+            const projScopeWrap = document.getElementById('remScopeProjectWrap');
+            if (projSel) {
+                const prev = projSel.value;
+                const allowedDesignProjs = ctxRem.isAdmin
+                    ? (projectsData || [])
+                    : (projectsData || []).filter(p => isProjectLeadForCurrentUser(p));
+                const allProjNames = [
+                    ...allowedDesignProjs.map(p => `[TK] ${p.name}`),
+                    ...(ctxRem.isAdmin ? (constructionProjectsData || []).map(p => `[TC] ${p.name}`) : [])
+                ];
+                projSel.innerHTML = `<option value="">— Chung / Không gắn dự án —</option>` +
+                    allProjNames.map(n => `<option value="${n.replace(/"/g, '&quot;')}">${n}</option>`).join('');
+                if (prev && allProjNames.includes(prev)) projSel.value = prev;
+                if (projScopeWrap) {
+                    const hasManagedProjects = allowedDesignProjs.length > 0;
+                    projScopeWrap.classList.toggle('hidden', !hasManagedProjects);
+                }
+            }
+
+            const permBtn = document.getElementById('btnReminderNotifPerm');
+            if (permBtn && 'Notification' in window && Notification.permission === 'granted') {
+                permBtn.innerHTML = '<span>🔔 Thông Báo: BẬT</span>';
+            }
+
+            const nowMs = Date.now();
+            const list = getPersonalRemindersForCurrentUser();
+
+            const isOverdue = (r) => {
+                if (r.done || !r.date) return false;
+                const ts = new Date(`${r.date}T${r.time || '23:59'}:00`).getTime();
+                return !isNaN(ts) && ts < nowMs;
+            };
+            const isToday = (r) => !r.done && r.date === todayIso;
+            const isUpcoming = (r) => !r.done && r.date > todayIso;
+
+            const counts = {
+                ALL: list.length,
+                TODAY: list.filter(isToday).length,
+                UPCOMING: list.filter(isUpcoming).length,
+                OVERDUE: list.filter(isOverdue).length,
+                DONE: list.filter(r => r.done).length
+            };
+
+            if (kpiContainer) {
+                const kpis = [
+                    { key: 'TODAY', label: 'Hôm nay', val: counts.TODAY, cls: 'text-amber-300' },
+                    { key: 'UPCOMING', label: 'Sắp tới', val: counts.UPCOMING, cls: 'text-sky-300' },
+                    { key: 'OVERDUE', label: 'Quá hạn', val: counts.OVERDUE, cls: 'text-rose-300' },
+                    { key: 'DONE', label: 'Đã xong', val: counts.DONE, cls: 'text-emerald-300' }
+                ];
+                kpiContainer.innerHTML = kpis.map(k => `
+                    <button onclick="setReminderFilter('${k.key}')" class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-left transition min-w-[74px]">
+                        <div class="text-base sm:text-lg font-black leading-none ${k.cls}">${k.val}</div>
+                        <div class="text-[10px] font-bold text-slate-300 mt-1 whitespace-nowrap">${k.label}</div>
+                    </button>
+                `).join('');
+            }
+
+            // Render Mini Monthly Calendar (Dương lịch + Âm lịch + Ngày lễ VN)
+            if (calContainer) {
+                const firstDay = new Date(remCalYear, remCalMonth, 1);
+                const startWeekday = (firstDay.getDay() + 6) % 7; // T2=0 .. CN=6
+                const daysInMonth = new Date(remCalYear, remCalMonth + 1, 0).getDate();
+                const dateMap = {};
+                list.forEach(r => {
+                    if (!r.date) return;
+                    if (!dateMap[r.date]) dateMap[r.date] = { pending: 0, overdue: 0, done: 0 };
+                    if (r.done) dateMap[r.date].done++;
+                    else if (isOverdue(r)) dateMap[r.date].overdue++;
+                    else dateMap[r.date].pending++;
+                });
+                const monthHolidays = [];
+                let cellsHtml = '';
+                for (let i = 0; i < startWeekday; i++) {
+                    cellsHtml += `<div></div>`;
+                }
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const mmNum = remCalMonth + 1;
+                    const iso = `${remCalYear}-${String(mmNum).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    const lunar = getVietnameseLunarDate(d, mmNum, remCalYear);
+                    const holiday = getVietnameseHolidayLabel(d, mmNum, lunar.day, lunar.month);
+                    if (holiday) monthHolidays.push({ d, mmNum, lunar, holiday });
+                    const lunarLabel = (lunar.day === 1 || d === 1) ? `${lunar.day}/${lunar.month}` : `${lunar.day}`;
+                    const info = dateMap[iso];
+                    const isTod = iso === todayIso;
+                    const isSel = iso === remSelectedCalDate;
+                    const dotColor = info ? (info.overdue > 0 ? 'bg-rose-500' : (info.pending > 0 ? 'bg-amber-500' : 'bg-emerald-500')) : '';
+                    cellsHtml += `
+                        <button type="button" onclick="selectRemCalendarDate('${iso}')" title="${holiday ? `${holiday} • ` : ''}Âm lịch: ${lunar.day}/${lunar.month}"
+                            class="relative h-10 rounded-xl flex flex-col items-center justify-center transition ${isSel ? 'bg-slate-900 text-white shadow-sm' : (isTod ? 'bg-amber-100 text-amber-900 ring-1 ring-amber-400' : (holiday ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'hover:bg-slate-100 text-slate-800'))}">
+                            <span class="text-[11px] font-extrabold leading-none">${d}</span>
+                            <span class="text-[8.5px] leading-none mt-0.5 ${isSel ? 'text-amber-200' : (lunar.day === 1 || lunar.day === 15 || holiday ? 'text-rose-600 font-extrabold' : 'text-slate-400 font-semibold')}">${lunarLabel}</span>
+                            ${dotColor ? `<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full ${dotColor}"></span>` : ''}
+                        </button>
+                    `;
+                }
+                calContainer.innerHTML = `
+                    <div class="flex items-center justify-between mb-2.5">
+                        <button type="button" onclick="shiftRemCalendarMonth(-1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center">◀</button>
+                        <div class="text-xs font-black uppercase text-slate-800 tracking-wide">Tháng ${remCalMonth + 1} / ${remCalYear}</div>
+                        <button type="button" onclick="shiftRemCalendarMonth(1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center">▶</button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-extrabold text-slate-400 mb-1">
+                        <div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div><div class="text-rose-400">CN</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1">${cellsHtml}</div>
+                    ${monthHolidays.length > 0 ? `
+                        <div class="mt-2.5 pt-2 border-t border-slate-100 space-y-1">
+                            <div class="text-[10px] font-extrabold uppercase text-rose-700">🎉 Ngày lễ trong tháng:</div>
+                            <div class="flex flex-wrap gap-1">
+                                ${monthHolidays.map(h => `<span class="px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-bold">${h.d}/${h.mmNum} (${h.lunar.day}/${h.lunar.month} ÂL): ${h.holiday}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${remSelectedCalDate ? `<button type="button" onclick="selectRemCalendarDate('')" class="mt-2.5 w-full py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-extrabold text-slate-600">✕ Bỏ lọc ngày ${remSelectedCalDate.split('-').reverse().join('/')}</button>` : ''}
+                `;
+            }
+
+            const filters = [
+                { key: 'ALL', label: 'Tất cả', count: counts.ALL },
+                { key: 'TODAY', label: 'Hôm nay', count: counts.TODAY },
+                { key: 'UPCOMING', label: 'Sắp tới', count: counts.UPCOMING },
+                { key: 'OVERDUE', label: 'Quá hạn', count: counts.OVERDUE },
+                { key: 'DONE', label: 'Đã xong', count: counts.DONE }
+            ];
+
+            filterContainer.innerHTML = filters.map(f => {
+                const active = activeReminderFilter === f.key;
+                return `
+                    <button onclick="setReminderFilter('${f.key}')" class="px-3 py-1.5 rounded-xl text-[11px] font-extrabold transition flex items-center gap-1.5 flex-shrink-0 ${active ? 'bg-slate-900 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                        <span>${f.label}</span>
+                        <span class="px-1.5 py-0.2 rounded-full text-[10px] font-black ${active ? 'bg-white/20 text-white' : 'bg-white text-slate-700'}">${f.count}</span>
+                    </button>
+                `;
+            }).join('');
+
+            const kw = (reminderSearchKeyword || '').toLowerCase().trim();
+            const filtered = list.filter(r => {
+                if (remSelectedCalDate && r.date !== remSelectedCalDate) return false;
+                if (activeReminderFilter === 'TODAY' && !isToday(r)) return false;
+                if (activeReminderFilter === 'UPCOMING' && !isUpcoming(r)) return false;
+                if (activeReminderFilter === 'OVERDUE' && !isOverdue(r)) return false;
+                if (activeReminderFilter === 'DONE' && !r.done) return false;
+                if (kw) {
+                    const hay = `${r.title} ${r.projectName} ${r.staff} ${r.note}`.toLowerCase();
+                    if (!hay.includes(kw)) return false;
+                }
+                return true;
+            }).sort((a, b) => {
+                if (Boolean(a.done) !== Boolean(b.done)) return a.done ? 1 : -1;
+                const ka = `${a.date || '9999-99-99'} ${a.time || '23:59'}`;
+                const kb = `${b.date || '9999-99-99'} ${b.time || '23:59'}`;
+                return ka.localeCompare(kb);
+            });
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-10 text-center space-y-2">
+                        <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl">📅</div>
+                        <div class="text-sm font-black text-slate-800">Không có lịch hẹn nào</div>
+                        <div class="text-xs text-slate-500">Tạo lịch hẹn mới ở cột bên trái hoặc chọn ngày khác trên lịch.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const priorityBadge = (p) => {
+                if (p === 'URGENT') return `<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-black">🔥 Khẩn cấp</span>`;
+                if (p === 'HIGH') return `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black">⭐ Quan trọng</span>`;
+                return `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">Bình thường</span>`;
+            };
+
+            const renderCard = (r) => {
+                const overdue = isOverdue(r);
+                const today = isToday(r);
+                const todayIsoStr = getTodayLocalISO();
+                const isUnfinishedOverdue = !r.done && !r.actualDate && overdue;
+                const lateDaysUnfinished = (isUnfinishedOverdue && r.date)
+                    ? Math.max(1, Math.round((new Date(todayIsoStr) - new Date(r.date)) / 86400000))
+                    : 0;
+                const lateCompletedDays = r.lateCompletedDays || (r.actualDate && r.date && r.actualDate > r.date
+                    ? Math.round((new Date(r.actualDate) - new Date(r.date)) / 86400000)
+                    : 0);
+                const accentCls = r.done
+                    ? 'border-l-emerald-500 border-slate-200/90 bg-slate-50/70 opacity-85'
+                    : (isUnfinishedOverdue
+                        ? 'border-l-rose-600 border-rose-300 bg-rose-50/90'
+                        : (today ? 'border-l-amber-500 border-slate-200/90 bg-white' : 'border-l-slate-800 border-slate-200/90 bg-white'));
+                const timeBoxCls = r.done
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : (isUnfinishedOverdue ? 'bg-rose-600 text-white' : (today ? 'bg-amber-50 text-amber-800' : 'bg-slate-100 text-slate-800'));
+                const dateDisp = r.date ? `${r.date.slice(8, 10)}/${r.date.slice(5, 7)}` : '--/--';
+                const remindLabel = Number(r.remindBefore) === 0 ? 'Đúng giờ' : (Number(r.remindBefore) >= 1440 ? 'Trước 1 ngày' : (Number(r.remindBefore) >= 60 ? `Trước ${Number(r.remindBefore) / 60} giờ` : `Trước ${r.remindBefore} phút`));
+                const creatorLabel = r.createdByName || (() => {
+                    const e = (r.createdByEmail || (!r.isAutoDeadline ? r.ownerEmail : '') || '').toLowerCase();
+                    if (!e) return '';
+                    const u = (allowedGoogleUsers || []).find(x => (x.email || '').toLowerCase() === e);
+                    return (u && u.staffName) ? u.staffName : e.split('@')[0];
+                })();
+                const staffLabel = (r.staff || '').trim();
+                const projPillCls = isUnfinishedOverdue
+                    ? 'px-2 py-0.5 rounded-lg bg-rose-100 text-rose-800 border border-rose-300 font-bold'
+                    : 'px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700';
+
+                const runBadge = r.runLabel || (() => {
+                    const m = (r.autoKey || '').match(/^tab1_[^_]+_[^_]+_[^_]+_(\d+)_/);
+                    return m ? `L${Number(m[1]) + 1}` : '';
+                })();
+                const actualDisp = r.actualDate ? `${r.actualDate.slice(8, 10)}/${r.actualDate.slice(5, 7)}` : '';
+
+                return `
+                    <div class="rem-agenda-card rounded-2xl border border-l-4 ${accentCls} p-3 sm:p-3.5 shadow-xs hover:shadow-md transition flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <button type="button" onclick="toggleReminderDone(${r.id})"
+                                class="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition ${r.done ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 hover:border-amber-500 bg-white'}"
+                                title="Đánh dấu hoàn thành">
+                                ${r.done ? '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : ''}
+                            </button>
+
+                            <div class="px-2.5 py-1.5 rounded-xl text-center flex-shrink-0 min-w-[58px] ${timeBoxCls}">
+                                <div class="text-xs font-black leading-none">${r.time || '09:00'}</div>
+                                <div class="text-[10px] font-bold opacity-90 mt-0.5">${dateDisp}</div>
+                            </div>
+
+                            <div class="min-w-0 flex-1 space-y-1">
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    ${priorityBadge(r.priority)}
+                                    ${runBadge ? `<span class="px-2 py-0.5 rounded-full bg-slate-800 text-white text-[10px] font-black">${runBadge}</span>` : ''}
+                                    ${isUnfinishedOverdue ? `<span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-black">🔴 Quá hạn ${lateDaysUnfinished} ngày (Chưa hoàn thành)</span>` : ''}
+                                    ${(r.done && lateCompletedDays > 0) ? `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black">✅ Đã hoàn thành${actualDisp ? ` (${actualDisp})` : ''} · Trễ ${lateCompletedDays} ngày</span>` : ''}
+                                    ${(r.done && r.isAutoDeadline && lateCompletedDays === 0) ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">✅ Đã hoàn thành${actualDisp ? ` (${actualDisp})` : ''} · Đúng hạn</span>` : ''}
+                                    ${r.scope === 'team' ? `<span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[10px] font-black">📢 Toàn phòng</span>` : ''}
+                                    ${r.scope === 'project' ? `<span class="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-900 text-[10px] font-black">🏛️ Họp dự án</span>` : ''}
+                                    ${r.isAutoDeadline ? `<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-extrabold">⚡ Tự động từ Tab 2</span>` : ''}
+                                    <span class="text-[10px] font-semibold text-slate-400">🔔 ${remindLabel}</span>
+                                </div>
+                                <div class="text-sm font-extrabold ${isUnfinishedOverdue ? 'text-rose-950' : 'text-slate-900'} truncate ${r.done ? 'line-through text-slate-400' : ''}" title="${r.title}">${r.title}</div>
+                                ${(r.projectName || staffLabel || (!r.isAutoDeadline && creatorLabel) || r.note) ? `
+                                    <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+                                        ${r.projectName ? `<span class="${projPillCls}">🏠 ${r.projectName}</span>` : ''}
+                                        ${staffLabel ? `<span class="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-900 border border-amber-200/70">👤 ${r.isAutoDeadline ? 'Triển khai' : 'Nhân sự'}: ${staffLabel}</span>` : ''}
+                                        ${(!r.isAutoDeadline && creatorLabel) ? `<span class="px-2 py-0.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200/70">✍️ Tạo bởi: ${creatorLabel}</span>` : ''}
+                                        ${r.note ? `<span class="truncate">📝 ${r.note}</span>` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="deleteReminder(${r.id})" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-rose-500 text-slate-400 hover:text-white flex items-center justify-center transition flex-shrink-0" title="Xóa lịch hẹn">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                    </div>
+                `;
+            };
+
+            const renderGroupedItemsByProject = (items) => {
+                const buckets = [];
+                const bucketMap = new Map();
+                items.forEach(item => {
+                    const key = (item.projectName || '').trim() || `__NO_PROJ_${item.id}`;
+                    if (!bucketMap.has(key)) {
+                        const bucket = { projName: (item.projectName || '').trim(), items: [] };
+                        bucketMap.set(key, bucket);
+                        buckets.push(bucket);
+                    }
+                    bucketMap.get(key).items.push(item);
+                });
+                return buckets.map(b => {
+                    if (!b.projName) {
+                        return b.items.map(renderCard).join('');
+                    }
+                    const unfinishedCount = b.items.filter(x => !x.done).length;
+                    const doneCount = b.items.filter(x => x.done).length;
+                    const hasOverdueProj = b.items.some(x => !x.done && !x.actualDate && isOverdue(x));
+                    const wrapCls = hasOverdueProj
+                        ? 'rounded-2xl border border-rose-300 bg-rose-50/40 p-2 sm:p-2.5 space-y-2'
+                        : 'rounded-2xl border border-slate-200 bg-slate-50/70 p-2 sm:p-2.5 space-y-2';
+                    const headCls = hasOverdueProj ? 'text-rose-800' : 'text-slate-800';
+                    return `
+                        <div class="${wrapCls}">
+                            <div class="flex flex-wrap items-center justify-between gap-1.5 px-1.5 pt-0.5">
+                                <span class="text-[11px] font-black ${headCls}">🏠 ${b.projName}</span>
+                                <div class="flex items-center gap-1">
+                                    ${unfinishedCount > 0 ? `<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full ${hasOverdueProj ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-800'}">${unfinishedCount} chưa xong</span>` : ''}
+                                    ${doneCount > 0 ? `<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">${doneCount} đã hoàn thành</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                ${b.items.map(renderCard).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            };
+
+            const isPriorityMeeting = (r) => !r.done && (
+                r.scope === 'project' ||
+                r.scope === 'team' ||
+                /\b(họp|giao ban)\b/i.test(r.title || '')
+            );
+            const restItems = filtered.filter(r => !isPriorityMeeting(r));
+            const projectItems = restItems.filter(r => Boolean((r.projectName || '').trim()));
+            const personalItems = restItems.filter(r => !((r.projectName || '').trim()));
+            const groups = [
+                { title: '🏛️ Lịch Họp & Thông Báo (Ưu tiên hàng đầu)', items: filtered.filter(isPriorityMeeting), titleCls: 'text-cyan-800', useProjGroup: true },
+                { title: '📁 Công Việc & Tiến Độ Theo Dự Án (Chưa xong & Đã hoàn thành)', items: projectItems, titleCls: 'text-slate-800', useProjGroup: true },
+                { title: '🔥 Quá hạn cần xử lý (Cá nhân)', items: personalItems.filter(r => isOverdue(r)), titleCls: 'text-rose-700', useProjGroup: false },
+                { title: '☀️ Hôm nay (Cá nhân)', items: personalItems.filter(r => !isOverdue(r) && isToday(r)), titleCls: 'text-amber-700', useProjGroup: false },
+                { title: '📅 Sắp tới (Cá nhân)', items: personalItems.filter(r => isUpcoming(r)), titleCls: 'text-slate-700', useProjGroup: false },
+                { title: '✅ Đã hoàn thành (Cá nhân)', items: personalItems.filter(r => r.done), titleCls: 'text-emerald-700', useProjGroup: false }
+            ].filter(g => g.items.length > 0);
+
+            listContainer.innerHTML = groups.map(g => `
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between px-1">
+                        <span class="text-xs font-black uppercase tracking-wider ${g.titleCls}">${g.title}</span>
+                        <span class="text-[11px] font-bold text-slate-400">${g.items.length} mục</span>
+                    </div>
+                    <div class="space-y-2">
+                        ${g.useProjGroup ? renderGroupedItemsByProject(g.items) : g.items.map(renderCard).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function parseVietnameseReminderCommand(rawText) {
+            const text = (rawText || '').trim();
+            const lower = text.toLowerCase();
+            const isTeamScope = /(cả phòng|toàn phòng|mọi người|tất cả nhân sự|cả team|toàn bộ nhân sự|toàn công ty|giao ban)/.test(lower);
+            const hasRelativeTime = /\d+\s*(?:p|phút|tiếng|giờ)\s*nữa/.test(lower);
+            const isCreateIntent = isTeamScope || hasRelativeTime || (/(nhắc|đặt|hẹn|tạo lịch|thông báo|báo lịch|gặp|họp|kiểm tra|gọi|gửi)/.test(lower) &&
+                (/(hôm nay|mai|ngày mai|mốt|ngày kia|tuần|cuối ngày|trưa nay|sáng mai|chiều nay|tối nay|thứ [2-7]|chủ nhật|\d{1,2}[\/\-]\d{1,2}|\d{1,2}\s*(h|giờ|:)\s*\d{0,2})/.test(lower)));
+            if (!isCreateIntent) return null;
+
+            const now = new Date();
+            let targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            let hour = 9, minute = 0;
+
+            const relMinMatch = lower.match(/(\d+)\s*(?:p|phút)\s*nữa/);
+            const relHourMatch = lower.match(/(\d+)\s*(?:tiếng|giờ)\s*nữa/);
+            if (relMinMatch || relHourMatch) {
+                const addMs = (relMinMatch ? Number(relMinMatch[1]) * 60000 : 0) + (relHourMatch ? Number(relHourMatch[1]) * 3600000 : 0);
+                const future = new Date(now.getTime() + addMs);
+                targetDate = new Date(future.getFullYear(), future.getMonth(), future.getDate());
+                hour = future.getHours();
+                minute = future.getMinutes();
+            } else {
+                if (/\b(ngày kia|mốt)\b/.test(lower)) {
+                    targetDate.setDate(targetDate.getDate() + 2);
+                } else if (/\b(ngày mai|mai)\b/.test(lower)) {
+                    targetDate.setDate(targetDate.getDate() + 1);
+                } else {
+                    const dmMatch = lower.match(/\b(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?\b/);
+                    if (dmMatch) {
+                        const dd = Number(dmMatch[1]);
+                        const mm = Number(dmMatch[2]) - 1;
+                        const yy = dmMatch[3] ? (dmMatch[3].length === 2 ? 2000 + Number(dmMatch[3]) : Number(dmMatch[3])) : now.getFullYear();
+                        targetDate = new Date(yy, mm, dd);
+                    } else {
+                        const wdMatch = lower.match(/(?:thứ\s*([2-7])|(chủ nhật))/);
+                        if (wdMatch) {
+                            const targetWd = wdMatch[2] ? 0 : (Number(wdMatch[1]) - 1);
+                            let diff = (targetWd - targetDate.getDay() + 7) % 7;
+                            if (diff === 0 || /tuần\s*(sau|tới)/.test(lower)) diff += 7;
+                            targetDate.setDate(targetDate.getDate() + diff);
+                        }
+                    }
+                }
+
+                const timeMatch = lower.match(/(\d{1,2})\s*(?:h|giờ|:)\s*(\d{1,2})?/);
+                if (timeMatch) {
+                    hour = Number(timeMatch[1]);
+                    minute = timeMatch[2] ? Number(timeMatch[2]) : 0;
+                    if (/(chiều|tối)/.test(lower) && hour >= 1 && hour <= 11) hour += 12;
+                } else if (/trưa/.test(lower)) {
+                    hour = 12;
+                } else if (/chiều|cuối ngày/.test(lower)) {
+                    hour = 14;
+                } else if (/tối/.test(lower)) {
+                    hour = 19;
+                }
+            }
+
+            const dateIso = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`;
+            const timeStr = `${String(Math.min(23, hour)).padStart(2, '0')}:${String(Math.min(59, minute)).padStart(2, '0')}`;
+
+            let priority = isTeamScope ? 'HIGH' : 'NORMAL';
+            if (/(khẩn|gấp|urgent)/.test(lower)) priority = 'URGENT';
+            else if (/(quan trọng|ưu tiên|chốt)/.test(lower)) priority = 'HIGH';
+
+            let matchedProj = '';
+            const foundProj = (projectsData || []).find(p => {
+                const full = (p.name || '').trim().toLowerCase();
+                if (!full) return false;
+                if (lower.includes(full)) return true;
+                const basePart = full.split(/[-–(/]/)[0].trim();
+                return basePart.length >= 4 && lower.includes(basePart);
+            });
+            if (foundProj) matchedProj = `[TK] ${foundProj.name}`;
+            const isProjMeeting = Boolean(foundProj) && /(họp|chốt|thông báo|dự án)/.test(lower);
+            const effectiveTeamScope = isTeamScope && !isProjMeeting;
+
+            // Nhận diện nhân sự được nhắc tên (nếu không phải cả phòng / họp dự án)
+            let targetStaffName = '';
+            let targetStaffEmail = '';
+            if (!effectiveTeamScope && !isProjMeeting) {
+                const matchedStaff = (staffList || []).find(s => s !== 'Chưa giao' && lower.includes(s.toLowerCase()));
+                if (matchedStaff) {
+                    targetStaffName = matchedStaff;
+                    targetStaffEmail = (typeof getStaffBoundEmail === 'function') ? getStaffBoundEmail(matchedStaff) : '';
+                }
+            }
+
+            let cleanTitle = text
+                .replace(/^(nhắc|đặt lịch|đặt hẹn|hẹn|tạo lịch|thông báo|báo lịch)\s*/i, '')
+                .replace(/\b(cho cả phòng|cả phòng|toàn phòng|cho mọi người|mọi người|tất cả nhân sự|cả team|hôm nay|ngày mai|mai|ngày kia|mốt|tuần sau|tuần tới|sáng|trưa|chiều|tối|cuối ngày|khẩn cấp|gấp)\b/gi, '')
+                .replace(/\b\d+\s*(?:p|phút|tiếng|giờ)\s*nữa\b/gi, '')
+                .replace(/\b\d{1,2}\s*(?:h|giờ|:)\s*\d{0,2}\s*(?:phút)?\b/gi, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (!cleanTitle) cleanTitle = text;
+            cleanTitle = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
+
+            return {
+                title: cleanTitle,
+                date: dateIso,
+                time: timeStr,
+                priority: isProjMeeting && priority === 'NORMAL' ? 'HIGH' : priority,
+                projectName: matchedProj,
+                scope: effectiveTeamScope ? 'team' : (isProjMeeting ? 'project' : 'personal'),
+                targetStaffName,
+                targetStaffEmail
+            };
+        }
+
+        function generateLocalTab7AIBriefing(query) {
+            const lower = (query || '').toLowerCase();
+            const todayIso = getTodayLocalISO();
+            const nowMs = Date.now();
+            const myList = getPersonalRemindersForCurrentUser();
+            const overdue = myList.filter(r => !r.done && r.date && new Date(`${r.date}T${r.time || '23:59'}:00`).getTime() < nowMs);
+            const todayItems = myList.filter(r => !r.done && r.date === todayIso);
+            const upcoming = myList.filter(r => !r.done && r.date > todayIso).slice(0, 5);
+
+            if (/quét hạn/.test(lower)) {
+                syncTab1DeadlinesToPersonalReminders();
+                renderRemindersSection();
+                return `✅ Đã quét toàn bộ lịch Dự kiến (Tab 1) của bạn và đồng bộ các đầu việc đến hạn/quá hạn vào danh sách cá nhân.`;
+            }
+
+            const lines = [];
+            lines.push(`<strong>📊 Trợ Lý AI Tổng Hợp Lịch Cá Nhân (${todayIso.split('-').reverse().join('/')}):</strong>`);
+            if (overdue.length > 0) {
+                lines.push(`• <strong class="text-rose-700">🔥 Quá hạn (${overdue.length} việc):</strong> ${overdue.slice(0, 4).map(r => `${r.title} (${r.date.slice(8,10)}/${r.date.slice(5,7)})`).join('; ')}. <em>Khuyên xử lý ngay đầu giờ!</em>`);
+            } else {
+                lines.push(`• <strong class="text-emerald-700">✅ Không có việc quá hạn.</strong>`);
+            }
+            if (todayItems.length > 0) {
+                lines.push(`• <strong class="text-amber-700">☀️ Hôm nay (${todayItems.length} việc):</strong> ${todayItems.map(r => `${r.time} ${r.title}`).join('; ')}.`);
+            } else {
+                lines.push(`• <strong>☀️ Hôm nay:</strong> Chưa có lịch hẹn riêng nào.`);
+            }
+            if (upcoming.length > 0) {
+                lines.push(`• <strong>📅 Sắp tới:</strong> ${upcoming.map(r => `${r.date.slice(8,10)}/${r.date.slice(5,7)} (${r.time}) - ${r.title}`).join('; ')}.`);
+            }
+            return lines.join('<br>');
+        }
+
+        async function runTab7AIReminderAction(customPrompt = null) {
+            const inp = document.getElementById('remAIInput');
+            const box = document.getElementById('remAIResponseBox');
+            const closeBtn = document.getElementById('remAICloseBtn');
+            const sendBtn = document.getElementById('remAISendBtn');
+            const query = (customPrompt !== null ? customPrompt : (inp?.value || '')).trim();
+            if (!query) {
+                showToast('✨ Hãy nhập nội dung cần AI đặt lịch hoặc hỏi lịch hôm nay!');
+                return;
+            }
+            if (customPrompt === null && inp) inp.value = '';
+            if (box) {
+                box.classList.remove('hidden');
+                box.innerHTML = `<div class="flex items-center gap-2 text-amber-800 font-bold"><span>⏳ AI đang phân tích và xử lý...</span></div>`;
+            }
+            if (closeBtn) closeBtn.classList.remove('hidden');
+            if (sendBtn) sendBtn.disabled = true;
+
+            // 1. Kiểm tra nếu là câu lệnh đặt lịch tự nhiên -> tạo lịch hẹn ngay lập tức
+            const parsedCmd = parseVietnameseReminderCommand(query);
+            if (parsedCmd) {
+                const curEmail = (currentAuthedGoogleUser?.email || '').toLowerCase();
+                const ctx = (typeof getCurrentUserAccessContext === 'function') ? getCurrentUserAccessContext() : { isAdmin: true, linkedStaffName: null };
+                let finalScope = (parsedCmd.scope === 'team' && ctx.isAdmin) ? 'team' : 'personal';
+                let targetEmails = [];
+                let staffLabel = finalScope === 'team' ? 'Cả phòng' : (parsedCmd.targetStaffName || ctx.linkedStaffName || curEmail);
+
+                if (parsedCmd.scope === 'team' && !ctx.isAdmin) {
+                    if (box) box.innerHTML = `<div class="font-extrabold text-rose-700">⛔ Chỉ Quản trị viên mới có quyền gửi thông báo cho cả phòng.</div>`;
+                    if (sendBtn) sendBtn.disabled = false;
+                    return;
+                }
+
+                if (parsedCmd.scope === 'project' && parsedCmd.projectName) {
+                    const pInfo = getProjectParticipantInfo(parsedCmd.projectName);
+                    if (!pInfo.proj || (!ctx.isAdmin && !isProjectLeadForCurrentUser(pInfo.proj))) {
+                        if (box) box.innerHTML = `<div class="font-extrabold text-rose-700">⛔ Bạn không phải Chủ trì của dự án <strong>${parsedCmd.projectName}</strong> nên không có quyền tạo cuộc họp cho dự án này.</div>`;
+                        if (sendBtn) sendBtn.disabled = false;
+                        return;
+                    }
+                    finalScope = 'project';
+                    targetEmails = pInfo.emails;
+                    staffLabel = pInfo.staffNames.join(', ') || 'Nhân sự dự án';
+                }
+
+                const targetOwner = (finalScope === 'personal' && parsedCmd.targetStaffEmail && ctx.isAdmin) ? parsedCmd.targetStaffEmail : curEmail;
+                const creatorName = ctx.linkedStaffName || currentAuthedGoogleUser?.displayName || (curEmail ? curEmail.split('@')[0] : 'Quản trị');
+                if (!Array.isArray(appointmentsData)) appointmentsData = [];
+                appointmentsData.push({
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    ownerEmail: targetOwner,
+                    createdByName: creatorName,
+                    createdByEmail: curEmail,
+                    scope: finalScope,
+                    targetEmails,
+                    doneByEmails: [],
+                    title: parsedCmd.title,
+                    date: parsedCmd.date,
+                    time: parsedCmd.time,
+                    remindBefore: 15,
+                    priority: parsedCmd.priority,
+                    projectName: parsedCmd.projectName,
+                    staff: staffLabel,
+                    note: `AI tạo nhanh từ: "${query}"`,
+                    done: false,
+                    createdAt: new Date().toISOString()
+                });
+                remSelectedCalDate = '';
+                activeReminderFilter = 'ALL';
+                saveToStorage();
+                updateReminderBadge();
+                renderRemindersSection();
+                if (box) {
+                    const headerHtml = finalScope === 'team'
+                        ? '<div class="font-extrabold text-purple-800">📢 AI đã phát lịch thông báo cho TẤT CẢ nhân sự trong phòng (Tab 7 của mọi Gmail):</div>'
+                        : (finalScope === 'project'
+                            ? `<div class="font-extrabold text-cyan-900">🏛️ AI đã gửi thông báo họp dự án tới các nhân sự tham gia (${staffLabel}):</div>`
+                            : '<div class="font-extrabold text-emerald-800">✅ AI đã tự động đặt lịch hẹn mới:</div>');
+                    box.innerHTML = `
+                        ${headerHtml}
+                        <div>• <strong>Nội dung:</strong> ${parsedCmd.title}</div>
+                        <div>• <strong>Thời gian:</strong> ${parsedCmd.time} ngày ${parsedCmd.date.split('-').reverse().join('/')} (Nhắc trước 15 phút)</div>
+                        ${parsedCmd.targetStaffName ? `<div>• <strong>Gửi tới nhân sự:</strong> ${parsedCmd.targetStaffName} (${targetOwner})</div>` : ''}
+                        ${parsedCmd.projectName ? `<div>• <strong>Dự án:</strong> ${parsedCmd.projectName}</div>` : ''}
+                    `;
+                }
+                if (sendBtn) sendBtn.disabled = false;
+                return;
+            }
+
+            // 2. Nếu là câu hỏi / tóm tắt / gợi ý -> gọi Gemini API (fallback nội bộ thông minh)
+            let aiHtml = '';
+            try {
+                const todayIso = getTodayLocalISO();
+                const myList = getPersonalRemindersForCurrentUser();
+                const promptContext = `Hôm nay là ${todayIso}. Danh sách lịch cá nhân hiện tại:\n${myList.map(r => `- [${r.done ? 'XONG' : 'CHỜ'}] ${r.date} ${r.time}: ${r.title} (${r.priority})${r.projectName ? ' | ' + r.projectName : ''}`).join('\n') || 'Trống'}`;
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const resp = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `${promptContext}\n\nYêu cầu người dùng: ${query}` }] }],
+                        systemInstruction: { parts: [{ text: 'Bạn là Trợ lý AI nhắc việc cá nhân ngắn gọn, thực tế bằng tiếng Việt. Trả lời súc tích, gạch đầu dòng rõ ràng, ưu tiên việc quá hạn và hôm nay.' }] }
+                    })
+                });
+                if (resp && resp.ok) {
+                    const data = await resp.json();
+                    const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (txt) aiHtml = txt.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                }
+            } catch (e) {}
+
+            if (!aiHtml) {
+                aiHtml = generateLocalTab7AIBriefing(query);
+            }
+            if (box) box.innerHTML = aiHtml;
+            if (sendBtn) sendBtn.disabled = false;
+        }
+
         function initAppUI() {
             applyMobileViewMode();
             normalizeProjectStaffData();
@@ -13371,14 +15444,18 @@ Nhiệm vụ của bạn:
             renderStatusFilters();
             renderProgressTable();
             updateArchiveBadge();
+            syncTab1DeadlinesToPersonalReminders();
+            updateReminderBadge();
+            checkDueRemindersNow();
+            if (!window._reminderAlertTimer) {
+                window._reminderAlertTimer = setInterval(checkDueRemindersNow, 30000);
+            }
             if (appStateHistory.length === 0) {
                 pushStateToHistory();
             }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            loadFromStorage();
-            initAppUI();
             if (typeof window.initializeApp === 'function') {
                 initFirebaseSync();
             } else {

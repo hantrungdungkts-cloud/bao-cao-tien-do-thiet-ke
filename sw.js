@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tien-do-tk-v1';
+const CACHE_NAME = 'tien-do-tk-v2';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
