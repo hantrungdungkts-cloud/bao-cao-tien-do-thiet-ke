@@ -76,8 +76,8 @@ jobs:
                   applicationId "com.donggia.tiendotk"
                   minSdk 24
                   targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
+                  versionCode 2
+                  versionName "1.1"
               }
               buildTypes {
                   release {
@@ -88,6 +88,9 @@ jobs:
                   sourceCompatibility JavaVersion.VERSION_17
                   targetCompatibility JavaVersion.VERSION_17
               }
+          }
+          dependencies {
+              implementation 'androidx.browser:browser:1.8.0'
           }
           EOF
 
@@ -128,92 +131,37 @@ jobs:
           import android.graphics.Color;
           import android.net.Uri;
           import android.os.Bundle;
-          import android.view.Window;
-          import android.webkit.CookieManager;
-          import android.webkit.WebChromeClient;
-          import android.webkit.WebResourceRequest;
-          import android.webkit.WebSettings;
-          import android.webkit.WebView;
-          import android.webkit.WebViewClient;
+          import androidx.browser.customtabs.CustomTabColorSchemeParams;
+          import androidx.browser.customtabs.CustomTabsIntent;
 
           public class MainActivity extends Activity {
               private static final String APP_URL = "https://hantrungdungkts-cloud.github.io/bao-cao-tien-do-thiet-ke/";
-              private WebView webView;
-
-              private boolean isInAppHost(String host) {
-                  if (host == null) return false;
-                  String h = host.toLowerCase();
-                  return h.equals("hantrungdungkts-cloud.github.io")
-                      || h.endsWith(".firebaseapp.com")
-                      || h.equals("accounts.google.com")
-                      || h.endsWith(".accounts.google.com")
-                      || h.equals("accounts.youtube.com")
-                      || h.equals("apis.google.com")
-                      || h.equals("myaccount.google.com")
-                      || h.endsWith(".gstatic.com")
-                      || h.endsWith(".googleapis.com");
-              }
 
               @Override
               protected void onCreate(Bundle savedInstanceState) {
                   super.onCreate(savedInstanceState);
-                  requestWindowFeature(Window.FEATURE_NO_TITLE);
-                  getWindow().setStatusBarColor(Color.parseColor("#211B18"));
-
-                  webView = new WebView(this);
-                  setContentView(webView);
-
-                  CookieManager cookieManager = CookieManager.getInstance();
-                  cookieManager.setAcceptCookie(true);
-                  cookieManager.setAcceptThirdPartyCookies(webView, true);
-
-                  WebSettings settings = webView.getSettings();
-                  settings.setJavaScriptEnabled(true);
-                  settings.setDomStorageEnabled(true);
-                  settings.setDatabaseEnabled(true);
-                  settings.setJavaScriptCanOpenWindowsAutomatically(true);
-                  settings.setSupportMultipleWindows(false);
-                  settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-                  settings.setUseWideViewPort(true);
-                  settings.setLoadWithOverviewMode(true);
-                  String ua = settings.getUserAgentString();
-                  if (ua != null) {
-                      settings.setUserAgentString(ua.replace("; wv", ""));
-                  }
-
-                  webView.setWebChromeClient(new WebChromeClient());
-                  webView.setWebViewClient(new WebViewClient() {
-                      @Override
-                      public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                          Uri uri = request.getUrl();
-                          String url = uri.toString();
-                          if (isInAppHost(uri.getHost())) {
-                              return false;
-                          }
-                          try {
-                              Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                              startActivity(intent);
-                          } catch (Exception ignored) {}
-                          return true;
+                  Uri uri = Uri.parse(APP_URL);
+                  try {
+                      CustomTabColorSchemeParams colors = new CustomTabColorSchemeParams.Builder()
+                          .setToolbarColor(Color.parseColor("#211B18"))
+                          .setNavigationBarColor(Color.parseColor("#211B18"))
+                          .build();
+                      CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+                          .setDefaultColorSchemeParams(colors)
+                          .setShowTitle(false)
+                          .setUrlBarHidingEnabled(true)
+                          .build();
+                      customTabsIntent.intent.setPackage("com.android.chrome");
+                      customTabsIntent.launchUrl(this, uri);
+                  } catch (Exception e) {
+                      try {
+                          CustomTabsIntent fallbackTab = new CustomTabsIntent.Builder().build();
+                          fallbackTab.launchUrl(this, uri);
+                      } catch (Exception ex) {
+                          startActivity(new Intent(Intent.ACTION_VIEW, uri));
                       }
-
-                      @Override
-                      public void onPageFinished(WebView view, String url) {
-                          super.onPageFinished(view, url);
-                          CookieManager.getInstance().flush();
-                      }
-                  });
-
-                  webView.loadUrl(APP_URL);
-              }
-
-              @Override
-              public void onBackPressed() {
-                  if (webView != null && webView.canGoBack()) {
-                      webView.goBack();
-                  } else {
-                      super.onBackPressed();
                   }
+                  finish();
               }
           }
           EOF
