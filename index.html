@@ -540,29 +540,47 @@
             pointer-events: none !important;
             cursor: default !important;
         }
-        /* Tab 7 Mobile Compact App Layout */
-        body.mobile-view-mode #remOuterWrap { padding: 8px !important; gap: 8px !important; }
-        body.mobile-view-mode #remMainGrid { display: flex !important; flex-direction: column !important; gap: 8px !important; }
+        /* Tab 1 & Header Mobile Ultra-Compact App Layout */
+        body.mobile-view-mode #topNavHeader { padding: 4px 8px !important; gap: 4px !important; }
+        body.mobile-view-mode #headerBrandTitlePill,
+        body.mobile-view-mode #headerBrandBtnTimeline { display: none !important; }
+        body.mobile-view-mode #headerTabsRow { flex-wrap: nowrap !important; overflow-x: auto !important; width: 100% !important; padding: 2px !important; gap: 2px !important; -webkit-overflow-scrolling: touch; }
+        body.mobile-view-mode #headerTabsRow::-webkit-scrollbar { display: none; }
+        body.mobile-view-mode #headerTabsRow button { padding: 4px 8px !important; font-size: 11px !important; }
+        body.mobile-view-mode #headerTabsRow button svg { display: none !important; }
+        body.mobile-view-mode #remOuterWrap { padding: 6px 8px !important; gap: 6px !important; }
+        body.mobile-view-mode #remMainGrid { display: flex !important; flex-direction: column !important; gap: 6px !important; }
         body.mobile-view-mode #remLeftCol,
         body.mobile-view-mode #remRightCol { width: 100% !important; min-width: 0 !important; }
-        body.mobile-view-mode #remHeroCard { padding: 10px 12px !important; border-radius: 12px !important; }
-        body.mobile-view-mode #remHeroIcon { width: 34px !important; height: 34px !important; border-radius: 10px !important; }
-        body.mobile-view-mode #remHeroIcon svg { width: 18px !important; height: 18px !important; }
-        body.mobile-view-mode #remHeroKpis { gap: 4px !important; width: 100%; }
-        body.mobile-view-mode #remHeroKpis > button { padding: 6px 4px !important; min-width: 0 !important; border-radius: 10px !important; text-align: center !important; overflow: hidden !important; }
+        body.mobile-view-mode #remHeroCard { padding: 7px 10px !important; border-radius: 12px !important; }
+        body.mobile-view-mode #remHeroIcon { width: 26px !important; height: 26px !important; border-radius: 8px !important; }
+        body.mobile-view-mode #remHeroIcon svg { width: 14px !important; height: 14px !important; }
+        body.mobile-view-mode #remHeroKpis { display: none !important; }
         body.mobile-view-mode #remMobileToggleRow { display: flex !important; }
         body.mobile-view-mode #remCalendarWrap:not(.mobile-open),
-        body.mobile-view-mode #remComposerWrap:not(.mobile-open) { display: none !important; }
-        body.mobile-view-mode #remFilterSearchCard { padding: 8px !important; border-radius: 12px !important; gap: 6px !important; flex-direction: column !important; align-items: stretch !important; }
-        body.mobile-view-mode #remindersListContainer .rem-agenda-card { padding: 9px 10px !important; border-radius: 12px !important; gap: 8px !important; }
+        body.mobile-view-mode #remComposerWrap:not(.mobile-open),
+        body.mobile-view-mode #remAIAssistantCard:not(.mobile-open) { display: none !important; }
+        body.mobile-view-mode #remFilterSearchCard { padding: 6px 8px !important; border-radius: 12px !important; gap: 5px !important; flex-direction: column !important; align-items: stretch !important; }
+        body.mobile-view-mode #remindersListContainer .rem-agenda-card { padding: 8px 9px !important; border-radius: 12px !important; gap: 7px !important; }
         @media (max-width: 767px) {
-            #remOuterWrap { padding: 8px !important; gap: 8px !important; }
-            #remHeroCard { padding: 10px 12px !important; border-radius: 12px !important; }
+            #topNavHeader { padding: 4px 8px !important; gap: 4px !important; }
+            #headerBrandTitlePill,
+            #headerBrandBtnTimeline { display: none !important; }
+            #headerTabsRow { flex-wrap: nowrap !important; overflow-x: auto !important; width: 100% !important; padding: 2px !important; gap: 2px !important; -webkit-overflow-scrolling: touch; }
+            #headerTabsRow::-webkit-scrollbar { display: none; }
+            #headerTabsRow button { padding: 4px 8px !important; font-size: 11px !important; }
+            #headerTabsRow button svg { display: none !important; }
+            #remOuterWrap { padding: 6px 8px !important; gap: 6px !important; }
+            #remHeroCard { padding: 7px 10px !important; border-radius: 12px !important; }
+            #remHeroIcon { width: 26px !important; height: 26px !important; border-radius: 8px !important; }
+            #remHeroIcon svg { width: 14px !important; height: 14px !important; }
+            #remHeroKpis { display: none !important; }
             #remMobileToggleRow { display: flex !important; }
             #remCalendarWrap:not(.mobile-open),
-            #remComposerWrap:not(.mobile-open) { display: none !important; }
-            #remFilterSearchCard { padding: 8px !important; border-radius: 12px !important; }
-            #remindersListContainer .rem-agenda-card { padding: 9px 10px !important; border-radius: 12px !important; gap: 8px !important; }
+            #remComposerWrap:not(.mobile-open),
+            #remAIAssistantCard:not(.mobile-open) { display: none !important; }
+            #remFilterSearchCard { padding: 6px 8px !important; border-radius: 12px !important; }
+            #remindersListContainer .rem-agenda-card { padding: 8px 9px !important; border-radius: 12px !important; gap: 7px !important; }
         }
 </style>
 </head>
@@ -571,7 +589,7 @@
     <!-- TOP NAVIGATION BAR (CỐ ĐỊNH TRÊN CÙNG) -->
     <header id="topNavHeader" class="sticky top-0 z-[100] bg-[#211B18] text-[#FAF6F0] px-3 py-2 flex flex-wrap xl:flex-nowrap items-center justify-between gap-2 shadow-lg border-b border-[#382F2A]">
         <div class="flex items-center gap-1.5 min-w-0 flex-shrink-0">
-            <div class="px-2.5 py-1 rounded-lg border border-[#C59B27]/50 bg-[#C59B27]/15 text-[#F0CAA0] font-extrabold text-[11px] tracking-wider uppercase shadow-sm truncate flex items-center gap-1.5">
+            <div id="headerBrandTitlePill" class="px-2.5 py-1 rounded-lg border border-[#C59B27]/50 bg-[#C59B27]/15 text-[#F0CAA0] font-extrabold text-[11px] tracking-wider uppercase shadow-sm truncate flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-[#C59B27] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
                 <span>BÁO CÁO TIẾN ĐỘ THIẾT KẾ</span>
             </div>
@@ -1133,7 +1151,7 @@
                     <button type="button" onclick="toggleMobileReminderPanel('calendar')" class="py-2 px-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-extrabold text-[11px] shadow-xs flex items-center justify-center gap-1">
                         <span>📅 Lịch</span>
                     </button>
-                    <button type="button" onclick="document.getElementById('remAIInput')?.focus()" class="py-2 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-[11px] shadow-xs flex items-center justify-center gap-1">
+                    <button type="button" onclick="toggleMobileReminderPanel('ai')" class="py-2 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-[11px] shadow-xs flex items-center justify-center gap-1">
                         <span>✨ AI Nhắc</span>
                     </button>
                 </div>
@@ -14757,12 +14775,22 @@ Nhiệm vụ của bạn:
         let remSelectedCalDate = '';
 
         function toggleMobileReminderPanel(which) {
-            const targetId = which === 'calendar' ? 'remCalendarWrap' : 'remComposerWrap';
-            const otherId = which === 'calendar' ? 'remComposerWrap' : 'remCalendarWrap';
+            const panelMap = {
+                composer: 'remComposerWrap',
+                calendar: 'remCalendarWrap',
+                ai: 'remAIAssistantCard'
+            };
+            const targetId = panelMap[which] || 'remComposerWrap';
+            Object.values(panelMap).forEach(id => {
+                if (id !== targetId) document.getElementById(id)?.classList.remove('mobile-open');
+            });
             const el = document.getElementById(targetId);
-            const other = document.getElementById(otherId);
-            if (other) other.classList.remove('mobile-open');
-            if (el) el.classList.toggle('mobile-open');
+            if (el) {
+                const opened = el.classList.toggle('mobile-open');
+                if (opened && which === 'ai') {
+                    setTimeout(() => document.getElementById('remAIInput')?.focus(), 50);
+                }
+            }
         }
 
         // --- BỘ CHUYỂN ĐỔI ÂM LỊCH VIỆT NAM (UTC+7) & NGÀY LỄ ---
