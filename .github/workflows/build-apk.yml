@@ -76,8 +76,8 @@ jobs:
                   applicationId "com.donggia.tiendotk"
                   minSdk 24
                   targetSdk 34
-                  versionCode 2
-                  versionName "1.1"
+                  versionCode 3
+                  versionName "1.2"
               }
               buildTypes {
                   release {
@@ -88,9 +88,6 @@ jobs:
                   sourceCompatibility JavaVersion.VERSION_17
                   targetCompatibility JavaVersion.VERSION_17
               }
-          }
-          dependencies {
-              implementation 'androidx.browser:browser:1.8.0'
           }
           EOF
 
@@ -131,37 +128,73 @@ jobs:
           import android.graphics.Color;
           import android.net.Uri;
           import android.os.Bundle;
-          import androidx.browser.customtabs.CustomTabColorSchemeParams;
-          import androidx.browser.customtabs.CustomTabsIntent;
+          import android.view.Window;
+          import android.webkit.CookieManager;
+          import android.webkit.WebChromeClient;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
 
           public class MainActivity extends Activity {
               private static final String APP_URL = "https://hantrungdungkts-cloud.github.io/bao-cao-tien-do-thiet-ke/";
+              private WebView webView;
 
               @Override
               protected void onCreate(Bundle savedInstanceState) {
                   super.onCreate(savedInstanceState);
-                  Uri uri = Uri.parse(APP_URL);
-                  try {
-                      CustomTabColorSchemeParams colors = new CustomTabColorSchemeParams.Builder()
-                          .setToolbarColor(Color.parseColor("#211B18"))
-                          .setNavigationBarColor(Color.parseColor("#211B18"))
-                          .build();
-                      CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
-                          .setDefaultColorSchemeParams(colors)
-                          .setShowTitle(false)
-                          .setUrlBarHidingEnabled(true)
-                          .build();
-                      customTabsIntent.intent.setPackage("com.android.chrome");
-                      customTabsIntent.launchUrl(this, uri);
-                  } catch (Exception e) {
-                      try {
-                          CustomTabsIntent fallbackTab = new CustomTabsIntent.Builder().build();
-                          fallbackTab.launchUrl(this, uri);
-                      } catch (Exception ex) {
-                          startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                  requestWindowFeature(Window.FEATURE_NO_TITLE);
+                  getWindow().setStatusBarColor(Color.parseColor("#211B18"));
+
+                  webView = new WebView(this);
+                  setContentView(webView);
+
+                  CookieManager cookieManager = CookieManager.getInstance();
+                  cookieManager.setAcceptCookie(true);
+                  cookieManager.setAcceptThirdPartyCookies(webView, true);
+
+                  WebSettings settings = webView.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  settings.setDatabaseEnabled(true);
+                  settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+                  settings.setUseWideViewPort(true);
+                  settings.setLoadWithOverviewMode(true);
+                  String ua = settings.getUserAgentString();
+                  settings.setUserAgentString((ua != null ? ua : "") + " TienDoTKApp");
+
+                  webView.setWebChromeClient(new WebChromeClient());
+                  webView.setWebViewClient(new WebViewClient() {
+                      @Override
+                      public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                          Uri uri = request.getUrl();
+                          String host = uri.getHost() != null ? uri.getHost().toLowerCase() : "";
+                          if (host.equals("hantrungdungkts-cloud.github.io")) {
+                              return false;
+                          }
+                          try {
+                              startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                          } catch (Exception ignored) {}
+                          return true;
                       }
+
+                      @Override
+                      public void onPageFinished(WebView view, String url) {
+                          super.onPageFinished(view, url);
+                          CookieManager.getInstance().flush();
+                      }
+                  });
+
+                  webView.loadUrl(APP_URL);
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
                   }
-                  finish();
               }
           }
           EOF
